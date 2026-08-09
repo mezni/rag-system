@@ -1,8 +1,0 @@
-fastapi[all]==0.92.0
-uvicorn[standard]==0.20.0
-sqlalchemy[asyncio]
-psycopg2-binary==2.9.5
-asyncpg==0.27.0
-passlib[bcrypt]
-fastapi-jwt-auth[asymmetric]
-pika==1.3.1
