@@ -1,0 +1,22 @@
+{
+  "documents": {},
+  "chunks": {},
+  "pipeline_runs": {
+    "40ac5f8e-c8aa-45a1-8275-8e9bf637d135": {
+      "id": "40ac5f8e-c8aa-45a1-8275-8e9bf637d135",
+      "pipeline_name": "ingestion",
+      "status": "success",
+      "started_at": "2026-09-12T14:32:55.008670+00:00",
+      "finished_at": "2026-09-12T14:32:55.015121+00:00",
+      "stats": {
+        "files_new": 0,
+        "files_modified": 0,
+        "files_deleted": 0,
+        "files_unchanged": 0,
+        "files_failed": 0,
+        "chunks_written": 0
+      },
+      "error": null
+    }
+  }
+}

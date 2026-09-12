@@ -1,26 +1,11 @@
 """
-Ingestion pipeline — version 0
+Ingestion pipeline — version 0 (File/In-Memory Mode)
 
-Single-file, monolithic version of the ingestion pipeline. Intentionally
-NOT split into sources/parsers/stages modules yet — this is the "make it
-work end to end" version. As you evolve this, peel out functions in this
-order (each is marked with a TODO below):
-
-    1. parsers   (_parse_pdf / _parse_markdown / _parse_text)
-    2. sources   (_discover_files -> a FilesystemSourceConnector)
-    3. stages    (discover/parse/clean/chunk/embed/persist -> ingestion/stages/*)
-    4. db models (raw SQL below -> SQLAlchemy models + Alembic migrations)
-
-Design choices already baked in so the migration is easy later:
-    - one document = one file, identified by its path (source_id)
-    - content_hash drives change detection (new / modified / unchanged / deleted)
-    - each document is processed in its own DB transaction (resilience per file:
-      one bad PDF does not roll back the whole run)
-    - embeddings are batched across chunks (not one API call per chunk)
-    - every run is recorded in pipeline_runs, with per-document outcomes logged
+Single-file, monolithic version of the ingestion pipeline configured to run 
+WITHOUT a database dependency. Tracks document lifecycle state using a local 
+JSON file (`ingestion_state.json`).
 
 Usage:
-    export DATABASE_URL=postgresql://user:pass@localhost:5432/ragdb
     export OPENAI_API_KEY=sk-...
     python ingestion_pipeline_v0.py --source-dir ./data/raw
 """
@@ -29,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import logging
 import os
 import re
@@ -36,16 +22,12 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Any
 
-import psycopg2
-import psycopg2.extras
-from pgvector.psycopg2 import register_vector
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 
-# --- optional deps used by parsers; import lazily so the script still loads
-# if you haven't installed one of them yet ---
+# --- optional deps used by parsers ---
 try:
     from pypdf import PdfReader
 except ImportError:
@@ -57,13 +39,6 @@ except ImportError:
 # =============================================================================
 
 class Settings(BaseSettings):
-    """
-    Central config. Env-var driven so this same script works locally and in
-    Docker/CI without code changes. TODO: split into config/ingestion.yaml +
-    config/sources.yaml once you move to the multi-file structure.
-    """
-    database_url: str = Field(..., alias="DATABASE_URL")
-
     embedding_provider: str = Field(default="openai", alias="EMBEDDING_PROVIDER")
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
     embedding_model: str = Field(default="text-embedding-3-small", alias="EMBEDDING_MODEL")
@@ -81,12 +56,7 @@ class Settings(BaseSettings):
 
 
 # =============================================================================
-# Domain types (in-memory, not DB models yet)
-#
-# Pydantic rather than dataclasses: free validation (e.g. chunk_index >= 0),
-# free (de)serialization if these ever cross a process boundary (a future
-# task queue / API), and it matches the DB layer's ParsedContent/ChunkRecord
-# shapes 1:1 once those move into core/models/*.py.
+# Domain types
 # =============================================================================
 
 class DiscoveredFile(BaseModel):
@@ -95,12 +65,12 @@ class DiscoveredFile(BaseModel):
     mtime: datetime
 
     class Config:
-        frozen = True  # discovery output shouldn't be mutated downstream
+        frozen = True
 
 
 class ParsedContent(BaseModel):
     text: str
-    lineage: list[dict] = Field(default_factory=list)  # per-block lineage, e.g. page/header
+    lineage: list[dict] = Field(default_factory=list)
 
 
 class ChunkRecord(BaseModel):
@@ -111,7 +81,7 @@ class ChunkRecord(BaseModel):
     embedding: list[float] | None = None
 
     class Config:
-        validate_assignment = True  # embed_chunks() mutates .embedding after creation
+        validate_assignment = True
 
 
 class RunStats(BaseModel):
@@ -135,60 +105,36 @@ logger = logging.getLogger("ingestion")
 
 
 # =============================================================================
-# DB bootstrap (v0: raw SQL, no ORM/Alembic yet)
+# File-Based State Storage (Replaces Postgres DDL & Queries)
 # =============================================================================
 
-DDL = """
-CREATE EXTENSION IF NOT EXISTS vector;
+class LocalStateStore:
+    """Simulates persistent tables (documents, chunks, runs) using a JSON file."""
 
-CREATE TABLE IF NOT EXISTS pipeline_runs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    pipeline_name TEXT NOT NULL DEFAULT 'ingestion',
-    status TEXT NOT NULL DEFAULT 'running',   -- running | success | failed
-    started_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    finished_at TIMESTAMPTZ,
-    stats JSONB NOT NULL DEFAULT '{{}}'::jsonb,
-    error TEXT
-);
+    def __init__(self, state_file: Path):
+        self.state_file = state_file
+        self.data: dict[str, Any] = {
+            "documents": {},
+            "chunks": {},
+            "pipeline_runs": {}
+        }
+        self.load()
 
-CREATE TABLE IF NOT EXISTS documents (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    source_type TEXT NOT NULL DEFAULT 'filesystem',
-    source_id TEXT NOT NULL,              -- absolute file path for v0
-    content_hash TEXT NOT NULL,
-    lifecycle_state TEXT NOT NULL DEFAULT 'active',  -- active | deleted
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (source_type, source_id)
-);
+    def load(self) -> None:
+        if self.state_file.exists():
+            try:
+                with open(self.state_file, "r", encoding="utf-8") as f:
+                    self.data = json.load(f)
+            except Exception as e:
+                logger.warning("Could not read existing state file, starting fresh: %s", e)
 
-CREATE TABLE IF NOT EXISTS chunks (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
-    chunk_index INT NOT NULL,
-    content TEXT NOT NULL,
-    content_hash TEXT NOT NULL,
-    lineage JSONB NOT NULL DEFAULT '{{}}'::jsonb,
-    lifecycle_state TEXT NOT NULL DEFAULT 'active',  -- active | stale | deleted
-    embedding VECTOR({embedding_dim}),
-    ingestion_run_id UUID REFERENCES pipeline_runs(id) ON DELETE SET NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    UNIQUE (document_id, chunk_index)
-);
-
-CREATE INDEX IF NOT EXISTS ix_documents_lifecycle ON documents (lifecycle_state);
-CREATE INDEX IF NOT EXISTS ix_chunks_document_id ON chunks (document_id);
-"""
-
-
-def ensure_schema(conn, settings: Settings) -> None:
-    with conn.cursor() as cur:
-        cur.execute(DDL.format(embedding_dim=settings.embedding_dim))
-    conn.commit()
+    def save(self) -> None:
+        with open(self.state_file, "w", encoding="utf-8") as f:
+            json.dump(self.data, f, indent=2, default=str)
 
 
 # =============================================================================
-# Stage 1: discover  (TODO: becomes sources/filesystem/connector.py)
+# Stage 1: discover
 # =============================================================================
 
 def _hash_file(path: Path) -> str:
@@ -213,29 +159,29 @@ def discover_files(source_dir: Path, extensions: tuple[str, ...]) -> list[Discov
     return found
 
 
-def diff_against_db(conn, discovered: list[DiscoveredFile]) -> dict:
-    """
-    Returns {"new": [...], "modified": [...], "unchanged": [...], "deleted": [row,...]}
-    """
-    with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-        cur.execute(
-            "SELECT id, source_id, content_hash FROM documents WHERE lifecycle_state = 'active'"
-        )
-        existing = {row["source_id"]: row for row in cur.fetchall()}
+def diff_against_store(store: LocalStateStore, discovered: list[DiscoveredFile]) -> dict:
+    existing = {
+        source_id: doc for source_id, doc in store.data["documents"].items()
+        if doc.get("lifecycle_state") == "active"
+    }
 
-    discovered_by_path = {str(f.path): f for f in discovered}
+    discovered_by_path = {str(f.path.resolve()): f for f in discovered}
 
     new_files, modified_files, unchanged_files = [], [], []
     for path_str, disc in discovered_by_path.items():
-        row = existing.get(path_str)
-        if row is None:
+        doc = existing.get(path_str)
+        if doc is None:
             new_files.append(disc)
-        elif row["content_hash"] != disc.content_hash:
+        elif doc["content_hash"] != disc.content_hash:
             modified_files.append(disc)
         else:
             unchanged_files.append(disc)
 
-    deleted_rows = [row for path_str, row in existing.items() if path_str not in discovered_by_path]
+    deleted_rows = [
+        {"id": doc["id"], "source_id": path_str}
+        for path_str, doc in existing.items()
+        if path_str not in discovered_by_path
+    ]
 
     return {
         "new": new_files,
@@ -246,12 +192,12 @@ def diff_against_db(conn, discovered: list[DiscoveredFile]) -> dict:
 
 
 # =============================================================================
-# Stage 2: parse  (TODO: becomes ingestion/parsers/*.py + registry.py)
+# Stage 2: parse
 # =============================================================================
 
 def _parse_pdf(path: Path) -> ParsedContent:
     if PdfReader is None:
-        raise RuntimeError("pypdf is not installed. `uv add pypdf`")
+        raise RuntimeError("pypdf is not installed. Run `pip install pypdf`")
     reader = PdfReader(str(path))
     text_parts, lineage = [], []
     for page_num, page in enumerate(reader.pages, start=1):
@@ -289,7 +235,7 @@ def parse_file(path: Path) -> ParsedContent:
 
 
 # =============================================================================
-# Stage 3: clean  (TODO: becomes ingestion/stages/clean.py)
+# Stage 3: clean
 # =============================================================================
 
 def clean_text(text: str) -> str:
@@ -299,7 +245,7 @@ def clean_text(text: str) -> str:
 
 
 # =============================================================================
-# Stage 4: chunk  (TODO: becomes ingestion/stages/chunk.py)
+# Stage 4: chunk
 # =============================================================================
 
 def chunk_text(text: str, chunk_size: int, overlap: int) -> list[str]:
@@ -310,7 +256,6 @@ def chunk_text(text: str, chunk_size: int, overlap: int) -> list[str]:
     start = 0
     while start < len(text):
         end = min(start + chunk_size, len(text))
-        # try to break on a paragraph/sentence boundary rather than mid-word
         if end < len(text):
             boundary = text.rfind("\n\n", start, end)
             if boundary == -1:
@@ -333,8 +278,6 @@ def build_chunk_records(parsed: ParsedContent, settings: Settings) -> list[Chunk
                 chunk_index=idx,
                 content=content,
                 content_hash=hashlib.sha256(content.encode("utf-8")).hexdigest(),
-                # v0: lineage is just "which parsed document this came from";
-                # mapping a chunk to an exact page/header comes later.
                 lineage={"source_blocks": len(parsed.lineage)},
             )
         )
@@ -342,15 +285,13 @@ def build_chunk_records(parsed: ParsedContent, settings: Settings) -> list[Chunk
 
 
 # =============================================================================
-# Stage 5: embed  (TODO: becomes ingestion/stages/embed.py + providers/embeddings/*)
+# Stage 5: embed
 # =============================================================================
 
 def embed_chunks(chunks: list[ChunkRecord], settings: Settings) -> None:
-    """Mutates chunks in place, setting .embedding. Batched, provider-agnostic entrypoint."""
     if settings.embedding_provider != "openai":
         raise NotImplementedError(
-            f"Embedding provider '{settings.embedding_provider}' not wired yet in v0. "
-            "TODO: providers/embeddings/factory.py"
+            f"Embedding provider '{settings.embedding_provider}' not wired yet in v0."
         )
 
     from openai import OpenAI
@@ -369,125 +310,105 @@ def embed_chunks(chunks: list[ChunkRecord], settings: Settings) -> None:
 
 
 # =============================================================================
-# Stage 6: persist  (TODO: becomes ingestion/stages/persist.py + repositories/*)
+# Stage 6: persist (Local JSON)
 # =============================================================================
 
-def persist_document(conn, path: Path, content_hash: str, chunks: list[ChunkRecord], run_id: str) -> None:
-    """
-    One document = one transaction. If this raises, the caller rolls back and
-    moves to the next file — a single bad document never aborts the whole run.
-    """
-    with conn.cursor() as cur:
-        cur.execute(
-            """
-            INSERT INTO documents (source_type, source_id, content_hash)
-            VALUES ('filesystem', %s, %s)
-            ON CONFLICT (source_type, source_id)
-            DO UPDATE SET content_hash = EXCLUDED.content_hash, updated_at = now()
-            RETURNING id
-            """,
-            (str(path), content_hash),
-        )
-        document_id = cur.fetchone()[0]
+def persist_document(store: LocalStateStore, path: Path, content_hash: str, chunks: list[ChunkRecord], run_id: str) -> None:
+    source_id = str(path.resolve())
+    doc = store.data["documents"].get(source_id)
 
-        # supersede old chunks for this document rather than deleting outright,
-        # so a rollback can flip them back to 'active' later.
-        cur.execute(
-            "UPDATE chunks SET lifecycle_state = 'stale' WHERE document_id = %s AND lifecycle_state = 'active'",
-            (document_id,),
-        )
+    if not doc:
+        doc_id = str(uuid.uuid4())
+        doc = {
+            "id": doc_id,
+            "source_type": "filesystem",
+            "source_id": source_id,
+            "content_hash": content_hash,
+            "lifecycle_state": "active",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+        store.data["documents"][source_id] = doc
+    else:
+        doc_id = doc["id"]
+        doc["content_hash"] = content_hash
+        doc["updated_at"] = datetime.now(timezone.utc).isoformat()
 
-        for chunk in chunks:
-            cur.execute(
-                """
-                INSERT INTO chunks
-                    (document_id, chunk_index, content, content_hash, lineage, embedding, ingestion_run_id)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (document_id, chunk_index)
-                DO UPDATE SET
-                    content = EXCLUDED.content,
-                    content_hash = EXCLUDED.content_hash,
-                    lineage = EXCLUDED.lineage,
-                    embedding = EXCLUDED.embedding,
-                    ingestion_run_id = EXCLUDED.ingestion_run_id,
-                    lifecycle_state = 'active'
-                """,
-                (
-                    document_id,
-                    chunk.chunk_index,
-                    chunk.content,
-                    chunk.content_hash,
-                    psycopg2.extras.Json(chunk.lineage),
-                    chunk.embedding,
-                    run_id,
-                ),
-            )
-    conn.commit()
+    # Mark old chunks for this document as stale
+    for cid, cdata in store.data["chunks"].items():
+        if cdata["document_id"] == doc_id and cdata["lifecycle_state"] == "active":
+            cdata["lifecycle_state"] = "stale"
+
+    # Insert / update new active chunks
+    for chunk in chunks:
+        chunk_key = f"{doc_id}_{chunk.chunk_index}"
+        store.data["chunks"][chunk_key] = {
+            "id": str(uuid.uuid4()),
+            "document_id": doc_id,
+            "chunk_index": chunk.chunk_index,
+            "content": chunk.content,
+            "content_hash": chunk.content_hash,
+            "lineage": chunk.lineage,
+            "embedding": chunk.embedding,
+            "ingestion_run_id": run_id,
+            "lifecycle_state": "active",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+    store.save()
 
 
-def mark_documents_deleted(conn, deleted_rows: list[dict]) -> None:
+def mark_documents_deleted(store: LocalStateStore, deleted_rows: list[dict]) -> None:
     if not deleted_rows:
         return
-    with conn.cursor() as cur:
-        ids = [row["id"] for row in deleted_rows]
-        cur.execute(
-            "UPDATE documents SET lifecycle_state = 'deleted', updated_at = now() WHERE id = ANY(%s)",
-            (ids,),
-        )
-        cur.execute(
-            "UPDATE chunks SET lifecycle_state = 'deleted' WHERE document_id = ANY(%s)",
-            (ids,),
-        )
-    conn.commit()
+    deleted_ids = {row["id"] for row in deleted_rows}
+
+    for doc in store.data["documents"].values():
+        if doc["id"] in deleted_ids:
+            doc["lifecycle_state"] = "deleted"
+            doc["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+    for chunk in store.data["chunks"].values():
+        if chunk["document_id"] in deleted_ids:
+            chunk["lifecycle_state"] = "deleted"
+
+    store.save()
 
 
 # =============================================================================
-# Run tracking  (TODO: becomes observability/run_tracker.py)
+# Run tracking
 # =============================================================================
 
-def start_run(conn) -> str:
-    with conn.cursor() as cur:
-        cur.execute(
-            "INSERT INTO pipeline_runs (pipeline_name, status) VALUES ('ingestion', 'running') RETURNING id"
-        )
-        run_id = cur.fetchone()[0]
-    conn.commit()
-    return str(run_id)
+def start_run(store: LocalStateStore) -> str:
+    run_id = str(uuid.uuid4())
+    store.data["pipeline_runs"][run_id] = {
+        "id": run_id,
+        "pipeline_name": "ingestion",
+        "status": "running",
+        "started_at": datetime.now(timezone.utc).isoformat(),
+        "finished_at": None,
+        "stats": {},
+        "error": None,
+    }
+    store.save()
+    return run_id
 
 
-def finish_run(conn, run_id: str, status: str, stats: RunStats, error: str | None = None) -> None:
-    with conn.cursor() as cur:
-        cur.execute(
-            """
-            UPDATE pipeline_runs
-            SET status = %s, finished_at = now(), stats = %s, error = %s
-            WHERE id = %s
-            """,
-            (
-                status,
-                psycopg2.extras.Json(
-                    {
-                        "files_new": stats.files_new,
-                        "files_modified": stats.files_modified,
-                        "files_deleted": stats.files_deleted,
-                        "files_unchanged": stats.files_unchanged,
-                        "files_failed": stats.files_failed,
-                        "chunks_written": stats.chunks_written,
-                    }
-                ),
-                error,
-                run_id,
-            ),
-        )
-    conn.commit()
+def finish_run(store: LocalStateStore, run_id: str, status: str, stats: RunStats, error: str | None = None) -> None:
+    run = store.data["pipeline_runs"].get(run_id)
+    if run:
+        run["status"] = status
+        run["finished_at"] = datetime.now(timezone.utc).isoformat()
+        run["stats"] = stats.model_dump()
+        run["error"] = error
+        store.save()
 
 
 # =============================================================================
 # Orchestration
 # =============================================================================
 
-def process_file(conn, disc: DiscoveredFile, settings: Settings, run_id: str) -> int:
-    """Returns number of chunks written. Raises on failure (caller catches per-file)."""
+def process_file(store: LocalStateStore, disc: DiscoveredFile, settings: Settings, run_id: str) -> int:
     parsed = parse_file(disc.path)
     parsed.text = clean_text(parsed.text)
 
@@ -497,22 +418,21 @@ def process_file(conn, disc: DiscoveredFile, settings: Settings, run_id: str) ->
         return 0
 
     embed_chunks(chunks, settings)
-    persist_document(conn, disc.path, disc.content_hash, chunks, run_id)
+    persist_document(store, disc.path, disc.content_hash, chunks, run_id)
     return len(chunks)
 
 
 def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
-    conn = psycopg2.connect(settings.database_url)
-    register_vector(conn)
-    ensure_schema(conn, settings)
+    state_file = source_dir / "ingestion_state.json"
+    store = LocalStateStore(state_file)
 
-    run_id = start_run(conn)
+    run_id = start_run(store)
     stats = RunStats()
-    logger.info("Started ingestion run %s on %s", run_id, source_dir)
+    logger.info("Started local ingestion run %s on %s", run_id, source_dir)
 
     try:
         discovered = discover_files(source_dir, settings.supported_extensions)
-        diff = diff_against_db(conn, discovered)
+        diff = diff_against_store(store, discovered)
 
         stats.files_unchanged = len(diff["unchanged"])
         logger.info(
@@ -524,7 +444,7 @@ def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
         for disc in diff["new"] + diff["modified"]:
             is_new = disc in diff["new"]
             try:
-                n_chunks = process_file(conn, disc, settings, run_id)
+                n_chunks = process_file(store, disc, settings, run_id)
                 stats.chunks_written += n_chunks
                 if is_new:
                     stats.files_new += 1
@@ -532,35 +452,35 @@ def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
                     stats.files_modified += 1
                 logger.info("Processed %s (%d chunks)", disc.path, n_chunks)
             except Exception:
-                conn.rollback()
                 stats.files_failed += 1
                 logger.exception("Failed to process %s — skipping, continuing run", disc.path)
 
-        mark_documents_deleted(conn, diff["deleted"])
+        mark_documents_deleted(store, diff["deleted"])
         stats.files_deleted = len(diff["deleted"])
 
-        finish_run(conn, run_id, "success" if stats.files_failed == 0 else "success_with_errors", stats)
+        finish_run(store, run_id, "success" if stats.files_failed == 0 else "success_with_errors", stats)
         logger.info("Finished run %s: %s", run_id, stats)
+        logger.info("Ingestion state saved to: %s", state_file)
         return stats
 
     except Exception as e:
-        finish_run(conn, run_id, "failed", stats, error=str(e))
+        finish_run(store, run_id, "failed", stats, error=str(e))
         logger.exception("Ingestion run %s failed", run_id)
         raise
-    finally:
-        conn.close()
 
 
 # =============================================================================
-# CLI entrypoint  (TODO: becomes orchestration/cli.py, called by scheduler.py)
+# CLI entrypoint
 # =============================================================================
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="RAG ingestion pipeline (v0)")
+    parser = argparse.ArgumentParser(description="RAG ingestion pipeline (In-Memory / File mode)")
     parser.add_argument("--source-dir", type=Path, required=True, help="Directory to scan for documents")
     args = parser.parse_args()
 
-    settings = Settings()  # reads from environment / .env
+    # Create dummy settings for environment loading without DATABASE_URL requirement
+    os.environ.setdefault("DATABASE_URL", "none")
+    settings = Settings()
 
     if not args.source_dir.exists():
         logger.error("Source directory does not exist: %s", args.source_dir)

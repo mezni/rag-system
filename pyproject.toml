@@ -2,4 +2,13 @@
 name = "rag-system"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "httpx>=0.28.1",
+    "openai>=3.13.0",
+    "pgvector>=0.5.0",
+    "psycopg2-binary>=2.9.13",
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+    "pypdf>=6.18.1",
+    "reportlab>=5.0.1",
+]
