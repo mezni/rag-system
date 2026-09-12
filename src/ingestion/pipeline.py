@@ -16,18 +16,18 @@ from typing import Iterable, Any
 
 from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-# --- optional deps used by parsers ---
-try:
-    from pypdf import PdfReader
-except ImportError:
-    PdfReader = None
+from src.db.base import get_session, SessionLocal, Base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from .stages.clean import clean_text
 from .stages.chunk import chunk_text, build_chunk_records
 from .stages.embed import embed_chunks
 from .stages.parse import discover_files, parse_file, _hash_file, _PARSERS
-from .stages.persist import LocalStateStore, RunStats
+from .stages.persist import PostgreSQLStateStore, RunStats
 
 from src.core.exceptions import IngestionError, FileProcessingError, EmbeddingError, ConfigurationError
 from src.core.enums import LifecycleState, ChunkStatus
@@ -231,58 +231,62 @@ def persist_document(store: LocalStateStore, path: Path, content_hash: str,
     store.save()
 
 
-def mark_documents_deleted(store: LocalStateStore, deleted_rows: list[dict]) -> None:
+def mark_documents_deleted(store: PostgreSQLStateStore, deleted_rows: list[dict]) -> None:
     if not deleted_rows:
         return
     deleted_ids = {row["id"] for row in deleted_rows}
 
-    for doc in store.data["documents"].values():
-        if doc["id"] in deleted_ids:
-            doc["lifecycle_state"] = "deleted"
-            doc["updated_at"] = datetime.now(timezone.utc).isoformat()
+    with store.session as session:
+        # Mark documents as deleted
+        for doc_id in deleted_ids:
+            doc = session.get(DocumentOrm, doc_id)
+            if doc:
+                doc.lifecycle_state = "deleted"
+                doc.updated_at = datetime.now(timezone.utc)
 
-    for chunk in store.data["chunks"].values():
-        if chunk["document_id"] in deleted_ids:
-            chunk["lifecycle_state"] = "deleted"
-
-    store.save()
+        # Mark chunks as deleted
+        session.query(ChunkOrm).filter(
+            ChunkOrm.document_id.in_(deleted_ids),
+            ChunkOrm.status == "active",
+        ).update({"status": "deleted"}, synchronize_session="fetch")
+        session.flush()
 
 
 # =============================================================================
 # Run tracking
 # =============================================================================
 
-def start_run(store: LocalStateStore) -> str:
-    run_id = str(uuid.uuid4())
-    store.data["pipeline_runs"][run_id] = {
-        "id": run_id,
-        "pipeline_name": "ingestion",
-        "status": "running",
-        "started_at": datetime.now(timezone.utc).isoformat(),
-        "finished_at": None,
-        "stats": {},
-        "error": None,
-    }
-    store.save()
-    return run_id
+def start_run(store: PostgreSQLStateStore) -> str:
+    from src.core.models.sqlalchemy_models import PipelineRunOrm
+    with store.session as session:
+        run = PipelineRunOrm(
+            id=str(uuid.uuid4()),
+            pipeline_name="ingestion",
+            status="running",
+            started_at=datetime.now(timezone.utc),
+        )
+        session.add(run)
+        session.flush()
+    return run.id
 
 
-def finish_run(store: LocalStateStore, run_id: str, status: str, stats: RunStats,
+def finish_run(store: PostgreSQLStateStore, run_id: str, status: str, stats: RunStats,
                error: str | None = None) -> None:
-    run = store.data["pipeline_runs"].get(run_id)
-    if run:
-        run["status"] = status
-        run["finished_at"] = datetime.now(timezone.utc).isoformat()
-        run["stats"] = stats.model_dump() if hasattr(stats, 'model_dump') else stats.__dict__
-        run["error"] = error
-        store.save()
+    with store.session as session:
+        run = session.get(PipelineRunOrm, run_id)
+        if run:
+            run.status = status
+            run.finished_at = datetime.now(timezone.utc)
+            run.stats = stats.model_dump() if hasattr(stats, 'model_dump') else stats.__dict__
+            run.error = error
+            session.flush()
 
 
 # =============================================================================
 # Orchestration
 # =============================================================================
 
-def process_file(store: LocalStateStore, disc: DiscoveredFile, settings: Settings,
+def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Settings,
                  run_id: str) -> int:
     parsed = parse_file(disc.path)
     parsed.text = clean_text(parsed.text)
@@ -293,13 +297,39 @@ def process_file(store: LocalStateStore, disc: DiscoveredFile, settings: Setting
         return 0
 
     embed_chunks(chunks, settings)
-    persist_document(store, disc.path, disc.content_hash, chunks, run_id)
+
+    # Upsert document
+    doc_id = store.upsert_document(
+        source_id=str(disc.path.resolve()),
+        content_hash=disc.content_hash,
+        lifecycle_state="active",
+        metadata={"source": disc.path.name},
+    )
+
+    # Upsert chunks
+    for chunk in chunks:
+        store.upsert_chunk(
+            document_id=doc_id,
+            chunk_index=chunk.chunk_index,
+            content=chunk.content,
+            content_hash=chunk.content_hash,
+            lineage=chunk.lineage,
+            embedding=chunk.embedding,
+            ingestion_run_id=run_id,
+        )
+
     return len(chunks)
 
 
 def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
-    state_file = source_dir / "ingestion_state.json"
-    store = LocalStateStore(state_file)
+    # Create PostgreSQL engine from settings/environment
+    database_url = (
+        getattr(settings, "database_url", None)
+        or os.environ.get("DATABASE_URL")
+        or "postgresql+psycopg2://rag_user:rag_password@localhost:15432/rag_ingestion"
+    )
+    engine = create_engine(database_url, future=True)
+    store = PostgreSQLStateStore(engine)
 
     run_id = start_run(store)
     stats = RunStats()
@@ -335,7 +365,8 @@ def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
 
         finish_run(store, run_id, "success" if stats.files_failed == 0 else "success_with_errors", stats)
         logger.info("Finished run %s: %s", run_id, stats)
-        logger.info("Ingestion state saved to: %s", state_file)
+        logger.info("Ingestion completed: %d chunks written, %d files new, %d files modified, %d files deleted",
+                     stats.chunks_written, stats.files_new, stats.files_modified, stats.files_deleted)
         return stats
 
     except Exception as e:

@@ -1,0 +1,69 @@
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    DateTime,
+    Text,
+    Boolean,
+    JSON,
+    ForeignKey,
+    Index,
+)
+from sqlalchemy.sql import func
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
+
+
+class DocumentOrm(Base):
+    __tablename__ = "documents"
+
+    id = Column(String, primary_key=True, default=lambda: func.uuid_generate())
+    source_id = Column(String, nullable=False, unique=True, index=True)
+    source_type = Column(String, nullable=False, default="filesystem")
+    content_hash = Column(String, nullable=False, index=True)
+    lifecycle_state = Column(String, nullable=False, default="active")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
+    meta = Column(JSON, nullable=True, default=dict)
+
+
+class ChunkOrm(Base):
+    __tablename__ = "chunks"
+
+    id = Column(String, primary_key=True, default=lambda: func.uuid_generate())
+    document_id = Column(
+        String,
+        ForeignKey("documents.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    chunk_index = Column(Integer, nullable=False)
+    content = Column(Text, nullable=False)
+    content_hash = Column(String, nullable=False)
+    lineage = Column(JSON, nullable=True, default=dict)
+    embedding = Column(JSON, nullable=True)
+    status = Column(String, nullable=False, default="active")
+    ingestion_run_id = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class PipelineRunOrm(Base):
+    __tablename__ = "pipeline_runs"
+
+    id = Column(String, primary_key=True, default=lambda: func.uuid_generate())
+    pipeline_name = Column(String, nullable=False, default="ingestion")
+    status = Column(String, nullable=False, default="running")
+    started_at = Column(DateTime(timezone=True), server_default=func.now())
+    finished_at = Column(DateTime(timezone=True), nullable=True)
+    stats = Column(JSON, nullable=True)
+    error = Column(Text, nullable=True)
+
+
+# Indexes for performance
+Index("ix_chunks_document_id_status", ChunkOrm.document_id, ChunkOrm.status)
+Index("ix_pipeline_runs_status", PipelineRunOrm.status)
