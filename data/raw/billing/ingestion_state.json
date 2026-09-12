@@ -1,37 +1,37 @@
 {
   "documents": {
     "/home/dali/WORK/rag-system/data/raw/billing/BILL-001_postpaid_billing_and_payment_policy.md": {
-      "id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+      "id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "source_type": "filesystem",
       "source_id": "/home/dali/WORK/rag-system/data/raw/billing/BILL-001_postpaid_billing_and_payment_policy.md",
       "content_hash": "6fef956f241285fa126004c15445b8c1aa62f71d159443ded6442c0a9644e3b4",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:52:55.247830+00:00",
-      "updated_at": "2026-09-12T17:54:23.987601+00:00"
+      "created_at": "2026-09-12T20:08:30.012721+00:00",
+      "updated_at": "2026-09-12T20:08:30.012746+00:00"
     },
     "/home/dali/WORK/rag-system/data/raw/billing/BILL-001_postpaid_billing_and_payment_policy.pdf": {
-      "id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+      "id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "source_type": "filesystem",
       "source_id": "/home/dali/WORK/rag-system/data/raw/billing/BILL-001_postpaid_billing_and_payment_policy.pdf",
       "content_hash": "97051aa5c92a2f19ed23142610a777f7dd305f203b4ce4c28df92ab9f3642e3d",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593482+00:00",
-      "updated_at": "2026-09-12T17:53:03.593499+00:00"
+      "created_at": "2026-09-12T20:08:54.872358+00:00",
+      "updated_at": "2026-09-12T20:08:54.872383+00:00"
     },
     "/home/dali/WORK/rag-system/data/raw/billing/BILL-001_postpaid_billing_and_payment_policy.txt": {
-      "id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+      "id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "source_type": "filesystem",
       "source_id": "/home/dali/WORK/rag-system/data/raw/billing/BILL-001_postpaid_billing_and_payment_policy.txt",
       "content_hash": "ac0064b5a8d340873a4c05a4cb56c6ae5ca1ddf113086e10964345675658f7fe",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.722915+00:00",
-      "updated_at": "2026-09-12T17:53:10.722946+00:00"
+      "created_at": "2026-09-12T20:09:24.731552+00:00",
+      "updated_at": "2026-09-12T20:09:24.731576+00:00"
     }
   },
   "chunks": {
-    "af393eed-5ca8-4639-976e-fc52ead102cc_0": {
-      "id": "f4666a3a-7819-4f26-ad62-90db6dded069",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_0": {
+      "id": "895ea76e-12a1-4da1-81f7-97bf68627e2b",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 0,
       "content": "## Overview\n\nThe Postpaid Billing and Payment Policy defines how Aether Wireless generates monthly invoices, collects payments, and manages account status for postpaid customers. The policy applies to all postpaid service contracts unless a customer has a written agreement that supersedes these general rules. ADD\n\n### Billing Cycle\n- Invoices are generated on a recurring basis (typically monthly) for the usage period that has just concluded.\n- Each invoice includes a summary of charges, applicable taxes, and any adjustments from the prior billing cycle.\n\n### Payment Methods\n- Accepted payment methods include electronic bank transfer, credit/debit card, and authorized automatic payment (ACH) arrangements.\n- Customers may select one or more methods; the primary method is used first, with secondary methods serving as fallback.\n\n### Due Date\n- Payment is due on the date specified on the invoice, which is calculated based on the billing cycle end date plus the standard payment period.\n- The due date is communicated to the customer via the invoice and any associated electronic notifications.\n\n### Failed Payments\n- If a payment is not received by the due date, the account is placed in a **past\u2011due** status.\n- The system automatically attempts a second collection using any secondary payment method on file.\n- A notification is sent to the customer outlining the missed payment and next steps.",
       "content_hash": "dd7d1b29a22f1a251a92857209f5b99a677487a69100a6430aad3a3faf4cc2ae",
@@ -424,13 +424,13 @@
         0.0970318391919136,
         -0.06868547201156616
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.987738+00:00"
+      "created_at": "2026-09-12T20:08:30.012770+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_1": {
-      "id": "ab641dc7-d3ba-43c0-a6d8-696955fe412c",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_1": {
+      "id": "3650862e-3b90-407a-a1c1-432f8b9f5530",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 1,
       "content": "due** status.\n- The system automatically attempts a second collection using any secondary payment method on file.\n- A notification is sent to the customer outlining the missed payment and next steps.\n\n### Account Status Management\n- **Current** \u2013 Account is in good standing; services continue without interruption.\n- **Past\u2011Due** \u2013 Services remain active but the account is flagged for follow\u2011up; additional collection actions may be initiated.\n- **Suspended** \u2013 If payment remains unresolved after a defined grace period, services may be temporarily suspended pending payment.\n- **Terminated** \u2013 Persistent non\u2011payment may lead to termination of service and recovery actions in accordance with contractual terms.\n\n### Customer Responsibilities\n- Review each invoice for accuracy and report discrepancies within the timeframe indicated on the invoice.\n- Ensure that a valid payment method is on file and that sufficient funds are available on the due date.\n- Respond promptly to any payment\u2011related communications from Aether Wireless.\n\n### Internal Staff Responsibilities\n- Billing staff generate and distribute invoices according to the schedule defined in the system.\n- Customer service representatives provide clarification on invoice items and assist with payment method updates.\n- Collections team monitors past\u2011due accounts, initiates follow\u2011up actions, and escalates accounts according to the defined status hierarchy.\n\n## Scope and Applicability",
       "content_hash": "40b1de239786f140ce0701ac22131bb23970c12f7cc1ff3be6a13a2295d5da0f",
@@ -823,13 +823,13 @@
         0.06466427445411682,
         -0.04901250824332237
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.987799+00:00"
+      "created_at": "2026-09-12T20:08:30.012788+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_2": {
-      "id": "35bd7ed0-d4b6-492b-828a-5b01b5187cd8",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_2": {
+      "id": "54a1692d-c848-4e85-b8fb-afced5235a6b",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 2,
       "content": "with payment method updates.\n- Collections team monitors past\u2011due accounts, initiates follow\u2011up actions, and escalates accounts according to the defined status hierarchy.\n\n## Scope and Applicability \n\nThis section defines the boundaries of the **Postpaid Billing and Payment Policy** (Document ID: BILL-001) and identifies the parties to whom it applies.\n\n- **Applicable Services** \n - All postpaid voice, data, and bundled service plans offered by Aether Wireless. \n - Any postpaid add\u2011on features (e.g., international roaming, device financing) that are billed on a monthly basis.\n\n- **Customer Eligibility** \n - The policy applies to every customer who has entered into a postpaid contract with Aether Wireless, regardless of account age, credit tier, or geographic region. \n - Customers on prepaid or hybrid (pre\u2011pay + post\u2011pay) plans are excluded; they are governed by the separate Prepaid Billing Policy.\n\n- **Geographic Scope** \n - The policy is enforceable for all Aether Wireless operations worldwide, unless a local regulator mandates a divergent requirement. In such cases, the local regulation supersedes this policy.",
       "content_hash": "f719c59874b4c2c88b6874d3cc94852c2505e574bacd57612dd75b6d8bff07b9",
@@ -1222,13 +1222,13 @@
         0.04498473182320595,
         -0.07913060486316681
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.987844+00:00"
+      "created_at": "2026-09-12T20:08:30.012804+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_3": {
-      "id": "bc850da5-701b-4af6-9ef2-6287bfb31410",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_3": {
+      "id": "15e393d9-ad8a-4d37-a7b2-877ac239be1e",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 3,
       "content": "pe** \n - The policy is enforceable for all Aether Wireless operations worldwide, unless a local regulator mandates a divergent requirement. In such cases, the local regulation supersedes this policy.\n\n- **Internal Stakeholder Coverage** \n - **Billing Operations Team** \u2013 responsible for generating invoices, applying payments, and monitoring delinquency. \n - **Customer Service Representatives** \u2013 handle inquiries, payment arrangements, and escalation of payment issues. \n - **Finance Department** \u2013 oversees reconciliation, reporting, and compliance with external financial regulations. \n - **Legal & Compliance** \u2013 reviews any exceptions required by law or regulatory bodies.\n\n- **Exceptions** \n - Accounts that are under a court\u2011ordered payment plan or a government\u2011mandated assistance program are subject to the terms of those specific arrangements, which may modify due dates or payment methods. \n - In cases of force\u2011majeure events (e.g., natural disasters) that impact a customer\u2019s ability to pay, staff may apply a temporary waiver in accordance with the Force\u2011Majeure Exception Procedure (refer to internal SOP).\n\n- **Customer Responsibilities** \n - Ensure that billing information (address, contact details, and payment method) is current and accurate. \n - Review monthly statements promptly and report any discrepancies to the Billing Operations Team within the timeframe specified in the statement. \n - Honor the agreed\u2011upon payment schedule unless an approved exception is granted.",
       "content_hash": "fb5e8b2c2e1032c0ba54acc8be723b25cb3d6623859278682aefac9d16aac04e",
@@ -1621,13 +1621,13 @@
         0.06667423993349075,
         -0.06652781367301941
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.987881+00:00"
+      "created_at": "2026-09-12T20:08:30.012817+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_4": {
-      "id": "1ad4eb94-e2a3-45d9-b931-21dc048d433d",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_4": {
+      "id": "51f0b16f-e93c-4514-9939-dc2d8f02a43f",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 4,
       "content": "omptly and report any discrepancies to the Billing Operations Team within the timeframe specified in the statement. \n - Honor the agreed\u2011upon payment schedule unless an approved exception is granted.\n\n- **Operational Steps for Determining Applicability** \n 1. Verify that the account type is classified as \u201cpostpaid\u201d in the customer master data. \n 2. Confirm that the service portfolio associated with the account consists solely of postpaid offerings. \n 3. Check for any active regulatory or legal exceptions linked to the account. \n 4. If all criteria are met, apply the Postpaid Billing and Payment Policy to the account; otherwise, reference the appropriate alternative policy.\n\n## Billing Cycle Rules\n\nAether Wireless postpaid accounts operate on a recurring billing cycle that defines when charges are calculated, invoiced, and due. The following rules apply to all postpaid customers unless otherwise specified in a customer\u2011specific agreement.\n\n### Cycle Definition \n- **Cycle Length:** The standard billing cycle is one calendar month. The cycle start date is the date the service is first activated or the date of the most recent plan change. \n- **Cycle Alignment:** For customers who change plans mid\u2011cycle, the new plan\u2019s charges are prorated for the remainder of the current cycle and then applied to the next full cycle.",
       "content_hash": "c31699b0048a040a6aa62cd71b4424c5a3ed3400bf2c9118eb1c170105aa49e8",
@@ -2020,13 +2020,13 @@
         0.06115943565964699,
         -0.0970374122262001
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.987919+00:00"
+      "created_at": "2026-09-12T20:08:30.012831+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_5": {
-      "id": "b7c81fa5-12ff-47aa-929e-348cb4a5bcf2",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_5": {
+      "id": "2c7d9d8c-f6f8-4e33-ac8a-5eaa08966590",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 5,
       "content": "cent plan change. \n- **Cycle Alignment:** For customers who change plans mid\u2011cycle, the new plan\u2019s charges are prorated for the remainder of the current cycle and then applied to the next full cycle.\n\n### Invoicing and Due Date \n- **Invoice Generation:** An invoice is generated at the end of each billing cycle and is made available to the customer via the online portal, email, or paper mail, depending on the customer\u2019s preference. \n- **Due Date:** Payment is due **X** days after the invoice date. (The exact number of days is defined in the customer contract and is not disclosed here.) \n\n### Payment Methods \n- Accepted payment methods include:\n - Automated bank debit (ACH)\n - Credit or debit card (Visa, MasterCard, American Express)\n - Online payment through the customer portal\n - Authorized third\u2011party payment processors\n- Payments must be processed using the method selected in the customer\u2019s account profile. Changes to the payment method require verification and must be updated in the system before the next billing cycle.",
       "content_hash": "789563c8c1684882f18bd3bd4130671fa0015c5990604f17cfc63dea845c2dd9",
@@ -2419,13 +2419,13 @@
         0.07851088792085648,
         -0.08217702060937881
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.987957+00:00"
+      "created_at": "2026-09-12T20:08:30.012845+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_6": {
-      "id": "5008f5f6-eed1-486b-ab85-0804c3902acc",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_6": {
+      "id": "6039eb8a-0f98-4f24-a65e-47b7ca59ae0e",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 6,
       "content": "ents must be processed using the method selected in the customer\u2019s account profile. Changes to the payment method require verification and must be updated in the system before the next billing cycle.\n\n### Failed Payment Handling \n1. **First Failure:** The system attempts a second collection attempt within 24\u202fhours. The customer receives a notification of the failed payment and a reminder of the upcoming due date. \n2. **Second Failure:** A second notification is sent, and the account is placed on a **Grace Period** pending resolution. \n3. **Grace Period:** During the grace period, services continue without interruption, but the account is flagged for follow\u2011up by the Billing team. \n4. **Third Failure:** If payment is not received after the grace period, the account is moved to **Suspended** status in accordance with the Account Status Policy. \n\n### Exceptions \n- **Promotional Accounts:** Customers enrolled in promotional billing arrangements may have alternate cycle lengths or due dates as defined in the promotion terms. \n- **Regulatory Holds:** Accounts subject to regulatory holds (e.g., court orders) follow the specific timelines dictated by the applicable regulation, superseding the standard cycle rules.",
       "content_hash": "c0bb53e5afd043fb29bbe709f980fae00bc6593e0e074d32f6f8fb72e1408042",
@@ -2818,13 +2818,13 @@
         0.0360063873231411,
         -0.010230094194412231
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.987991+00:00"
+      "created_at": "2026-09-12T20:08:30.012859+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_7": {
-      "id": "0aab5262-0c90-4af4-935a-f4ae3c6bbea0",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_7": {
+      "id": "2f40a506-6d94-4c82-8e8e-c18766bf45ae",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 7,
       "content": "n terms. \n- **Regulatory Holds:** Accounts subject to regulatory holds (e.g., court orders) follow the specific timelines dictated by the applicable regulation, superseding the standard cycle rules. \n\n### Customer Responsibilities \n- Keep payment method information current and ensure sufficient funds are available on the due date. \n- Review the monthly invoice for accuracy and report any discrepancies within the timeframe specified in the Dispute Resolution Procedure. \n- Notify Aether Wireless promptly of any changes to billing address, contact information, or preferred payment method. \n\n### Internal Staff Responsibilities \n- **Billing Operations:** Generate invoices promptly at cycle end, verify accuracy of prorated charges, and ensure delivery through the selected channel. \n- **Customer Service:** Respond to payment\u2011related inquiries, provide assistance with updating payment methods, and communicate any upcoming changes to billing cycles. \n- **Collections Team:** Monitor failed payment alerts, execute the defined collection steps, and coordinate with the Account Management team for any required account status changes. \n\nThese rules establish a consistent framework for managing postpaid billing cycles, ensuring transparency for customers and operational efficiency for Aether Wireless staff.\n\n## Accepted Payment Methods",
       "content_hash": "d9abbc50befddb14f6ec056f8f9f9c3b24740ec16dc1f3974df70f429ca3669f",
@@ -3217,13 +3217,13 @@
         0.060954753309488297,
         -0.06341381371021271
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.988043+00:00"
+      "created_at": "2026-09-12T20:08:30.012873+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_8": {
-      "id": "be86dcb7-01e0-4d81-be99-a27eb232e2b0",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_8": {
+      "id": "9440c6a1-dd6d-4e06-9bec-9e416aebf73f",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 8,
       "content": "se rules establish a consistent framework for managing postpaid billing cycles, ensuring transparency for customers and operational efficiency for Aether Wireless staff.\n\n## Accepted Payment Methods \n\nAether Wireless supports a defined set of payment methods for post\u2011paid accounts. All methods must be accepted in the currency of the account and comply with applicable regulatory and security standards.\n\n### Supported Methods \n- **Credit/Debit Cards** \u2013 Visa, MasterCard, American Express, and Discover. Card details must be entered through the secure online portal or provided to a billing representative. \n- **Electronic Bank Transfer (ACH/EFT)** \u2013 Direct debit from a checking or savings account. Customers must submit a signed authorization form. \n- **Online Payment Services** \u2013 PayPal, Apple Pay, Google Pay, or other approved digital wallets, provided the service is linked to a verified funding source. \n- **Postal Money Order** \u2013 Accepted only when mailed to the designated billing address with the account number clearly indicated.",
       "content_hash": "8862e3b58e641a5a98d7bd4fe9ad3d9c1294b4695f2e146603aa8809c5e4aae0",
@@ -3616,13 +3616,13 @@
         0.11619435995817184,
         -0.053557153791189194
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.988087+00:00"
+      "created_at": "2026-09-12T20:08:30.012886+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_9": {
-      "id": "0394a85a-4b32-4e9e-859a-f9172a7fb59c",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_9": {
+      "id": "52496dbc-6646-4487-ab55-42afb658c443",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 9,
       "content": "llets, provided the service is linked to a verified funding source. \n- **Postal Money Order** \u2013 Accepted only when mailed to the designated billing address with the account number clearly indicated. \n\n### Operational Steps \n1. **Customer Initiation** \u2013 The customer selects a preferred method via the self\u2011service portal or contacts the Billing Support team. \n2. **Verification** \u2013 Billing staff confirm that the payment method meets security and compliance requirements (e.g., card validation, bank account verification). \n3. **Activation** \u2013 Once verified, the method is added to the account profile and becomes the default payment option for the next billing cycle. \n4. **Processing** \u2013 Payments are processed on the scheduled due date. Successful transactions update the account status automatically. \n\n### Exceptions \n- **Cash Payments** \u2013 Not accepted for post\u2011paid billing due to traceability and reconciliation constraints. \n- **International Cards** \u2013 May be declined if they do not meet the issuer\u2019s cross\u2011border verification standards. \n\n### Customer Responsibilities \n- Keep payment method information current and accurate. \n- Notify Billing Support promptly of any changes to card expiration dates, bank account details, or digital wallet credentials. \n- Ensure sufficient funds or credit availability on the payment date to avoid failed transactions.",
       "content_hash": "b428010ba7ec35ac0f071be9dd4883a93484e9ebe16a1bf615645dcef7668975",
@@ -4015,13 +4015,13 @@
         0.07014689594507217,
         -0.06408775597810745
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.988123+00:00"
+      "created_at": "2026-09-12T20:08:30.012899+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_10": {
-      "id": "61e77779-d414-421e-a8d3-d13146018490",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_10": {
+      "id": "b4b68eb4-354d-4b4c-9020-b11c213242a6",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 10,
       "content": "ptly of any changes to card expiration dates, bank account details, or digital wallet credentials. \n- Ensure sufficient funds or credit availability on the payment date to avoid failed transactions. \n\n### Internal Staff Responsibilities \n- Verify the authenticity and validity of new payment method submissions. \n- Record all payment method changes in the customer account system with timestamps and staff identifiers. \n- Escalate any payment method that fails verification to the Risk Management team for review. \n\nCompliance with these procedures ensures timely billing, reduces the incidence of failed payments, and maintains the integrity of the post\u2011paid billing cycle.\n\n## Payment Due Dates and Grace Period\n\nThe postpaid billing cycle ends on the last day of each calendar month. The invoice generated for that cycle is delivered to the customer electronically (or by mail, if requested) within three business days after cycle close. The **payment due date** is set to **15 calendar days** from the invoice issuance date, unless otherwise specified in the customer contract.\n\n### Grace Period\nA standard grace period of **5 calendar days** follows the due date. Payments received within the grace period are treated as on\u2011time and do not trigger any service restrictions.",
       "content_hash": "f907978703634ec940c1db3c4eaf0c11ca12ff39a0bed11ba7d3052efc9faee4",
@@ -4414,13 +4414,13 @@
         0.06816095858812332,
         -0.09408307820558548
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990034+00:00"
+      "created_at": "2026-09-12T20:08:30.012913+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_11": {
-      "id": "4cd79391-a5ff-4894-8343-4c043ff60ae8",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_11": {
+      "id": "9cd95e79-2e31-4637-b633-42d4066ce4c7",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 11,
       "content": "t.\n\n### Grace Period\nA standard grace period of **5 calendar days** follows the due date. Payments received within the grace period are treated as on\u2011time and do not trigger any service restrictions.\n\n### Operational Steps\n1. **Invoice Generation** \u2013 Billing system creates the invoice and timestamps the issuance date.\n2. **Notification** \u2013 Automated notification is sent to the customer with the due date and grace period details.\n3. **Payment Processing** \u2013 Payments received before or on the due date are posted as on\u2011time. Payments received during the grace period are posted as on\u2011time but flagged for internal monitoring.\n4. **Grace Period Expiry** \u2013 If no payment is recorded by the end of the grace period, the account is flagged for potential delinquency actions.\n\n### Exceptions\n- **Contractual Variations** \u2013 Customers with negotiated billing terms may have a different due date or grace period as documented in their contract. In such cases, the contract terms supersede the standard policy.\n- **Regulatory Requirements** \u2013 Any jurisdiction\u2011specific regulations that mandate a different grace period must be applied in lieu of the standard 5\u2011day grace period.\n\n### Customer Responsibilities\n- Review the invoice promptly upon receipt.\n- Ensure payment is submitted by the due date to avoid reliance on the grace period.\n- Notify the billing department of any changes to contact information that could affect invoice delivery.",
       "content_hash": "e74e88f85916667d74ea0e951bde0eb55ccdb058191f9884e4b004d0dbd2b977",
@@ -4813,13 +4813,13 @@
         0.029432957991957664,
         -0.08668774366378784
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990153+00:00"
+      "created_at": "2026-09-12T20:08:30.012927+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_12": {
-      "id": "94507538-0ccb-48b5-9edc-3fa6efa1e2d9",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_12": {
+      "id": "ea189a35-e6db-462b-8c02-4d91887e6bf6",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 12,
       "content": "receipt.\n- Ensure payment is submitted by the due date to avoid reliance on the grace period.\n- Notify the billing department of any changes to contact information that could affect invoice delivery.\n\n### Internal Staff Responsibilities\n- Verify that invoices are generated and dispatched within the three\u2011business\u2011day window.\n- Monitor accounts for payments received during the grace period and update status accordingly.\n- Apply any contractual or regulatory exceptions before flagging an account for delinquency.\n\n## Failed Payment Process \n\nThe Failed Payment Process outlines how Aether Wireless handles postpaid accounts when a scheduled payment is not successfully received. The process applies to all postpaid customers whose payment method (e.g., credit card, bank account, or authorized electronic transfer) fails to clear on the due date.\n\n### Applicable Rule \nWhen a payment attempt fails, the account is placed in a **Payment\u2011Failure Status** until the issue is resolved. The status triggers a defined series of notifications, internal actions, and potential service restrictions.\n\n### Operational Steps",
       "content_hash": "63f132b70c6dc511594a314f7454c3107fc17feb3ee7fff8fb2c3a8f3511ab3c",
@@ -5212,13 +5212,13 @@
         0.083281509578228,
         -0.0946655198931694
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990201+00:00"
+      "created_at": "2026-09-12T20:08:30.012940+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_13": {
-      "id": "dbd01cc4-ac63-4a52-a0ba-587b5d0d43e1",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_13": {
+      "id": "0941bdf7-b31f-4a44-b759-6f5f17ba9cdb",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 13,
       "content": "laced in a **Payment\u2011Failure Status** until the issue is resolved. The status triggers a defined series of notifications, internal actions, and potential service restrictions.\n\n### Operational Steps",
       "content_hash": "4e8c2a0db2ae25edf401d280cf26ec89d87291ff9df0abb9552813971f79bb67",
@@ -5611,13 +5611,13 @@
         0.07890915125608444,
         -0.028596868738532066
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990235+00:00"
+      "created_at": "2026-09-12T20:08:30.012954+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_14": {
-      "id": "dde248ae-f994-4ef1-b7e6-d4fb0e476ba2",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_14": {
+      "id": "5ab0b507-442b-4a42-b5c8-4f78e3384710",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 14,
       "content": "1. **Detection** \n - The billing system automatically flags a payment as failed at the close of the billing day. \n2. **Initial Notification** \n - An automated email and SMS are sent to the customer within 24\u202fhours of the failure, indicating: \n - The amount due \n - The date of the missed payment \n - Instructions for updating payment information or making an alternate payment. \n3. **Grace Period Monitoring** \n - The account remains in Payment\u2011Failure Status for a standard grace period (as defined in the broader billing policy). No service interruption occurs during this time. \n4. **Second Notification** \n - If the payment remains unresolved after the grace period, a second notification is issued, reiterating the outstanding balance and warning of possible service suspension. \n5. **Escalation Review** \n - Billing staff review the account for any recurring issues or potential fraud. \n - If the failure appears to be due to a systemic issue (e.g., bank outage), staff may extend the grace period at their discretion. \n6. **Service Restriction** \n - If the payment is still not received after the second notification, the account may be moved to **Restricted Service Status**, limiting non\u2011essential services (e.g., data caps, international roaming). \n7. **Final Notice & Account Closure** \n - A final notice is sent, outlining the steps required to restore full service.",
       "content_hash": "e9d2360f7eb4381fab7b918d96cce7848d7f6d6df6b8a55a7b73df1f6e6ac9c6",
@@ -6010,13 +6010,13 @@
         0.02868523821234703,
         -0.06612933427095413
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990269+00:00"
+      "created_at": "2026-09-12T20:08:30.012967+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_15": {
-      "id": "f60f424f-cc1a-4606-9a05-923f2127f99e",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_15": {
+      "id": "5821dd64-ac8f-40f6-a1eb-3835e93647ae",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 15,
       "content": "us**, limiting non\u2011essential services (e.g., data caps, international roaming). \n7. **Final Notice & Account Closure** \n - A final notice is sent, outlining the steps required to restore full service. \n - If no resolution is achieved within the timeframe specified in the final notice, the account may be scheduled for termination in accordance with the Account Termination Policy. \n\n### Exceptions \n\n- **Payment Dispute**: If a customer formally disputes the charge, the account remains in Payment\u2011Failure Status but is exempt from service restriction until the dispute is resolved. \n- **Hardship Cases**: For customers who qualify under a documented hardship program, staff may apply a temporary waiver of service restrictions, provided appropriate documentation is received. \n\n### Customer Responsibilities \n\n- Review notifications promptly and update payment information or arrange alternate payment methods as instructed. \n- Contact the Billing Support Center within the grace period if there are extenuating circumstances preventing payment. \n- Respond to any dispute or hardship documentation requests within the specified timeframes. \n\n### Internal Staff Responsibilities",
       "content_hash": "9147ef8c9a91ae17a227f53b74082acc9aa95ae373a534e074436be4bd2fd02a",
@@ -6409,13 +6409,13 @@
         0.05087064579129219,
         -0.06905770301818848
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990303+00:00"
+      "created_at": "2026-09-12T20:08:30.012982+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_16": {
-      "id": "14592366-6a18-4823-ae6a-f67fe03a8deb",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_16": {
+      "id": "6d80c211-54d7-4f16-9ea4-f9810c40b1c5",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 16,
       "content": "period if there are extenuating circumstances preventing payment. \n- Respond to any dispute or hardship documentation requests within the specified timeframes. \n\n### Internal Staff Responsibilities \n\n- **Billing System Administrators**: Ensure failed payment alerts are generated accurately and trigger the correct notification workflow. \n- **Billing Representatives**: Monitor accounts in Payment\u2011Failure Status, provide assistance to customers, and document any extensions or exceptions applied. \n- **Escalation Team**: Evaluate recurring failures for potential fraud or systemic issues and authorize any necessary adjustments to the grace period. \n- **Compliance Officer**: Verify that all actions taken comply with regulatory requirements and internal policy standards.\n\n## Account Status Impact\n\nThe postpaid account status is directly linked to the customer\u2019s payment performance. The following rules define how billing events affect account standing and outline the responsibilities of both customers and internal staff.",
       "content_hash": "7419ac731bac8e8479d015d74492feed5f14f17b87d5a19dc18d8167afd42636",
@@ -6808,13 +6808,13 @@
         0.032645948231220245,
         -0.0580144003033638
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990338+00:00"
+      "created_at": "2026-09-12T20:08:30.012995+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_17": {
-      "id": "370ddd80-5533-487d-bf3f-59da8331fccd",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_17": {
+      "id": "755a4e2a-0721-48b0-8213-dd2bfefb8ba6",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 17,
       "content": "is directly linked to the customer\u2019s payment performance. The following rules define how billing events affect account standing and outline the responsibilities of both customers and internal staff.\n\n### General Rule\n- **Current** \u2013 The account is in good standing when the most recent invoice has been paid in full by the due date.\n- **Past\u2011Due** \u2013 The account moves to past\u2011due status when a payment is not received by the invoice due date.\n- **Suspended** \u2013 The account is suspended when payment remains outstanding after the prescribed grace period and internal escalation procedures have been executed.\n- **Terminated** \u2013 The account may be terminated if the past\u2011due balance remains unresolved following suspension and final notice periods, in accordance with applicable contract terms.",
       "content_hash": "1c9576989c191a85d3591344d99462255b2bc05ae6c4bb0b1733f4295a55fef6",
@@ -7207,13 +7207,13 @@
         0.04735241457819939,
         -0.05595147982239723
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990373+00:00"
+      "created_at": "2026-09-12T20:08:30.013009+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_18": {
-      "id": "8c1d4f9c-e540-4622-a823-c5078f7651c5",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_18": {
+      "id": "326279a0-7e78-4d88-84eb-47fad93b41bb",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 18,
       "content": "been executed.\n- **Terminated** \u2013 The account may be terminated if the past\u2011due balance remains unresolved following suspension and final notice periods, in accordance with applicable contract terms.\n\n### Operational Steps\n1. **Invoice Generation** \u2013 Billing system creates the monthly invoice and records the due date.\n2. **Payment Monitoring** \u2013 Automated checks flag any invoice that remains unpaid after the due date.\n3. **Grace Period Notification** \u2013 Customer receives a reminder notice outlining the past\u2011due status and any applicable grace period.\n4. **Escalation** \u2013 If payment is still not received, the account is marked as suspended; internal staff initiate suspension procedures per the escalation workflow.\n5. **Final Notice** \u2013 A final notice is sent before termination, summarizing the outstanding balance and the impending termination date.\n6. **Termination Processing** \u2013 Upon continued non\u2011payment, staff execute termination actions, including service deactivation and account closure.",
       "content_hash": "4695c2531fd723c0c146bb41b1d4ad2da0a771a9bafb841daaea320fb0fdf99a",
@@ -7606,13 +7606,13 @@
         0.04914163798093796,
         -0.10116774588823318
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990406+00:00"
+      "created_at": "2026-09-12T20:08:30.013022+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_19": {
-      "id": "9ba6c835-6991-4a7c-86c2-12586c92097e",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_19": {
+      "id": "3e12133c-0143-4ef8-8d9a-e9b841a6760c",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 19,
       "content": "standing balance and the impending termination date.\n6. **Termination Processing** \u2013 Upon continued non\u2011payment, staff execute termination actions, including service deactivation and account closure.\n\n### Exceptions\n- **Disputed Charges** \u2013 If a customer formally disputes a charge, the account may remain in current status pending resolution, provided the dispute is documented and a temporary payment arrangement is in place.\n- **Approved Payment Arrangements** \u2013 When a customer secures an approved payment plan, the account status may be maintained as current for the duration of the arrangement, subject to compliance with the agreed schedule.\n- **Regulatory Holds** \u2013 Accounts subject to regulatory holds (e.g., court orders) are exempt from automatic suspension and follow the specific legal process.\n\n### Customer Responsibilities\n- Pay the full invoice amount by the due date unless a formal dispute or approved payment arrangement is in place.\n- Respond promptly to any payment reminders or notices.\n- Notify the billing department of any changes to payment method or contact information that could affect payment processing.",
       "content_hash": "bae012a6108104726a67daeb7ad779f3bb060f98e8e6e5e7adaef0e9d9e5b8ce",
@@ -8005,13 +8005,13 @@
         0.04783167690038681,
         -0.08226142078638077
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990441+00:00"
+      "created_at": "2026-09-12T20:08:30.013035+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_20": {
-      "id": "4ad22035-03d4-4fdb-a49d-7c27ebafe0f8",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_20": {
+      "id": "8dc36c9e-378a-4a96-93f7-8d99b799dc17",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 20,
       "content": "ment is in place.\n- Respond promptly to any payment reminders or notices.\n- Notify the billing department of any changes to payment method or contact information that could affect payment processing.\n\n### Internal Staff Responsibilities\n- Ensure invoices are generated accurately and delivered on schedule.\n- Monitor payment status and trigger notifications according to the defined timeline.\n- Document all communications, disputes, and payment arrangements in the customer\u2019s account record.\n- Follow the escalation workflow consistently, applying exceptions only when documented and authorized.\n\n## Exceptions and Waivers\n\nThe Postpaid Billing and Payment Policy includes defined circumstances under which standard billing rules may be modified or temporarily suspended. These provisions are intended to balance customer fairness with the operational integrity of Aether Wireless billing systems.\n\n### Applicable Rules\n- **Waiver Eligibility** \u2013 A waiver may be granted when a customer experiences a verifiable service interruption, a documented billing error, or an extraordinary hardship that prevents timely payment.\n- **Scope of Waiver** \u2013 Waivers may apply to late fees, service suspension, or the requirement to meet a specific payment deadline. They do not alter the underlying service charges for the billing period.",
       "content_hash": "b5d29ff68669543a5f96e6e2e8fbcdbd5baa09ab57d239bca02dcc74ad55e945",
@@ -8404,13 +8404,13 @@
         0.05985051020979881,
         -0.055814873427152634
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990474+00:00"
+      "created_at": "2026-09-12T20:08:30.013048+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_21": {
-      "id": "742eb149-5f59-48d4-8962-ecb4bb560ba3",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_21": {
+      "id": "2e640dca-9c74-4914-8cbd-e76a3d6a3563",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 21,
       "content": "cope of Waiver** \u2013 Waivers may apply to late fees, service suspension, or the requirement to meet a specific payment deadline. They do not alter the underlying service charges for the billing period.\n\n### Operational Steps\n1. **Customer Request** \u2013 The customer must submit a written request (email or portal ticket) detailing the reason for the waiver, including any supporting documentation (e.g., outage notice, medical certificate, or financial hardship statement).\n2. **Initial Review** \u2013 Billing staff reviews the request within a defined internal timeframe and verifies the supporting evidence.\n3. **Decision** \u2013 \n - If approved, the staff records the waiver in the billing system, notes the effective dates, and communicates the outcome to the customer.\n - If denied, the staff provides a clear explanation and outlines any alternative assistance options.\n4. **Documentation** \u2013 All waiver decisions are logged with the request ID, reviewer name, and justification to ensure auditability.",
       "content_hash": "313045ac71e9907c5ccb5eb472086b580da6faabe42da4b4602ded7d18e0eead",
@@ -8803,13 +8803,13 @@
         0.05474497005343437,
         -0.0005952852079644799
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990517+00:00"
+      "created_at": "2026-09-12T20:08:30.013061+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_22": {
-      "id": "75836b01-4b1a-460d-b46b-ca158cc3114d",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_22": {
+      "id": "99d55a23-5085-4fc5-bf38-d6066e82f59a",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 22,
       "content": "clear explanation and outlines any alternative assistance options.\n4. **Documentation** \u2013 All waiver decisions are logged with the request ID, reviewer name, and justification to ensure auditability.\n\n### Exceptions\n- **System\u2011Generated Errors** \u2013 When an automated billing error is identified (e.g., duplicate charge), the error is corrected without requiring a formal waiver request.\n- **Regulatory Mandates** \u2013 Any statutory requirement that overrides standard billing practices (e.g., emergency consumer protection orders) is applied automatically, superseding internal waiver procedures.\n- **Promotional Adjustments** \u2013 Temporary promotional credits or discounts are handled under the promotions policy and are not considered waivers.\n\n### Customer Responsibilities\n- Provide accurate and complete information in the waiver request.\n- Respond promptly to any follow\u2011up inquiries from billing staff.\n- Honor any revised payment schedule communicated as part of the waiver approval.\n\n### Internal Staff Responsibilities\n- Assess waiver requests objectively and consistently, adhering to documented criteria.\n- Maintain confidentiality of customer information throughout the review process.\n- Ensure that any granted waiver is reflected accurately in the billing system to prevent future billing disputes.\n- Escalate complex or high\u2011value cases to the Billing Manager for final approval.\n\n## Roles and Responsibilities",
       "content_hash": "e2f7f8231b3505dee6a6db6924595fdea10d493a152ca11a1f67d43bf936a3aa",
@@ -9202,13 +9202,13 @@
         0.01387125626206398,
         -0.019053947180509567
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990551+00:00"
+      "created_at": "2026-09-12T20:08:30.013075+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_23": {
-      "id": "9ecdac64-5451-44df-9658-de4164274d7b",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_23": {
+      "id": "d4c0ef82-d8b3-4161-85b7-7c85b4274ca4",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 23,
       "content": "iver is reflected accurately in the billing system to prevent future billing disputes.\n- Escalate complex or high\u2011value cases to the Billing Manager for final approval.\n\n## Roles and Responsibilities\n\n**Customer Responsibilities** \n- Review the monthly invoice promptly and verify all listed charges. \n- Submit payment by the due date using an approved payment method (e.g., electronic funds transfer, credit/debit card, or authorized bank draft). \n- Notify the Billing Department of any billing discrepancies, address changes, or payment method updates within five business days of discovery. \n- Maintain sufficient funds or credit availability to cover the full invoice amount to avoid service interruptions. \n\n**Billing Department Responsibilities** \n- Generate accurate postpaid invoices on the scheduled billing cycle and distribute them to customers via the designated delivery channels (email, portal, or paper). \n- Record all received payments in the billing system no later than the business day following receipt. \n- Monitor accounts for missed or failed payments and initiate the defined escalation process (e.g., reminder notices, temporary service suspension) according to the policy workflow. \n- Communicate any billing errors or adjustments to the customer promptly and provide a corrected invoice when necessary.",
       "content_hash": "88db3bc9efae95262a03f81cf838a6b904c87608e5d0151136b0dc71e07dbbbd",
@@ -9601,13 +9601,13 @@
         0.04210884869098663,
         -0.10401377081871033
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990585+00:00"
+      "created_at": "2026-09-12T20:08:30.013088+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_24": {
-      "id": "4ad1f46a-535d-40e5-999b-b9433a5f9c60",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_24": {
+      "id": "debfde47-01f6-47e0-8dbd-28ba05805e0b",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 24,
       "content": "der notices, temporary service suspension) according to the policy workflow. \n- Communicate any billing errors or adjustments to the customer promptly and provide a corrected invoice when necessary. \n\n**Finance Operations Responsibilities** \n- Reconcile daily payment transactions against bank statements and the internal accounting ledger. \n- Ensure that all payment methods comply with applicable regulatory and security standards. \n- Prepare periodic reports on payment performance, delinquency trends, and revenue recognition for senior management review. \n\n**Customer Service Responsibilities** \n- Serve as the first point of contact for customers with billing inquiries, providing clear explanations of charges and payment options. \n- Escalate unresolved payment issues to the Billing Department according to the established escalation matrix. \n- Document all customer interactions related to billing in the CRM system to maintain an audit trail. \n\n**IT/Systems Support Responsibilities** \n- Maintain the integrity and availability of the billing platform, ensuring that invoice generation, payment processing, and account status updates function without interruption. \n- Implement and test backup and recovery procedures for billing data in accordance with the company\u2019s data protection policies.",
       "content_hash": "fc29c855e1e404cddbc3817985f706e27f870a6484a676a0cfc7dfd1089db7bb",
@@ -10000,13 +10000,13 @@
         0.06553781777620316,
         -0.0872582420706749
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990620+00:00"
+      "created_at": "2026-09-12T20:08:30.013101+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_25": {
-      "id": "6723b766-a376-4cd5-b31e-bf54c0f11fec",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_25": {
+      "id": "6f0399b5-2f5b-43c9-8af5-7f58546fab03",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 25,
       "content": "processing, and account status updates function without interruption. \n- Implement and test backup and recovery procedures for billing data in accordance with the company\u2019s data protection policies. \n\n**Compliance and Audit Responsibilities** \n- Conduct regular audits of billing processes to verify adherence to internal policies and external regulatory requirements. \n- Report any identified non\u2011compliance or systemic issues to the Compliance Officer for corrective action. \n\nThese responsibilities collectively ensure accurate billing, timely payment collection, and consistent service delivery for postpaid accounts.\n\n## Key Rules Summary",
       "content_hash": "1878e81bbeaaf2630c36bf875cc89ec545d867b2db2dabeef6ac2d0254294ec7",
@@ -10399,13 +10399,13 @@
         0.08803504705429077,
         -0.08088969439268112
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990653+00:00"
+      "created_at": "2026-09-12T20:08:30.013113+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_26": {
-      "id": "6d23686a-4903-460e-b74b-73b6655db834",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_26": {
+      "id": "efced37f-34eb-4731-a9c0-e153db61bf31",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 26,
       "content": "e Officer for corrective action. \n\nThese responsibilities collectively ensure accurate billing, timely payment collection, and consistent service delivery for postpaid accounts.\n\n## Key Rules Summary",
       "content_hash": "335826836de85610e53d56f386d72f94487385da30d4c77e55a924ba7123dd3a",
@@ -10798,13 +10798,13 @@
         0.02176099270582199,
         -0.042220570147037506
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990690+00:00"
+      "created_at": "2026-09-12T20:08:30.013126+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_27": {
-      "id": "f1eecce3-5d98-4ceb-ae2c-ab57b573ccc1",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_27": {
+      "id": "535e4011-b813-428f-a903-d6087468ea1a",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 27,
       "content": "| Rule | Requirement | Operational Handling |\n|------|-------------|----------------------|\n| Billing Cycle Frequency | Postpaid accounts are billed on a regular recurring cycle. | System generates an invoice at the start of each cycle and records the cycle date. |\n| Accepted Payment Methods | Payments may be made using approved methods (e.g., credit/debit card, ACH, online portal). | Payment gateway validates method; successful transactions update account balance automatically. |\n| Payment Due Date | All invoices must be paid by the due date specified on the invoice. | Automated reminders are sent prior to the due date; the due date is tracked in the billing system. |\n| Late Payment Consequence | Late payment triggers a defined follow\u2011up process. | System flags overdue invoices, applies any applicable late fees, and notifies the customer. |\n| Failed Payment Procedure | If a payment attempt fails, the system must retry and notify the customer. | Automatic retry is scheduled; failure triggers an alert and a reminder to the customer. |\n| Account Suspension Trigger | Accounts with unresolved payment issues may be suspended. | After the defined escalation period, the system changes account status to \u201cSuspended\u201d and logs the action. |\n| Reactivation Requirement | Suspended accounts can be reactivated upon receipt of payment. | Once payment clears, the system restores active status and notifies the customer.",
       "content_hash": "533ca62ed63c3def41f70b367963b3c6fe5a5e3b59ffe4fd4ba2b8f9c53db568",
@@ -11197,13 +11197,13 @@
         0.08951838314533234,
         -0.10081261396408081
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990724+00:00"
+      "created_at": "2026-09-12T20:08:30.013139+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_28": {
-      "id": "012ef17a-6944-4e2b-9bdd-26986d57cb99",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_28": {
+      "id": "be74dec1-fa81-4555-ba1e-f2ee15b6f30a",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 28,
       "content": "\u201d and logs the action. |\n| Reactivation Requirement | Suspended accounts can be reactivated upon receipt of payment. | Once payment clears, the system restores active status and notifies the customer. |\n| Billing Dispute Handling | Customers may dispute charges within the policy\u2011defined window. | Dispute tickets are created, and billing adjustments are processed pending resolution. |\n\n## FAQs\n\n**Q:** What is the typical billing cycle for a postpaid account? \n**A:** Postpaid accounts are billed on a regular monthly cycle, with each cycle covering the usage and services provided during the preceding month.\n\n**Q:** Which payment methods are accepted for postpaid bills? \n**A:** Accepted payment methods include electronic funds transfer, credit or debit cards, and approved online payment portals. All methods must be linked to a valid account.\n\n**Q:** When is the payment due for a postpaid invoice? \n**A:** Payment is due on the date specified on the invoice, which is generally a set number of days after the billing cycle ends. The due date will be clearly indicated on each statement.\n\n**Q:** What happens if a payment is missed or fails? \n**A:** A missed or failed payment triggers a notification to the account holder. If the issue is not resolved within the grace period outlined in the notice, the account may be placed on a delinquent status, potentially affecting service continuity.",
       "content_hash": "c9ad925e2bd07324330f6a17161d350842a113d5a3007b5eac9f3f7b21e29d05",
@@ -11596,13 +11596,13 @@
         0.056174710392951965,
         -0.0831763967871666
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990758+00:00"
+      "created_at": "2026-09-12T20:08:30.013152+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_29": {
-      "id": "3d7fa951-1e4d-4199-a037-dd0129fd027c",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_29": {
+      "id": "e470dbae-416d-42c5-84a3-74b38e294467",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 29,
       "content": "ication to the account holder. If the issue is not resolved within the grace period outlined in the notice, the account may be placed on a delinquent status, potentially affecting service continuity.\n\n**Q:** How does a missed payment affect account status? \n**A:** Repeated missed payments can lead to the account being classified as delinquent, which may result in service suspension, additional collection actions, or termination as defined by the billing policy.\n\n**Q:** Can I set up automatic payments for my postpaid bill? \n**A:** Yes, customers may enroll in automatic payment options using a supported payment method to ensure timely settlement of each invoice.\n\n**Q:** How can I view or dispute a charge on my postpaid bill? \n**A:** Billing statements are accessible through the customer portal. Disputes should be submitted in writing within the timeframe indicated on the invoice, following the outlined dispute resolution process.\n\n**Q:** Who should I contact for billing inquiries or assistance? \n**A:** For any billing-related questions, customers should contact the Billing Department using the contact information provided on their invoice or through the official Aether Wireless support channels.",
       "content_hash": "398be227c5587afbfe213e2bff94e51bee0d4d593b0edc0079a726d3ff75c7f9",
@@ -11995,13 +11995,13 @@
         0.01742466539144516,
         -0.09874246269464493
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990791+00:00"
+      "created_at": "2026-09-12T20:08:30.013165+00:00"
     },
-    "af393eed-5ca8-4639-976e-fc52ead102cc_30": {
-      "id": "5a77ccd5-d010-4103-bf18-8994adc3609b",
-      "document_id": "af393eed-5ca8-4639-976e-fc52ead102cc",
+    "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68_30": {
+      "id": "fe54224a-2288-494d-bbe1-c9f841b85ef0",
+      "document_id": "0dd93ab3-ed5e-4689-8e16-09e1e1e41f68",
       "chunk_index": 30,
       "content": ":** For any billing-related questions, customers should contact the Billing Department using the contact information provided on their invoice or through the official Aether Wireless support channels.",
       "content_hash": "1117f0b56883d0d20eb52a0065b87a057cb458b9d5c6bb40afa3d8d65a6c1f01",
@@ -12394,13 +12394,13 @@
         0.049904052168130875,
         -0.02879193425178528
       ],
-      "ingestion_run_id": "0109b900-abdf-47fa-937d-03d40dabce47",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:54:23.990824+00:00"
+      "created_at": "2026-09-12T20:08:30.013226+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_0": {
-      "id": "bfc9c376-16f2-4d65-801f-2a2350097821",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_0": {
+      "id": "a36f7ff8-d178-4431-9a75-452e95685068",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 0,
       "content": "Postpaid Billing and Payment Policy\n<b>Document ID</b>\nBILL-001\n<b>Version</b>\nv1.0\n<b>Department</b>\nBilling\n<b>Category</b>\nbilling\n<b>Last Updated</b>\n2026-09-01\n<b>Status</b>\nActive\nOverview\nThe Postpaid Billing and Payment Policy defines how Aether Wireless generates monthly invoices, collects payments,\nand manages account status for postpaid customers.",
       "content_hash": "c75204f69376f66e34c725ac3a1686be0f5db53de315c3bf543a855b9068f9d6",
@@ -12793,13 +12793,13 @@
         0.07080083340406418,
         -0.06366080790758133
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593529+00:00"
+      "created_at": "2026-09-12T20:08:54.872415+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_1": {
-      "id": "effed388-8b65-4c68-8be2-0f81224afb12",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_1": {
+      "id": "ff2d7693-e9bb-4207-ba7f-f3fd243fa0ca",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 1,
       "content": "9-01\n<b>Status</b>\nActive\nOverview\nThe Postpaid Billing and Payment Policy defines how Aether Wireless generates monthly invoices, collects payments,\nand manages account status for postpaid customers.",
       "content_hash": "e81e54fd97cbd2e83a8b460933a01bdccf618b7995723fbcfaaa1206e1eed1dc",
@@ -13192,13 +13192,13 @@
         0.05582753196358681,
         -0.06405588239431381
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593545+00:00"
+      "created_at": "2026-09-12T20:08:54.872431+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_2": {
-      "id": "0ba06628-dacb-4cf4-acbf-ebef0d70378a",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_2": {
+      "id": "cf8455d9-fcb9-4e96-82a2-2a4cd9008f20",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 2,
       "content": "The policy applies to all postpaid service contracts unless a\ncustomer has a written agreement that supersedes these general rules.\nBilling Cycle\n\u007f Invoices are generated on a recurring basis (typically monthly) for the usage period that has just concluded.\n\u007f Each invoice includes a summary of charges, applicable taxes, and any adjustments from the prior billing cycle.\nPayment Methods\n\u007f Accepted payment methods include electronic bank transfer, credit/debit card, and authorized automatic payment\n(ACH) arrangements.\n\u007f Customers may select one or more methods; the primary method is used first, with secondary methods serving as\nfallback.\nDue Date\n\u007f Payment is due on the date specified on the invoice, which is calculated based on the billing cycle end date plus the\nstandard payment period.\n\u007f The due date is communicated to the customer via the invoice and any associated electronic notifications.\nFailed Payments\n\u007f If a payment is not received by the due date, the account is placed in a past\u25a0due status.\n\u007f The system automatically attempts a second collection using any secondary payment method on file.\n\u007f A notification is sent to the customer outlining the missed payment and next steps.\nAccount Status Management\n\u007f Current \u2013 Account is in good standing; services continue without interruption.\n\u007f Past\u25a0Due \u2013 Services remain active but the account is flagged for follow\u25a0up; additional collection actions may be\ninitiated.\n\u007f Suspended \u2013 If payment remains unresolved after a defined grace p",
       "content_hash": "19f6df153660006d6bb28895a73eccaec020f33317ce9915b2ea631f26352b5c",
@@ -13591,13 +13591,13 @@
         0.06217069551348686,
         -0.0549263097345829
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593560+00:00"
+      "created_at": "2026-09-12T20:08:54.872445+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_3": {
-      "id": "c49845fe-ab9c-47bf-8df0-2c11553e87b3",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_3": {
+      "id": "1901f718-c199-48c7-a011-cc33b70d5031",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 3,
       "content": "ption.\n\u007f Past\u25a0Due \u2013 Services remain active but the account is flagged for follow\u25a0up; additional collection actions may be\ninitiated.\n\u007f Suspended \u2013 If payment remains unresolved after a defined grace period, services may be temporarily suspended\npending payment.\n\u007f Terminated \u2013 Persistent non\u25a0payment may lead to termination of service and recovery actions in accordance with\ncontractual terms.\nCustomer Responsibilities\n\u007f Review each invoice for accuracy and report discrepancies within the timeframe indicated on the invoice.",
       "content_hash": "e34f575f68fa1385e46946103650930b12757fbeb1de8e330c931aa8b239912e",
@@ -13990,13 +13990,13 @@
         0.0707956925034523,
         -0.06194012239575386
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593574+00:00"
+      "created_at": "2026-09-12T20:08:54.872458+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_4": {
-      "id": "406322f3-b5da-4142-aa98-9149339f170a",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_4": {
+      "id": "c081f80a-6992-4f74-a4cc-95bdb960e448",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 4,
       "content": "service and recovery actions in accordance with\ncontractual terms.\nCustomer Responsibilities\n\u007f Review each invoice for accuracy and report discrepancies within the timeframe indicated on the invoice.",
       "content_hash": "c42eaffe709296160716778d7d68a15b7488bbdd0d3bae3989bf9aeb50db53c9",
@@ -14389,13 +14389,13 @@
         -0.007277915254235268,
         -0.06611958146095276
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593587+00:00"
+      "created_at": "2026-09-12T20:08:54.872471+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_5": {
-      "id": "7f676b8e-7d1d-42b2-8b76-0847416ea68e",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_5": {
+      "id": "906054b1-45e3-4db6-8b24-dc7d6908a837",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 5,
       "content": "\u007f Ensure that a valid payment method is on file and that sufficient funds are available on the due date.\n\u007f Respond promptly to any payment\u25a0related communications from Aether Wireless.\nInternal Staff Responsibilities\n\u007f Billing staff generate and distribute invoices according to the schedule defined in the system.\n\u007f Customer service representatives provide clarification on invoice items and assist with payment method updates.\n\u007f Collections team monitors past\u25a0due accounts, initiates follow\u25a0up actions, and escalates accounts according to the\ndefined status hierarchy.\nScope and Applicability\nThis section defines the boundaries of the Postpaid Billing and Payment Policy (Document ID: BILL-001) and\nidentifies the parties to whom it applies.\n\u007f Applicable Services\n\u007f All postpaid voice, data, and bundled service plans offered by Aether Wireless.\n\u007f Any postpaid add\u25a0on features (e.g., international roaming, device financing) that are billed on a monthly basis.\n\u007f Customer Eligibility\n\u007f The policy applies to every customer who has entered into a postpaid contract with Aether Wireless, regardless of\naccount age, credit tier, or geographic region.\n\u007f Customers on prepaid or hybrid (pre\u25a0pay + post\u25a0pay) plans are excluded; they are governed by the separate Prepaid\nBilling Policy.\n\u007f Geographic Scope\n\u007f The policy is enforceable for all Aether Wireless operations worldwide, unless a local regulator mandates a divergent\nrequirement.",
       "content_hash": "31504d128acd2b3db46ff571ce63bf53aa8fa94a095568836213db01e6a19e35",
@@ -14788,13 +14788,13 @@
         0.06819140911102295,
         -0.079402856528759
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593600+00:00"
+      "created_at": "2026-09-12T20:08:54.872484+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_6": {
-      "id": "f1b01510-92e3-4323-ade6-8efe4f5319e9",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_6": {
+      "id": "27a42418-ac10-4a9e-a759-e8d7528404d9",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 6,
       "content": "governed by the separate Prepaid\nBilling Policy.\n\u007f Geographic Scope\n\u007f The policy is enforceable for all Aether Wireless operations worldwide, unless a local regulator mandates a divergent\nrequirement.",
       "content_hash": "679a75af3573a92aa0d971abdc1f0ffe069d445259adbab8091b4e7167892280",
@@ -15187,13 +15187,13 @@
         0.06585390865802765,
         -0.06165003404021263
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593613+00:00"
+      "created_at": "2026-09-12T20:08:54.872497+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_7": {
-      "id": "a1513335-d254-4872-a3b6-e5bd368aebd2",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_7": {
+      "id": "c904c1ad-5a5e-495b-9d5d-f32fe3d33ca3",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 7,
       "content": "In such cases, the local regulation supersedes this policy.\n\u007f Internal Stakeholder Coverage\n\u007f Billing Operations Team \u2013 responsible for generating invoices, applying payments, and monitoring delinquency.\n\u007f Customer Service Representatives \u2013 handle inquiries, payment arrangements, and escalation of payment issues.\n\u007f Finance Department \u2013 oversees reconciliation, reporting, and compliance with external financial regulations.\n\u007f Legal & Compliance \u2013 reviews any exceptions required by law or regulatory bodies.\n\u007f Exceptions\n\u007f Accounts that are under a court\u25a0ordered payment plan or a government\u25a0mandated assistance program are subject to\nthe terms of those specific arrangements, which may modify due dates or payment methods.\n\u007f In cases of force\u25a0majeure events (e.g., natural disasters) that impact a customer\u2019s ability to pay, staff may apply a\ntemporary waiver in accordance with the Force\u25a0Majeure Exception Procedure (refer to internal SOP).\n\u007f Customer Responsibilities\n\u007f Ensure that billing information (address, contact details, and payment method) is current and accurate.\n\u007f Review monthly statements promptly and report any discrepancies to the Billing Operations Team within the timeframe\nspecified in the statement.\n\u007f Honor the agreed\u25a0upon payment schedule unless an approved exception is granted.\n\u007f Operational Steps for Determining Applicability\n1. Verify that the account type is classified as \u201cpostpaid\u201d in the customer master data.",
       "content_hash": "49df89233af11640dba374195bf71d1957a2bae6aea967bc3ddafb9df6ee6086",
@@ -15586,13 +15586,13 @@
         0.05410437285900116,
         -0.049425363540649414
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593626+00:00"
+      "created_at": "2026-09-12T20:08:54.872510+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_8": {
-      "id": "e67b2548-3fa2-41eb-b4d5-4720c2db4122",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_8": {
+      "id": "88b931c4-fb20-4e48-ad58-d6493af9e623",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 8,
       "content": "on payment schedule unless an approved exception is granted.\n\u007f Operational Steps for Determining Applicability\n1. Verify that the account type is classified as \u201cpostpaid\u201d in the customer master data.",
       "content_hash": "6d8d46fd7fa1bc3963088c6b506a7805a166c604e83f2d624548056d8eff76fc",
@@ -15985,13 +15985,13 @@
         0.05874938517808914,
         -0.07301204651594162
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593639+00:00"
+      "created_at": "2026-09-12T20:08:54.872523+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_9": {
-      "id": "fab66559-65cc-49d5-a4df-f62c75524791",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_9": {
+      "id": "19b793ba-38dd-4f30-a2d0-49c4f96ae298",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 9,
       "content": "2. Confirm that the service portfolio associated with the account consists solely of postpaid offerings.\n3. Check for any active regulatory or legal exceptions linked to the account.\n4. If all criteria are met, apply the Postpaid Billing and Payment Policy to the account; otherwise, reference the\nappropriate alternative policy.\nBilling Cycle Rules\nAether Wireless postpaid accounts operate on a recurring billing cycle that defines when charges are calculated,\ninvoiced, and due. The following rules apply to all postpaid customers unless otherwise specified in a customer\u25a0specific\nagreement.\nCycle Definition\n\u007f Cycle Length: The standard billing cycle is one calendar month. The cycle start date is the date the service is first\nactivated or the date of the most recent plan change.\n\u007f Cycle Alignment: For customers who change plans mid\u25a0cycle, the new plan\u2019s charges are prorated for the remainder\nof the current cycle and then applied to the next full cycle.\nInvoicing and Due Date\n\u007f Invoice Generation: An invoice is generated at the end of each billing cycle and is made available to the customer via\nthe online portal, email, or paper mail, depending on the customer\u2019s preference.\n\u007f Due Date: Payment is due X days after the invoice date.",
       "content_hash": "ceabee04bbd873010e250e5b6c790c776473c0fdced470c0f57c93730e83a62e",
@@ -16384,13 +16384,13 @@
         0.07659371197223663,
         -0.09600310027599335
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593653+00:00"
+      "created_at": "2026-09-12T20:08:54.872536+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_10": {
-      "id": "7b4637c4-2328-4824-8924-6852a30bfaee",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_10": {
+      "id": "60172ed7-9781-43b7-9dd6-e89df9e6eac0",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 10,
       "content": "each billing cycle and is made available to the customer via\nthe online portal, email, or paper mail, depending on the customer\u2019s preference.\n\u007f Due Date: Payment is due X days after the invoice date. (The exact number of days is defined in the customer contract\nand is not disclosed here.)\nPayment Methods\n\u007f Accepted payment methods include:\n\u007f Automated bank debit (ACH)\n\u007f Credit or debit card (Visa, MasterCard, American Express)\n\u007f Online payment through the customer portal\n\u007f Authorized third\u25a0party payment processors\n\u007f Payments must be processed using the method selected in the customer\u2019s account profile. Changes to the payment\nmethod require verification and must be updated in the system before the next billing cycle.\nFailed Payment Handling\n1. First Failure: The system attempts a second collection attempt within 24 hours. The customer receives a notification\nof the failed payment and a reminder of the upcoming due date.\n2. Second Failure: A second notification is sent, and the account is placed on a Grace Period pending resolution.\n3. Grace Period: During the grace period, services continue without interruption, but the account is flagged for follow\u25a0up\nby the Billing team.\n4.",
       "content_hash": "2dceea4c037c8d011e32651e56a903f7821093d921566f11242b90700b2e78a8",
@@ -16783,13 +16783,13 @@
         0.07339125126600266,
         -0.06189369782805443
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593666+00:00"
+      "created_at": "2026-09-12T20:08:54.872548+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_11": {
-      "id": "725a9e06-0857-4670-8ee5-982aa70fbdd3",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_11": {
+      "id": "e15683f4-c222-4736-8775-8406a0684674",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 11,
       "content": "count is placed on a Grace Period pending resolution.\n3. Grace Period: During the grace period, services continue without interruption, but the account is flagged for follow\u25a0up\nby the Billing team.\n4. Third Failure: If payment is not received after the grace period, the account is moved to Suspended status in\naccordance with the Account Status Policy.\nExceptions\n\u007f Promotional Accounts: Customers enrolled in promotional billing arrangements may have alternate cycle lengths or\ndue dates as defined in the promotion terms.\n\u007f Regulatory Holds: Accounts subject to regulatory holds (e.g., court orders) follow the specific timelines dictated by the\napplicable regulation, superseding the standard cycle rules.",
       "content_hash": "1e7c96e9e63dae22fe573e9cc9b297a805caaf6e63c97c91c80ef5d1f711dcdb",
@@ -17182,13 +17182,13 @@
         0.011460227891802788,
         -0.08320961892604828
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593680+00:00"
+      "created_at": "2026-09-12T20:08:54.872561+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_12": {
-      "id": "4c75788e-f686-4a60-a930-748a8f9f23a5",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_12": {
+      "id": "08cc0efc-9a44-4762-a7f3-bf592c6aa1ad",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 12,
       "content": "omotion terms.\n\u007f Regulatory Holds: Accounts subject to regulatory holds (e.g., court orders) follow the specific timelines dictated by the\napplicable regulation, superseding the standard cycle rules.",
       "content_hash": "8d0dccbd950e3c03af2eecf0cc07b9f7deabf6eca1a0548796f7e8ca8ee21a9f",
@@ -17581,13 +17581,13 @@
         0.08843064308166504,
         -0.08021408319473267
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593695+00:00"
+      "created_at": "2026-09-12T20:08:54.872578+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_13": {
-      "id": "593fc3de-6bb4-4a14-b7f1-eddbe201e733",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_13": {
+      "id": "b90ec81d-a8b5-49ea-a8af-25a0d08b0598",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 13,
       "content": "Customer Responsibilities\n\u007f Keep payment method information current and ensure sufficient funds are available on the due date.\n\u007f Review the monthly invoice for accuracy and report any discrepancies within the timeframe specified in the Dispute\nResolution Procedure.\n\u007f Notify Aether Wireless promptly of any changes to billing address, contact information, or preferred payment method.\nInternal Staff Responsibilities\n\u007f Billing Operations: Generate invoices promptly at cycle end, verify accuracy of prorated charges, and ensure delivery\nthrough the selected channel.\n\u007f Customer Service: Respond to payment\u25a0related inquiries, provide assistance with updating payment methods, and\ncommunicate any upcoming changes to billing cycles.\n\u007f Collections Team: Monitor failed payment alerts, execute the defined collection steps, and coordinate with the\nAccount Management team for any required account status changes.\nThese rules establish a consistent framework for managing postpaid billing cycles, ensuring transparency for customers\nand operational efficiency for Aether Wireless staff.\nAccepted Payment Methods\nAether Wireless supports a defined set of payment methods for post\u25a0paid accounts. All methods must be accepted in\nthe currency of the account and comply with applicable regulatory and security standards.\nSupported Methods\n\u007f Credit/Debit Cards \u2013 Visa, MasterCard, American Express, and Discover.",
       "content_hash": "4d5a6ee83132975fba6827d12e595eb0304c9f1ea6825af51e62487d15655415",
@@ -17980,13 +17980,13 @@
         0.06460678577423096,
         -0.05384994298219681
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593708+00:00"
+      "created_at": "2026-09-12T20:08:54.872592+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_14": {
-      "id": "bcbe9347-cd25-4356-9e79-24983c390c01",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_14": {
+      "id": "790e33ed-7130-4040-ba21-e8b897dac841",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 14,
       "content": "must be accepted in\nthe currency of the account and comply with applicable regulatory and security standards.\nSupported Methods\n\u007f Credit/Debit Cards \u2013 Visa, MasterCard, American Express, and Discover. Card details must be entered through the\nsecure online portal or provided to a billing representative.\n\u007f Electronic Bank Transfer (ACH/EFT) \u2013 Direct debit from a checking or savings account. Customers must submit a\nsigned authorization form.\n\u007f Online Payment Services \u2013 PayPal, Apple Pay, Google Pay, or other approved digital wallets, provided the service is\nlinked to a verified funding source.\n\u007f Postal Money Order \u2013 Accepted only when mailed to the designated billing address with the account number clearly\nindicated.\nOperational Steps\n1. Customer Initiation \u2013 The customer selects a preferred method via the self\u25a0service portal or contacts the Billing\nSupport team.\n2. Verification \u2013 Billing staff confirm that the payment method meets security and compliance requirements (e.g., card\nvalidation, bank account verification).\n3. Activation \u2013 Once verified, the method is added to the account profile and becomes the default payment option for\nthe next billing cycle.\n4. Processing \u2013 Payments are processed on the scheduled due date.",
       "content_hash": "460cf58e72d61f3289eb13ae6bf27215259fe4830c5f3f1d621e5bb2f2ab1beb",
@@ -18379,13 +18379,13 @@
         0.11309943348169327,
         -0.06944850832223892
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593722+00:00"
+      "created_at": "2026-09-12T20:08:54.872605+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_15": {
-      "id": "da7021c9-237e-4a72-b9b3-88592079d073",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_15": {
+      "id": "505a25bc-bae9-4952-b1e5-9b30bfc711b7",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 15,
       "content": "ivation \u2013 Once verified, the method is added to the account profile and becomes the default payment option for\nthe next billing cycle.\n4. Processing \u2013 Payments are processed on the scheduled due date. Successful transactions update the account\nstatus automatically.\nExceptions\n\u007f Cash Payments \u2013 Not accepted for post\u25a0paid billing due to traceability and reconciliation constraints.\n\u007f International Cards \u2013 May be declined if they do not meet the issuer\u2019s cross\u25a0border verification standards.\nCustomer Responsibilities",
       "content_hash": "538d64fa1afd473b2f6c90a0e9aa2699a465d6e6329848a5d6eda5d77632da2e",
@@ -18778,13 +18778,13 @@
         0.09245800971984863,
         -0.10359016805887222
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593734+00:00"
+      "created_at": "2026-09-12T20:08:54.872618+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_16": {
-      "id": "fa0bf390-43af-4c56-9db8-d81e3b364c91",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_16": {
+      "id": "1e2db76f-5e1e-4113-a686-fdd982ba8f0c",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 16,
       "content": "aid billing due to traceability and reconciliation constraints.\n\u007f International Cards \u2013 May be declined if they do not meet the issuer\u2019s cross\u25a0border verification standards.\nCustomer Responsibilities",
       "content_hash": "df88936a68c282d0391acfe04b7225e88a017fb03fa6f52a97b85b1a27d68795",
@@ -19177,13 +19177,13 @@
         0.03400208428502083,
         -0.03569231927394867
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593747+00:00"
+      "created_at": "2026-09-12T20:08:54.872630+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_17": {
-      "id": "b300c4ed-27be-4644-b5b3-1a5234b1f85e",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_17": {
+      "id": "7b20f3fa-5de2-45fa-8c23-908b5fd4c531",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 17,
       "content": "\u007f Keep payment method information current and accurate.\n\u007f Notify Billing Support promptly of any changes to card expiration dates, bank account details, or digital wallet\ncredentials.\n\u007f Ensure sufficient funds or credit availability on the payment date to avoid failed transactions.\nInternal Staff Responsibilities\n\u007f Verify the authenticity and validity of new payment method submissions.\n\u007f Record all payment method changes in the customer account system with timestamps and staff identifiers.\n\u007f Escalate any payment method that fails verification to the Risk Management team for review.\nCompliance with these procedures ensures timely billing, reduces the incidence of failed payments, and maintains the\nintegrity of the post\u25a0paid billing cycle.\nPayment Due Dates and Grace Period\nThe postpaid billing cycle ends on the last day of each calendar month. The invoice generated for that cycle is delivered\nto the customer electronically (or by mail, if requested) within three business days after cycle close. The payment due\ndate is set to 15 calendar days from the invoice issuance date, unless otherwise specified in the customer contract.\nGrace Period\nA standard grace period of 5 calendar days follows the due date. Payments received within the grace period are treated\nas on\u25a0time and do not trigger any service restrictions.\nOperational Steps\n1. Invoice Generation \u2013 Billing system creates the invoice and timestamps the issuance date.\n2.",
       "content_hash": "e2961b6f8de413d67f1d2b3c84e5dc1998ab6cc108819f7896002ef470d3bf87",
@@ -19576,13 +19576,13 @@
         0.08038028329610825,
         -0.0976366326212883
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593761+00:00"
+      "created_at": "2026-09-12T20:08:54.872644+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_18": {
-      "id": "cf6f70fb-c995-40ce-922c-ed503d0b64ec",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_18": {
+      "id": "8e586dcf-9b89-4d7a-bb28-4960304c42fc",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 18,
       "content": "n the grace period are treated\nas on\u25a0time and do not trigger any service restrictions.\nOperational Steps\n1. Invoice Generation \u2013 Billing system creates the invoice and timestamps the issuance date.\n2. Notification \u2013 Automated notification is sent to the customer with the due date and grace period details.\n3. Payment Processing \u2013 Payments received before or on the due date are posted as on\u25a0time. Payments received\nduring the grace period are posted as on\u25a0time but flagged for internal monitoring.\n4. Grace Period Expiry \u2013 If no payment is recorded by the end of the grace period, the account is flagged for potential\ndelinquency actions.\nExceptions\n\u007f Contractual Variations \u2013 Customers with negotiated billing terms may have a different due date or grace period as\ndocumented in their contract.",
       "content_hash": "581cd0cf756774e90a25c81f52fb29dc514a85a8ff18e23a9f4892492e8d55a2",
@@ -19975,13 +19975,13 @@
         0.07255225628614426,
         -0.10011477768421173
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593774+00:00"
+      "created_at": "2026-09-12T20:08:54.872656+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_19": {
-      "id": "57a3d680-6e36-43ef-8e85-9ebed97d943e",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_19": {
+      "id": "70c9f713-afc5-4d46-bd1e-1d75950f0269",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 19,
       "content": "flagged for potential\ndelinquency actions.\nExceptions\n\u007f Contractual Variations \u2013 Customers with negotiated billing terms may have a different due date or grace period as\ndocumented in their contract. In such cases, the contract terms supersede the standard policy.\n\u007f Regulatory Requirements \u2013 Any jurisdiction\u25a0specific regulations that mandate a different grace period must be\napplied in lieu of the standard 5\u25a0day grace period.\nCustomer Responsibilities\n\u007f Review the invoice promptly upon receipt.\n\u007f Ensure payment is submitted by the due date to avoid reliance on the grace period.\n\u007f Notify the billing department of any changes to contact information that could affect invoice delivery.\nInternal Staff Responsibilities\n\u007f Verify that invoices are generated and dispatched within the three\u25a0business\u25a0day window.\n\u007f Monitor accounts for payments received during the grace period and update status accordingly.\n\u007f Apply any contractual or regulatory exceptions before flagging an account for delinquency.",
       "content_hash": "ce0605683006931703d0ac1bba98c9aed363bc963302666ed8c8f88941461fd1",
@@ -20374,13 +20374,13 @@
         0.06121845915913582,
         -0.1078847125172615
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593787+00:00"
+      "created_at": "2026-09-12T20:08:54.872669+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_20": {
-      "id": "32f3edde-2199-4eb5-9f93-2d27b56fa0ab",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_20": {
+      "id": "64a9d598-bbf4-48d4-873a-0d8a5f2d5003",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 20,
       "content": "ay window.\n\u007f Monitor accounts for payments received during the grace period and update status accordingly.\n\u007f Apply any contractual or regulatory exceptions before flagging an account for delinquency.",
       "content_hash": "3e9c00afbe2cc412a729f3ca3e268c1544f4b84203b03892ce07c5f9a81745e9",
@@ -20773,13 +20773,13 @@
         0.02809196338057518,
         -0.12702949345111847
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593800+00:00"
+      "created_at": "2026-09-12T20:08:54.872682+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_21": {
-      "id": "670aff11-5206-48ca-b808-6d54a5f1e153",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_21": {
+      "id": "401ef3ae-69ff-4015-9e00-3137c6c384c7",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 21,
       "content": "Failed Payment Process\nThe Failed Payment Process outlines how Aether Wireless handles postpaid accounts when a scheduled payment is not\nsuccessfully received. The process applies to all postpaid customers whose payment method (e.g., credit card, bank\naccount, or authorized electronic transfer) fails to clear on the due date.\nApplicable Rule\nWhen a payment attempt fails, the account is placed in a Payment\u25a0Failure Status until the issue is resolved. The status\ntriggers a defined series of notifications, internal actions, and potential service restrictions.\nOperational Steps\n1. Detection\n\u007f The billing system automatically flags a payment as failed at the close of the billing day.\n2. Initial Notification\n\u007f An automated email and SMS are sent to the customer within 24 hours of the failure, indicating:\n\u007f The amount due\n\u007f The date of the missed payment\n\u007f Instructions for updating payment information or making an alternate payment.\n3. Grace Period Monitoring\n\u007f The account remains in Payment\u25a0Failure Status for a standard grace period (as defined in the broader billing policy).\nNo service interruption occurs during this time.\n4. Second Notification\n\u007f If the payment remains unresolved after the grace period, a second notification is issued, reiterating the outstanding\nbalance and warning of possible service suspension.\n5.",
       "content_hash": "f498afb6995c896e4d2170d9d356e3848ea4a8dc3510d3de38b44da1607981a1",
@@ -21172,13 +21172,13 @@
         0.051980432122945786,
         -0.08841214329004288
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593812+00:00"
+      "created_at": "2026-09-12T20:08:54.872695+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_22": {
-      "id": "92c77d48-cb11-4c6c-bfb1-25dcbb5b717d",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_22": {
+      "id": "7103c03f-6023-47db-b588-ab335aaeb7ee",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 22,
       "content": ".\n4. Second Notification\n\u007f If the payment remains unresolved after the grace period, a second notification is issued, reiterating the outstanding\nbalance and warning of possible service suspension.\n5. Escalation Review\n\u007f Billing staff review the account for any recurring issues or potential fraud.\n\u007f If the failure appears to be due to a systemic issue (e.g., bank outage), staff may extend the grace period at their\ndiscretion.\n6. Service Restriction\n\u007f If the payment is still not received after the second notification, the account may be moved to Restricted Service\nStatus, limiting non\u25a0essential services (e.g., data caps, international roaming).\n7. Final Notice & Account Closure\n\u007f A final notice is sent, outlining the steps required to restore full service.\n\u007f If no resolution is achieved within the timeframe specified in the final notice, the account may be scheduled for\ntermination in accordance with the Account Termination Policy.\nExceptions\n\u007f Payment Dispute: If a customer formally disputes the charge, the account remains in Payment\u25a0Failure Status but is\nexempt from service restriction until the dispute is resolved.\n\u007f Hardship Cases: For customers who qualify under a documented hardship program, staff may apply a temporary\nwaiver of service restrictions, provided appropriate documentation is received.\nCustomer Responsibilities",
       "content_hash": "c9b26cb2990b9157273933087b85eec4ab407f3b42c12b3df2a943086b8c5a22",
@@ -21571,13 +21571,13 @@
         0.03390662744641304,
         -0.08285687863826752
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593825+00:00"
+      "created_at": "2026-09-12T20:08:54.872707+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_23": {
-      "id": "91699f92-8da5-46c6-a740-ed74d21ba8c6",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_23": {
+      "id": "71f1c57b-4e20-47f1-bca5-ac29236ec1c5",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 23,
       "content": "s: For customers who qualify under a documented hardship program, staff may apply a temporary\nwaiver of service restrictions, provided appropriate documentation is received.\nCustomer Responsibilities",
       "content_hash": "69e232062b42b13dbc02ed92e56b9fc2330efb4cb6378177bd14117d147f4227",
@@ -21970,13 +21970,13 @@
         -0.011922848410904408,
         -0.02192077226936817
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593838+00:00"
+      "created_at": "2026-09-12T20:08:54.872720+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_24": {
-      "id": "14bad27b-e343-49c7-b80b-1a55211af769",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_24": {
+      "id": "d0162702-bacd-4e17-ba81-3f2f4ec707cd",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 24,
       "content": "\u007f Review notifications promptly and update payment information or arrange alternate payment methods as instructed.\n\u007f Contact the Billing Support Center within the grace period if there are extenuating circumstances preventing payment.\n\u007f Respond to any dispute or hardship documentation requests within the specified timeframes.\nInternal Staff Responsibilities\n\u007f Billing System Administrators: Ensure failed payment alerts are generated accurately and trigger the correct\nnotification workflow.\n\u007f Billing Representatives: Monitor accounts in Payment\u25a0Failure Status, provide assistance to customers, and\ndocument any extensions or exceptions applied.\n\u007f Escalation Team: Evaluate recurring failures for potential fraud or systemic issues and authorize any necessary\nadjustments to the grace period.\n\u007f Compliance Officer: Verify that all actions taken comply with regulatory requirements and internal policy standards.\nAccount Status Impact\nThe postpaid account status is directly linked to the customer\u2019s payment performance.",
       "content_hash": "3f4b7551531eece8cc3a94c84cdcc2d7b90c9c1d2c7f3b68eca2e1d55847ddae",
@@ -22369,13 +22369,13 @@
         0.05602762848138809,
         -0.040345221757888794
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593851+00:00"
+      "created_at": "2026-09-12T20:08:54.872732+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_25": {
-      "id": "57a4f6a9-ba6c-4413-9bf2-d9291418537b",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_25": {
+      "id": "bcf24b92-a697-42a6-bb9b-3251165465a6",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 25,
       "content": "fy that all actions taken comply with regulatory requirements and internal policy standards.\nAccount Status Impact\nThe postpaid account status is directly linked to the customer\u2019s payment performance. The following rules define how\nbilling events affect account standing and outline the responsibilities of both customers and internal staff.\nGeneral Rule\n\u007f Current \u2013 The account is in good standing when the most recent invoice has been paid in full by the due date.\n\u007f Past\u25a0Due \u2013 The account moves to past\u25a0due status when a payment is not received by the invoice due date.\n\u007f Suspended \u2013 The account is suspended when payment remains outstanding after the prescribed grace period and\ninternal escalation procedures have been executed.\n\u007f Terminated \u2013 The account may be terminated if the past\u25a0due balance remains unresolved following suspension and\nfinal notice periods, in accordance with applicable contract terms.\nOperational Steps\n1. Invoice Generation \u2013 Billing system creates the monthly invoice and records the due date.\n2. Payment Monitoring \u2013 Automated checks flag any invoice that remains unpaid after the due date.\n3. Grace Period Notification \u2013 Customer receives a reminder notice outlining the past\u25a0due status and any applicable\ngrace period.\n4. Escalation \u2013 If payment is still not received, the account is marked as suspended; internal staff initiate suspension\nprocedures per the escalation workflow.\n5.",
       "content_hash": "233e74daff4eefbed421e283831d9273800aa748fb27aff9da8dcd8093a7ab09",
@@ -22768,13 +22768,13 @@
         0.062011897563934326,
         -0.09093532711267471
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593864+00:00"
+      "created_at": "2026-09-12T20:08:54.872745+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_26": {
-      "id": "90eec548-246f-4000-b71c-02c5a851bb35",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_26": {
+      "id": "67d4e218-0a1d-4b60-b39d-7484f50d0d2f",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 26,
       "content": "tus and any applicable\ngrace period.\n4. Escalation \u2013 If payment is still not received, the account is marked as suspended; internal staff initiate suspension\nprocedures per the escalation workflow.\n5. Final Notice \u2013 A final notice is sent before termination, summarizing the outstanding balance and the impending\ntermination date.\n6. Termination Processing \u2013 Upon continued non\u25a0payment, staff execute termination actions, including service\ndeactivation and account closure.\nExceptions\n\u007f Disputed Charges \u2013 If a customer formally disputes a charge, the account may remain in current status pending\nresolution, provided the dispute is documented and a temporary payment arrangement is in place.\n\u007f Approved Payment Arrangements \u2013 When a customer secures an approved payment plan, the account status may\nbe maintained as current for the duration of the arrangement, subject to compliance with the agreed schedule.\n\u007f Regulatory Holds \u2013 Accounts subject to regulatory holds (e.g., court orders) are exempt from automatic suspension\nand follow the specific legal process.",
       "content_hash": "96080b6fd828d72b568aeafb5e5aff7aaeafd21c1e309067bc0191006fe8e4c5",
@@ -23167,13 +23167,13 @@
         0.04066525027155876,
         -0.08397497236728668
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593877+00:00"
+      "created_at": "2026-09-12T20:08:54.872758+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_27": {
-      "id": "70c2def2-423c-417f-98fe-90316a0cc8be",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_27": {
+      "id": "c939ebc4-8c8f-4db0-827a-a595b6254a9e",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 27,
       "content": "ject to compliance with the agreed schedule.\n\u007f Regulatory Holds \u2013 Accounts subject to regulatory holds (e.g., court orders) are exempt from automatic suspension\nand follow the specific legal process.",
       "content_hash": "feb2ee12719b2e55092d6e59fae274f2c07ca07f7033107b76651d8254ff4f83",
@@ -23566,13 +23566,13 @@
         0.0912761315703392,
         -0.09243016690015793
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593891+00:00"
+      "created_at": "2026-09-12T20:08:54.872770+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_28": {
-      "id": "5c4db7ae-17e9-4521-b97e-313ff3b81634",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_28": {
+      "id": "8d429364-92ca-4c8d-b0b3-90e27d886406",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 28,
       "content": "Customer Responsibilities\n\u007f Pay the full invoice amount by the due date unless a formal dispute or approved payment arrangement is in place.\n\u007f Respond promptly to any payment reminders or notices.\n\u007f Notify the billing department of any changes to payment method or contact information that could affect payment\nprocessing.\nInternal Staff Responsibilities\n\u007f Ensure invoices are generated accurately and delivered on schedule.\n\u007f Monitor payment status and trigger notifications according to the defined timeline.\n\u007f Document all communications, disputes, and payment arrangements in the customer\u2019s account record.\n\u007f Follow the escalation workflow consistently, applying exceptions only when documented and authorized.\nExceptions and Waivers\nThe Postpaid Billing and Payment Policy includes defined circumstances under which standard billing rules may be\nmodified or temporarily suspended. These provisions are intended to balance customer fairness with the operational\nintegrity of Aether Wireless billing systems.\nApplicable Rules\n\u007f Waiver Eligibility \u2013 A waiver may be granted when a customer experiences a verifiable service interruption, a\ndocumented billing error, or an extraordinary hardship that prevents timely payment.\n\u007f Scope of Waiver \u2013 Waivers may apply to late fees, service suspension, or the requirement to meet a specific payment\ndeadline. They do not alter the underlying service charges for the billing period.\nOperational Steps\n1.",
       "content_hash": "da56eeb5b4a104820661d45496038b53997c63b281fff8be56565b5015dc11e6",
@@ -23965,13 +23965,13 @@
         0.04986167326569557,
         -0.08228224515914917
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593908+00:00"
+      "created_at": "2026-09-12T20:08:54.872783+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_29": {
-      "id": "9966c020-ebeb-4b14-a881-40fc8155cab3",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_29": {
+      "id": "f69e5a0c-cd4b-46ba-81da-fbf547f8a1eb",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 29,
       "content": "aivers may apply to late fees, service suspension, or the requirement to meet a specific payment\ndeadline. They do not alter the underlying service charges for the billing period.\nOperational Steps\n1. Customer Request \u2013 The customer must submit a written request (email or portal ticket) detailing the reason for the\nwaiver, including any supporting documentation (e.g., outage notice, medical certificate, or financial hardship statement).\n2. Initial Review \u2013 Billing staff reviews the request within a defined internal timeframe and verifies the supporting\nevidence.\n3. Decision \u2013\n\u007f If approved, the staff records the waiver in the billing system, notes the effective dates, and communicates the outcome\nto the customer.\n\u007f If denied, the staff provides a clear explanation and outlines any alternative assistance options.\n4.",
       "content_hash": "4f0040afb8b1cde2b6114114799f8093a82da1516d0c6e37925b4b6049d45b62",
@@ -24364,13 +24364,13 @@
         0.03827144578099251,
         -0.008149035274982452
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593921+00:00"
+      "created_at": "2026-09-12T20:08:54.872795+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_30": {
-      "id": "89836a3b-d466-41ab-8062-fa5def8f4714",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_30": {
+      "id": "47a06d74-c8b7-4214-b01c-d7f3b5fa1290",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 30,
       "content": "in the billing system, notes the effective dates, and communicates the outcome\nto the customer.\n\u007f If denied, the staff provides a clear explanation and outlines any alternative assistance options.\n4. Documentation \u2013 All waiver decisions are logged with the request ID, reviewer name, and justification to ensure\nauditability.\nExceptions\n\u007f System\u25a0Generated Errors \u2013 When an automated billing error is identified (e.g., duplicate charge), the error is\ncorrected without requiring a formal waiver request.\n\u007f Regulatory Mandates \u2013 Any statutory requirement that overrides standard billing practices (e.g., emergency consumer\nprotection orders) is applied automatically, superseding internal waiver procedures.\n\u007f Promotional Adjustments \u2013 Temporary promotional credits or discounts are handled under the promotions policy and\nare not considered waivers.\nCustomer Responsibilities",
       "content_hash": "3746d7367f7e994ed643309745f0c2327fea70c9c05e7d561c658e4ec678e9e7",
@@ -24763,13 +24763,13 @@
         0.04271461442112923,
         -0.015328073874115944
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593934+00:00"
+      "created_at": "2026-09-12T20:08:54.872808+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_31": {
-      "id": "5fd049bd-d529-4fc0-877a-b625e9056248",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_31": {
+      "id": "fc0ec3ec-d262-4008-acfd-b44a15a0dd21",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 31,
       "content": "ng internal waiver procedures.\n\u007f Promotional Adjustments \u2013 Temporary promotional credits or discounts are handled under the promotions policy and\nare not considered waivers.\nCustomer Responsibilities",
       "content_hash": "cf9487fe42698ceefe99cbf3f7c3e4cee4da96281006da5fd8855190029fcce7",
@@ -25162,13 +25162,13 @@
         -0.03588645160198212,
         -0.04077233001589775
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593947+00:00"
+      "created_at": "2026-09-12T20:08:54.872821+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_32": {
-      "id": "b0354473-2252-422b-8fe4-ef9cd43a6aae",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_32": {
+      "id": "cf56d581-d71a-4099-a58c-c5379cf4f7bc",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 32,
       "content": "\u007f Provide accurate and complete information in the waiver request.\n\u007f Respond promptly to any follow\u25a0up inquiries from billing staff.\n\u007f Honor any revised payment schedule communicated as part of the waiver approval.\nInternal Staff Responsibilities\n\u007f Assess waiver requests objectively and consistently, adhering to documented criteria.\n\u007f Maintain confidentiality of customer information throughout the review process.\n\u007f Ensure that any granted waiver is reflected accurately in the billing system to prevent future billing disputes.\n\u007f Escalate complex or high\u25a0value cases to the Billing Manager for final approval.\nRoles and Responsibilities\nCustomer Responsibilities\n\u007f Review the monthly invoice promptly and verify all listed charges.\n\u007f Submit payment by the due date using an approved payment method (e.g., electronic funds transfer, credit/debit card,\nor authorized bank draft).\n\u007f Notify the Billing Department of any billing discrepancies, address changes, or payment method updates within five\nbusiness days of discovery.\n\u007f Maintain sufficient funds or credit availability to cover the full invoice amount to avoid service interruptions.\nBilling Department Responsibilities\n\u007f Generate accurate postpaid invoices on the scheduled billing cycle and distribute them to customers via the designated\ndelivery channels (email, portal, or paper).\n\u007f Record all received payments in the billing system no later than the business day following receipt.\n\u007f Monitor accounts for missed or failed payments an",
       "content_hash": "9d213dbb27b2c8a142b0a651a9ded797992a62b813776dbf3cdc3f3582957cee",
@@ -25561,13 +25561,13 @@
         0.029501497745513916,
         -0.054211609065532684
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593959+00:00"
+      "created_at": "2026-09-12T20:08:54.872833+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_33": {
-      "id": "ce6b5a89-9d66-4de5-9adc-e67572bc5bca",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_33": {
+      "id": "ba161c3e-bf75-44b9-83f8-5d98743bd548",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 33,
       "content": "delivery channels (email, portal, or paper).\n\u007f Record all received payments in the billing system no later than the business day following receipt.\n\u007f Monitor accounts for missed or failed payments and initiate the defined escalation process (e.g., reminder notices,\ntemporary service suspension) according to the policy workflow.\n\u007f Communicate any billing errors or adjustments to the customer promptly and provide a corrected invoice when\nnecessary.\nFinance Operations Responsibilities\n\u007f Reconcile daily payment transactions against bank statements and the internal accounting ledger.\n\u007f Ensure that all payment methods comply with applicable regulatory and security standards.\n\u007f Prepare periodic reports on payment performance, delinquency trends, and revenue recognition for senior\nmanagement review.\nCustomer Service Responsibilities\n\u007f Serve as the first point of contact for customers with billing inquiries, providing clear explanations of charges and\npayment options.\n\u007f Escalate unresolved payment issues to the Billing Department according to the established escalation matrix.\n\u007f Document all customer interactions related to billing in the CRM system to maintain an audit trail.\nIT/Systems Support Responsibilities\n\u007f Maintain the integrity and availability of the billing platform, ensuring that invoice generation, payment processing, and\naccount status updates function without interruption.",
       "content_hash": "fbc7d3a678c27afe0b9d713602ac560f4f46edc853ad3e17868ed101585634d8",
@@ -25960,13 +25960,13 @@
         0.043296560645103455,
         -0.08603784441947937
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593972+00:00"
+      "created_at": "2026-09-12T20:08:54.872845+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_34": {
-      "id": "22266de3-e1f1-4ebe-af04-af6af69c3fb4",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_34": {
+      "id": "4ea12af6-035b-48a2-acbe-beb89bdf3904",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 34,
       "content": "ort Responsibilities\n\u007f Maintain the integrity and availability of the billing platform, ensuring that invoice generation, payment processing, and\naccount status updates function without interruption.",
       "content_hash": "d09e20a5749625061ed4918314fecdd25e333ce59b8da663651579385bbf7543",
@@ -26359,13 +26359,13 @@
         0.1494881808757782,
         -0.060388028621673584
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593985+00:00"
+      "created_at": "2026-09-12T20:08:54.872858+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_35": {
-      "id": "67fa7366-e187-45ee-a351-2b1e8a07b50c",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_35": {
+      "id": "36918919-0354-4869-b3cd-e6918b5ac057",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 35,
       "content": "\u007f Implement and test backup and recovery procedures for billing data in accordance with the company\u2019s data protection\npolicies.\nCompliance and Audit Responsibilities\n\u007f Conduct regular audits of billing processes to verify adherence to internal policies and external regulatory requirements.\n\u007f Report any identified non\u25a0compliance or systemic issues to the Compliance Officer for corrective action.\nThese responsibilities collectively ensure accurate billing, timely payment collection, and consistent service delivery for\npostpaid accounts.\nKey Rules Summary\nRule\nRequirement\nOperational Handling\nBilling Cycle Frequency\nPostpaid accounts are billed on a regular recurring cycle.\nSystem generates an invoice at the start of each cycle and records the cycle date.\nAccepted Payment Methods\nPayments may be made using approved methods (e.g., credit/debit card, ACH, online portal).\nPayment gateway validates method; successful transactions update account balance automatically.\nPayment Due Date\nAll invoices must be paid by the due date specified on the invoice.\nAutomated reminders are sent prior to the due date; the due date is tracked in the billing system.\nLate Payment Consequence\nLate payment triggers a defined follow\u25a0up process.\nSystem flags overdue invoices, applies any applicable late fees, and notifies the customer.\nFailed Payment Procedure\nIf a payment attempt fails, the system must retry and notify the customer.\nAutomatic retry is scheduled; failure triggers an alert and a reminder t",
       "content_hash": "1a90beee1c82997988d1f90cfe594e1f0e8a095cd1a7410b5512d2ec0a5d8d8d",
@@ -26758,13 +26758,13 @@
         0.09771999716758728,
         -0.11021516472101212
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.593998+00:00"
+      "created_at": "2026-09-12T20:08:54.872871+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_36": {
-      "id": "08e497fa-9a69-4263-a16d-c121ba39ed30",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_36": {
+      "id": "a8c526c6-a797-4f11-96e4-350da3b6ae2e",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 36,
       "content": "and notifies the customer.\nFailed Payment Procedure\nIf a payment attempt fails, the system must retry and notify the customer.\nAutomatic retry is scheduled; failure triggers an alert and a reminder to the customer.\nAccount Suspension Trigger\nAccounts with unresolved payment issues may be suspended.\nAfter the defined escalation period, the system changes account status to \u201cSuspended\u201d and logs the action.\nReactivation Requirement\nSuspended accounts can be reactivated upon receipt of payment.\nOnce payment clears, the system restores active status and notifies the customer.\nBilling Dispute Handling\nCustomers may dispute charges within the policy\u25a0defined window.\nDispute tickets are created, and billing adjustments are processed pending resolution.\nFAQs\nQ: What is the typical billing cycle for a postpaid account? A: Postpaid accounts are billed on a regular monthly cycle,\nwith each cycle covering the usage and services provided during the preceding month.\nQ: Which payment methods are accepted for postpaid bills? A: Accepted payment methods include electronic funds\ntransfer, credit or debit cards, and approved online payment portals. All methods must be linked to a valid account.\nQ: When is the payment due for a postpaid invoice? A: Payment is due on the date specified on the invoice, which is\ngenerally a set number of days after the billing cycle ends.",
       "content_hash": "14d0ac431f3c205632d2aedb12b3217ff3e34b4eb713ee1632063265d376e49d",
@@ -27157,13 +27157,13 @@
         0.034794583916664124,
         -0.09476286172866821
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.594011+00:00"
+      "created_at": "2026-09-12T20:08:54.872884+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_37": {
-      "id": "61589646-7ffa-4074-bb5d-3e091bb0ebf7",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_37": {
+      "id": "1b1dd54d-6ee4-47fe-9709-85d49be62f5a",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 37,
       "content": "ked to a valid account.\nQ: When is the payment due for a postpaid invoice? A: Payment is due on the date specified on the invoice, which is\ngenerally a set number of days after the billing cycle ends. The due date will be clearly indicated on each statement.\nQ: What happens if a payment is missed or fails? A: A missed or failed payment triggers a notification to the account\nholder. If the issue is not resolved within the grace period outlined in the notice, the account may be placed on a\ndelinquent status, potentially affecting service continuity.\nQ: How does a missed payment affect account status? A: Repeated missed payments can lead to the account being\nclassified as delinquent, which may result in service suspension, additional collection actions, or termination as defined\nby the billing policy.\nQ: Can I set up automatic payments for my postpaid bill? A: Yes, customers may enroll in automatic payment options\nusing a supported payment method to ensure timely settlement of each invoice.\nQ: How can I view or dispute a charge on my postpaid bill? A: Billing statements are accessible through the customer\nportal.",
       "content_hash": "2379c443bbbcda551902d2b7bdd1b85d142f769f614cc7a86dca0f4da920109f",
@@ -27556,13 +27556,13 @@
         0.016506807878613472,
         -0.08749502897262573
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.594024+00:00"
+      "created_at": "2026-09-12T20:08:54.872896+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_38": {
-      "id": "39cbe485-c8e4-4950-8373-90f0afa1eae9",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_38": {
+      "id": "e562bf5c-ddb1-47ae-8227-209bc182baf4",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 38,
       "content": "ing a supported payment method to ensure timely settlement of each invoice.\nQ: How can I view or dispute a charge on my postpaid bill? A: Billing statements are accessible through the customer\nportal. Disputes should be submitted in writing within the timeframe indicated on the invoice, following the outlined\ndispute resolution process.\nQ: Who should I contact for billing inquiries or assistance? A: For any billing-related questions, customers should contact\nthe Billing Department using the contact information provided on their invoice or through the official Aether Wireless\nsupport channels.",
       "content_hash": "37439eac9f1ef371493e02e48c42a417ac6d7e84a3dfcd0e25d700ca80aaed4f",
@@ -27955,13 +27955,13 @@
         0.05638643726706505,
         -0.03173048049211502
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.594036+00:00"
+      "created_at": "2026-09-12T20:08:54.872909+00:00"
     },
-    "edcf599d-7775-4bc6-a7df-fa6622d470b8_39": {
-      "id": "8e972a6f-8b6f-41c3-8343-0f1b7d94b70d",
-      "document_id": "edcf599d-7775-4bc6-a7df-fa6622d470b8",
+    "b50977b1-0b84-4495-8bbf-b34dca132a17_39": {
+      "id": "c00b0555-2ecf-4a64-8dd6-ed4b0e2702ac",
+      "document_id": "b50977b1-0b84-4495-8bbf-b34dca132a17",
       "chunk_index": 39,
       "content": "A: For any billing-related questions, customers should contact\nthe Billing Department using the contact information provided on their invoice or through the official Aether Wireless\nsupport channels.",
       "content_hash": "1daa555ef2eb8ee9747c00650268c1e31b47aea0b3d2dca4f62ddda811c874a6",
@@ -28354,13 +28354,13 @@
         0.05454733222723007,
         -0.027686832472682
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:03.594049+00:00"
+      "created_at": "2026-09-12T20:08:54.872922+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_0": {
-      "id": "103bc302-7a77-4ebe-8730-ff2ebb44a9bd",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_0": {
+      "id": "57428876-dcc9-4667-8601-2548986d8dc3",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 0,
       "content": "OVERVIEW\n--------\n\nThe Postpaid Billing and Payment Policy defines how Aether Wireless generates monthly invoices, collects payments, and manages account status for postpaid customers. The policy applies to all postpaid service contracts unless a customer has a written agreement that supersedes these general rules.\n\nBILLING CYCLE\n-------------\n- Invoices are generated on a recurring basis (typically monthly) for the usage period that has just concluded.\n- Each invoice includes a summary of charges, applicable taxes, and any adjustments from the prior billing cycle.\n\nPAYMENT METHODS\n---------------\n- Accepted payment methods include electronic bank transfer, credit/debit card, and authorized automatic payment (ACH) arrangements.\n- Customers may select one or more methods; the primary method is used first, with secondary methods serving as fallback.\n\nDUE DATE\n--------\n- Payment is due on the date specified on the invoice, which is calculated based on the billing cycle end date plus the standard payment period.\n- The due date is communicated to the customer via the invoice and any associated electronic notifications.\n\nFAILED PAYMENTS\n---------------\n- If a payment is not received by the due date, the account is placed in a past\u2011due status.\n- The system automatically attempts a second collection using any secondary payment method on file.\n- A notification is sent to the customer outlining the missed payment and next steps.",
       "content_hash": "dab60c5826980c23e71c868a5355d1294c0c730936d68a0f1eba129bd18e97cc",
@@ -28753,13 +28753,13 @@
         0.11341545730829239,
         -0.06872197240591049
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.722986+00:00"
+      "created_at": "2026-09-12T20:09:24.731616+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_1": {
-      "id": "be555e23-8186-4ecb-a812-1c2e53cc20fa",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_1": {
+      "id": "951e4670-9b35-469c-aeb5-159e1d9a19ca",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 1,
       "content": "t\u2011due status.\n- The system automatically attempts a second collection using any secondary payment method on file.\n- A notification is sent to the customer outlining the missed payment and next steps.\n\nACCOUNT STATUS MANAGEMENT\n-------------------------\n- Current \u2013 Account is in good standing; services continue without interruption.\n- Past\u2011Due \u2013 Services remain active but the account is flagged for follow\u2011up; additional collection actions may be initiated.\n- Suspended \u2013 If payment remains unresolved after a defined grace period, services may be temporarily suspended pending payment.\n- Terminated \u2013 Persistent non\u2011payment may lead to termination of service and recovery actions in accordance with contractual terms.\n\nCUSTOMER RESPONSIBILITIES\n-------------------------\n- Review each invoice for accuracy and report discrepancies within the timeframe indicated on the invoice.\n- Ensure that a valid payment method is on file and that sufficient funds are available on the due date.\n- Respond promptly to any payment\u2011related communications from Aether Wireless.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------\n- Billing staff generate and distribute invoices according to the schedule defined in the system.\n- Customer service representatives provide clarification on invoice items and assist with payment method updates.\n- Collections team monitors past\u2011due accounts, initiates follow\u2011up actions, and escalates accounts according to the defined status hierarchy.",
       "content_hash": "a9f023d71021220bf0d6052f673ab28ef37ec362cb1969a751d45080c74b0b78",
@@ -29152,13 +29152,13 @@
         0.03813675418496132,
         -0.03965911641716957
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723016+00:00"
+      "created_at": "2026-09-12T20:09:24.731632+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_2": {
-      "id": "de99fc02-4a73-4aaa-b780-551e60a1d817",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_2": {
+      "id": "43abcd2a-8519-4b23-8a25-ee957f07c070",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 2,
       "content": "on invoice items and assist with payment method updates.\n- Collections team monitors past\u2011due accounts, initiates follow\u2011up actions, and escalates accounts according to the defined status hierarchy.\n\nSCOPE AND APPLICABILITY\n-----------------------\n\nThis section defines the boundaries of the Postpaid Billing and Payment Policy (Document ID: BILL-001) and identifies the parties to whom it applies.\n\n- Applicable Services\n- All postpaid voice, data, and bundled service plans offered by Aether Wireless.\n- Any postpaid add\u2011on features (e.g., international roaming, device financing) that are billed on a monthly basis.\n\n- Customer Eligibility\n- The policy applies to every customer who has entered into a postpaid contract with Aether Wireless, regardless of account age, credit tier, or geographic region.\n- Customers on prepaid or hybrid (pre\u2011pay + post\u2011pay) plans are excluded; they are governed by the separate Prepaid Billing Policy.\n\n- Geographic Scope\n- The policy is enforceable for all Aether Wireless operations worldwide, unless a local regulator mandates a divergent requirement. In such cases, the local regulation supersedes this policy.",
       "content_hash": "8be1d2f8c2cf29e0bb58e27a4d3633f2b8d22ea8792621abffcdb3dbaa7ba1df",
@@ -29551,13 +29551,13 @@
         0.04850655794143677,
         -0.07934144139289856
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723030+00:00"
+      "created_at": "2026-09-12T20:09:24.731647+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_3": {
-      "id": "d9bcfb9f-5b66-4552-a853-90457724be89",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_3": {
+      "id": "4b09c563-7e02-49c3-83a5-70f39461b28f",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 3,
       "content": "Scope\n- The policy is enforceable for all Aether Wireless operations worldwide, unless a local regulator mandates a divergent requirement. In such cases, the local regulation supersedes this policy.\n\n- Internal Stakeholder Coverage\n- Billing Operations Team \u2013 responsible for generating invoices, applying payments, and monitoring delinquency.\n- Customer Service Representatives \u2013 handle inquiries, payment arrangements, and escalation of payment issues.\n- Finance Department \u2013 oversees reconciliation, reporting, and compliance with external financial regulations.\n- Legal & Compliance \u2013 reviews any exceptions required by law or regulatory bodies.\n\n- Exceptions\n- Accounts that are under a court\u2011ordered payment plan or a government\u2011mandated assistance program are subject to the terms of those specific arrangements, which may modify due dates or payment methods.\n- In cases of force\u2011majeure events (e.g., natural disasters) that impact a customer\u2019s ability to pay, staff may apply a temporary waiver in accordance with the Force\u2011Majeure Exception Procedure (refer to internal SOP).\n\n- Customer Responsibilities\n- Ensure that billing information (address, contact details, and payment method) is current and accurate.\n- Review monthly statements promptly and report any discrepancies to the Billing Operations Team within the timeframe specified in the statement.\n- Honor the agreed\u2011upon payment schedule unless an approved exception is granted.",
       "content_hash": "692b6a440dc83d3da3e8265c9d882ec9e10c59b3eedcbb9db1014ca964cf36ca",
@@ -29950,13 +29950,13 @@
         0.04499850049614906,
         -0.07280722260475159
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723044+00:00"
+      "created_at": "2026-09-12T20:09:24.731661+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_4": {
-      "id": "604f3467-d6ec-440b-85f8-0fb7fe3f60f8",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_4": {
+      "id": "6c0b3c4f-b240-4cbf-9011-c7aafd21fc4c",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 4,
       "content": "promptly and report any discrepancies to the Billing Operations Team within the timeframe specified in the statement.\n- Honor the agreed\u2011upon payment schedule unless an approved exception is granted.\n\n- Operational Steps for Determining Applicability\n1. Verify that the account type is classified as \u201cpostpaid\u201d in the customer master data.\n2. Confirm that the service portfolio associated with the account consists solely of postpaid offerings.\n3. Check for any active regulatory or legal exceptions linked to the account.\n4. If all criteria are met, apply the Postpaid Billing and Payment Policy to the account; otherwise, reference the appropriate alternative policy.\n\nBILLING CYCLE RULES\n-------------------\n\nAether Wireless postpaid accounts operate on a recurring billing cycle that defines when charges are calculated, invoiced, and due. The following rules apply to all postpaid customers unless otherwise specified in a customer\u2011specific agreement.\n\nCYCLE DEFINITION\n----------------\n- Cycle Length: The standard billing cycle is one calendar month. The cycle start date is the date the service is first activated or the date of the most recent plan change.\n- Cycle Alignment: For customers who change plans mid\u2011cycle, the new plan\u2019s charges are prorated for the remainder of the current cycle and then applied to the next full cycle.",
       "content_hash": "22483e510f46216c2bd7959079422e3bdf355abe1204ab85498dad6310ce2b57",
@@ -30349,13 +30349,13 @@
         0.07466241717338562,
         -0.09392589330673218
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723057+00:00"
+      "created_at": "2026-09-12T20:09:24.731674+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_5": {
-      "id": "64a8bd33-c7d1-4bf9-b251-cb8ffc9e3afa",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_5": {
+      "id": "c2b33054-34d8-4e13-9cd7-767d27b1c2b8",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 5,
       "content": "st recent plan change.\n- Cycle Alignment: For customers who change plans mid\u2011cycle, the new plan\u2019s charges are prorated for the remainder of the current cycle and then applied to the next full cycle.\n\nINVOICING AND DUE DATE\n----------------------\n- Invoice Generation: An invoice is generated at the end of each billing cycle and is made available to the customer via the online portal, email, or paper mail, depending on the customer\u2019s preference.\n- Due Date: Payment is due X days after the invoice date. (The exact number of days is defined in the customer contract and is not disclosed here.)\n\nPAYMENT METHODS\n---------------\n- Accepted payment methods include:\n- Automated bank debit (ACH)\n- Credit or debit card (Visa, MasterCard, American Express)\n- Online payment through the customer portal\n- Authorized third\u2011party payment processors\n- Payments must be processed using the method selected in the customer\u2019s account profile. Changes to the payment method require verification and must be updated in the system before the next billing cycle.",
       "content_hash": "f192ad6addb8525ef622f4787cde62bb8d00b332188379a95f90b3f772582c4c",
@@ -30748,13 +30748,13 @@
         0.06425424665212631,
         -0.06515192240476608
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723070+00:00"
+      "created_at": "2026-09-12T20:09:24.731687+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_6": {
-      "id": "1d702355-99b9-4ac1-bae8-b986dee4f697",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_6": {
+      "id": "63a25aa5-ec4c-4968-94c0-35d47c04e98c",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 6,
       "content": "ents must be processed using the method selected in the customer\u2019s account profile. Changes to the payment method require verification and must be updated in the system before the next billing cycle.\n\nFAILED PAYMENT HANDLING\n-----------------------\n1. First Failure: The system attempts a second collection attempt within 24\u202fhours. The customer receives a notification of the failed payment and a reminder of the upcoming due date.\n2. Second Failure: A second notification is sent, and the account is placed on a Grace Period pending resolution.\n3. Grace Period: During the grace period, services continue without interruption, but the account is flagged for follow\u2011up by the Billing team.\n4. Third Failure: If payment is not received after the grace period, the account is moved to Suspended status in accordance with the Account Status Policy.\n\nEXCEPTIONS\n----------\n- Promotional Accounts: Customers enrolled in promotional billing arrangements may have alternate cycle lengths or due dates as defined in the promotion terms.\n- Regulatory Holds: Accounts subject to regulatory holds (e.g., court orders) follow the specific timelines dictated by the applicable regulation, superseding the standard cycle rules.",
       "content_hash": "c3915f9ed53c2fbf00b29500ee5208476d37cf8c6eaf052e5c782d34d0fbb107",
@@ -31147,13 +31147,13 @@
         0.03547979146242142,
         -0.02650490589439869
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723083+00:00"
+      "created_at": "2026-09-12T20:09:24.731700+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_7": {
-      "id": "b58d45a6-f29f-4297-a97b-5d9438532a5c",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_7": {
+      "id": "b2781c74-20af-4138-a3f5-5f82271125a5",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 7,
       "content": "omotion terms.\n- Regulatory Holds: Accounts subject to regulatory holds (e.g., court orders) follow the specific timelines dictated by the applicable regulation, superseding the standard cycle rules.\n\nCUSTOMER RESPONSIBILITIES\n-------------------------\n- Keep payment method information current and ensure sufficient funds are available on the due date.\n- Review the monthly invoice for accuracy and report any discrepancies within the timeframe specified in the Dispute Resolution Procedure.\n- Notify Aether Wireless promptly of any changes to billing address, contact information, or preferred payment method.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------\n- Billing Operations: Generate invoices promptly at cycle end, verify accuracy of prorated charges, and ensure delivery through the selected channel.\n- Customer Service: Respond to payment\u2011related inquiries, provide assistance with updating payment methods, and communicate any upcoming changes to billing cycles.\n- Collections Team: Monitor failed payment alerts, execute the defined collection steps, and coordinate with the Account Management team for any required account status changes.\n\nThese rules establish a consistent framework for managing postpaid billing cycles, ensuring transparency for customers and operational efficiency for Aether Wireless staff.\n\nACCEPTED PAYMENT METHODS\n------------------------",
       "content_hash": "6117838b8f034c616fd822cec4b87b1f5eb00707666bd26381c3268c1aabeb03",
@@ -31546,13 +31546,13 @@
         0.07707640528678894,
         -0.07003391534090042
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723095+00:00"
+      "created_at": "2026-09-12T20:09:24.731713+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_8": {
-      "id": "bff342c7-2876-4a43-8748-66391bf67f1d",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_8": {
+      "id": "a5b14fa2-99e9-439a-acef-c28fc6ea8475",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 8,
       "content": "consistent framework for managing postpaid billing cycles, ensuring transparency for customers and operational efficiency for Aether Wireless staff.\n\nACCEPTED PAYMENT METHODS\n------------------------\n\nAether Wireless supports a defined set of payment methods for post\u2011paid accounts. All methods must be accepted in the currency of the account and comply with applicable regulatory and security standards.\n\nSUPPORTED METHODS\n-----------------\n- Credit/Debit Cards \u2013 Visa, MasterCard, American Express, and Discover. Card details must be entered through the secure online portal or provided to a billing representative.\n- Electronic Bank Transfer (ACH/EFT) \u2013 Direct debit from a checking or savings account. Customers must submit a signed authorization form.\n- Online Payment Services \u2013 PayPal, Apple Pay, Google Pay, or other approved digital wallets, provided the service is linked to a verified funding source.\n- Postal Money Order \u2013 Accepted only when mailed to the designated billing address with the account number clearly indicated.",
       "content_hash": "df27bf463c8732fe10aa2562b65378d45aab86f80dc650a7049509ae03e4d6cd",
@@ -31945,13 +31945,13 @@
         0.10779328644275665,
         -0.04462241008877754
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723108+00:00"
+      "created_at": "2026-09-12T20:09:24.731726+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_9": {
-      "id": "9ef4b0e3-06d4-4156-ac13-a13af3da95ca",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_9": {
+      "id": "554495fa-7578-491a-874b-a5d31e1774df",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 9,
       "content": "tal wallets, provided the service is linked to a verified funding source.\n- Postal Money Order \u2013 Accepted only when mailed to the designated billing address with the account number clearly indicated.\n\nOPERATIONAL STEPS\n-----------------\n1. Customer Initiation \u2013 The customer selects a preferred method via the self\u2011service portal or contacts the Billing Support team.\n2. Verification \u2013 Billing staff confirm that the payment method meets security and compliance requirements (e.g., card validation, bank account verification).\n3. Activation \u2013 Once verified, the method is added to the account profile and becomes the default payment option for the next billing cycle.\n4. Processing \u2013 Payments are processed on the scheduled due date. Successful transactions update the account status automatically.\n\nEXCEPTIONS\n----------\n- Cash Payments \u2013 Not accepted for post\u2011paid billing due to traceability and reconciliation constraints.\n- International Cards \u2013 May be declined if they do not meet the issuer\u2019s cross\u2011border verification standards.\n\nCUSTOMER RESPONSIBILITIES\n-------------------------\n- Keep payment method information current and accurate.\n- Notify Billing Support promptly of any changes to card expiration dates, bank account details, or digital wallet credentials.\n- Ensure sufficient funds or credit availability on the payment date to avoid failed transactions.",
       "content_hash": "ada3f2f25a5f164054287c7eae3ba8c6f31263e58ba8ff387baf81bee7c822fa",
@@ -32344,13 +32344,13 @@
         0.08281231671571732,
         -0.06859700381755829
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723121+00:00"
+      "created_at": "2026-09-12T20:09:24.731739+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_10": {
-      "id": "8e3f6279-1826-473f-8c0d-16c51c396dc7",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_10": {
+      "id": "75d6aa9b-180f-4b18-a1cd-f06cba7ee954",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 10,
       "content": "omptly of any changes to card expiration dates, bank account details, or digital wallet credentials.\n- Ensure sufficient funds or credit availability on the payment date to avoid failed transactions.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------\n- Verify the authenticity and validity of new payment method submissions.\n- Record all payment method changes in the customer account system with timestamps and staff identifiers.\n- Escalate any payment method that fails verification to the Risk Management team for review.\n\nCompliance with these procedures ensures timely billing, reduces the incidence of failed payments, and maintains the integrity of the post\u2011paid billing cycle.\n\nPAYMENT DUE DATES AND GRACE PERIOD\n----------------------------------\n\nThe postpaid billing cycle ends on the last day of each calendar month. The invoice generated for that cycle is delivered to the customer electronically (or by mail, if requested) within three business days after cycle close. The payment due date is set to 15 calendar days from the invoice issuance date, unless otherwise specified in the customer contract.\n\nGRACE PERIOD\n------------\nA standard grace period of 5 calendar days follows the due date. Payments received within the grace period are treated as on\u2011time and do not trigger any service restrictions.",
       "content_hash": "e92e9618d7ef88ce335f0dce749ac1ed503bfff48c67ab4f8deae3e892590d79",
@@ -32743,13 +32743,13 @@
         0.08127632737159729,
         -0.06509871035814285
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723134+00:00"
+      "created_at": "2026-09-12T20:09:24.731752+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_11": {
-      "id": "fe1a8f7b-0ae6-4fed-b756-cd6fcd818b9d",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_11": {
+      "id": "3a21349d-2e0f-456a-8828-5a03b4a2df94",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 11,
       "content": "RACE PERIOD\n------------\nA standard grace period of 5 calendar days follows the due date. Payments received within the grace period are treated as on\u2011time and do not trigger any service restrictions.\n\nOPERATIONAL STEPS\n-----------------\n1. Invoice Generation \u2013 Billing system creates the invoice and timestamps the issuance date.\n2. Notification \u2013 Automated notification is sent to the customer with the due date and grace period details.\n3. Payment Processing \u2013 Payments received before or on the due date are posted as on\u2011time. Payments received during the grace period are posted as on\u2011time but flagged for internal monitoring.\n4. Grace Period Expiry \u2013 If no payment is recorded by the end of the grace period, the account is flagged for potential delinquency actions.\n\nEXCEPTIONS\n----------\n- Contractual Variations \u2013 Customers with negotiated billing terms may have a different due date or grace period as documented in their contract. In such cases, the contract terms supersede the standard policy.\n- Regulatory Requirements \u2013 Any jurisdiction\u2011specific regulations that mandate a different grace period must be applied in lieu of the standard 5\u2011day grace period.\n\nCUSTOMER RESPONSIBILITIES\n-------------------------\n- Review the invoice promptly upon receipt.\n- Ensure payment is submitted by the due date to avoid reliance on the grace period.\n- Notify the billing department of any changes to contact information that could affect invoice delivery.",
       "content_hash": "796af5fd6f0dc18bdc5c033e44b7eaee875792ef041231efc3d51ea4602eec57",
@@ -33142,13 +33142,13 @@
         0.030478397384285927,
         -0.059584204107522964
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723148+00:00"
+      "created_at": "2026-09-12T20:09:24.731765+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_12": {
-      "id": "bec4a2a6-fff9-4f87-8880-e73f34d254d7",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_12": {
+      "id": "6a5140b8-e657-4441-9cf9-d942a743b5fc",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 12,
       "content": "receipt.\n- Ensure payment is submitted by the due date to avoid reliance on the grace period.\n- Notify the billing department of any changes to contact information that could affect invoice delivery.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------\n- Verify that invoices are generated and dispatched within the three\u2011business\u2011day window.\n- Monitor accounts for payments received during the grace period and update status accordingly.\n- Apply any contractual or regulatory exceptions before flagging an account for delinquency.\n\nFAILED PAYMENT PROCESS\n----------------------\n\nThe Failed Payment Process outlines how Aether Wireless handles postpaid accounts when a scheduled payment is not successfully received. The process applies to all postpaid customers whose payment method (e.g., credit card, bank account, or authorized electronic transfer) fails to clear on the due date.\n\nAPPLICABLE RULE\n---------------\nWhen a payment attempt fails, the account is placed in a Payment\u2011Failure Status until the issue is resolved. The status triggers a defined series of notifications, internal actions, and potential service restrictions.\n\nOPERATIONAL STEPS\n-----------------",
       "content_hash": "229d28f6145111222c039585cb4a143d1eb8c764456aa7f7ccb9fe4e4854b852",
@@ -33541,13 +33541,13 @@
         0.08364008367061615,
         -0.08741757273674011
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723161+00:00"
+      "created_at": "2026-09-12T20:09:24.731778+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_13": {
-      "id": "8de29029-555e-4b02-84a1-e6737f42701b",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_13": {
+      "id": "3bfa95d4-e00c-4279-88e6-c118a144c53b",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 13,
       "content": "a Payment\u2011Failure Status until the issue is resolved. The status triggers a defined series of notifications, internal actions, and potential service restrictions.\n\nOPERATIONAL STEPS\n-----------------",
       "content_hash": "92d7239e79c69549b7db40b15645ec24cfa93414bf45042151d38b07229a34c2",
@@ -33940,13 +33940,13 @@
         0.06621623784303665,
         -0.01523721031844616
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723173+00:00"
+      "created_at": "2026-09-12T20:09:24.731791+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_14": {
-      "id": "db87a580-b5bc-4745-a157-20ec8c07003f",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_14": {
+      "id": "f847c65b-4439-4e66-8958-70eb50c16e17",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 14,
       "content": "1. Detection\n- The billing system automatically flags a payment as failed at the close of the billing day.\n2. Initial Notification\n- An automated email and SMS are sent to the customer within 24\u202fhours of the failure, indicating:\n- The amount due\n- The date of the missed payment\n- Instructions for updating payment information or making an alternate payment.\n3. Grace Period Monitoring\n- The account remains in Payment\u2011Failure Status for a standard grace period (as defined in the broader billing policy). No service interruption occurs during this time.\n4. Second Notification\n- If the payment remains unresolved after the grace period, a second notification is issued, reiterating the outstanding balance and warning of possible service suspension.\n5. Escalation Review\n- Billing staff review the account for any recurring issues or potential fraud.\n- If the failure appears to be due to a systemic issue (e.g., bank outage), staff may extend the grace period at their discretion.\n6. Service Restriction\n- If the payment is still not received after the second notification, the account may be moved to Restricted Service Status, limiting non\u2011essential services (e.g., data caps, international roaming).\n7. Final Notice & Account Closure\n- A final notice is sent, outlining the steps required to restore full service.\n- If no resolution is achieved within the timeframe specified in the final notice, the account may be scheduled for termination in accordance with the Account Termination Policy.",
       "content_hash": "7fbab87aa87f67f769bdc0c671a7dd19f6aa09ae4c83673300f7bc398bc5b447",
@@ -34339,13 +34339,13 @@
         0.04887660592794418,
         -0.06765507161617279
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723186+00:00"
+      "created_at": "2026-09-12T20:09:24.731803+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_15": {
-      "id": "340e8867-764b-42c9-a042-19a45455bf1e",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_15": {
+      "id": "5b87429c-682b-465d-832e-dbdf6a366f27",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 15,
       "content": "estore full service.\n- If no resolution is achieved within the timeframe specified in the final notice, the account may be scheduled for termination in accordance with the Account Termination Policy.\n\nEXCEPTIONS\n----------\n\n- Payment Dispute: If a customer formally disputes the charge, the account remains in Payment\u2011Failure Status but is exempt from service restriction until the dispute is resolved.\n- Hardship Cases: For customers who qualify under a documented hardship program, staff may apply a temporary waiver of service restrictions, provided appropriate documentation is received.\n\nCUSTOMER RESPONSIBILITIES\n-------------------------\n\n- Review notifications promptly and update payment information or arrange alternate payment methods as instructed.\n- Contact the Billing Support Center within the grace period if there are extenuating circumstances preventing payment.\n- Respond to any dispute or hardship documentation requests within the specified timeframes.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------",
       "content_hash": "cd0f10b08ecffbf79eea0702675762f5365d39c11ddafcc3f4fa313302f649b0",
@@ -34738,13 +34738,13 @@
         0.054153576493263245,
         -0.0495518259704113
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723201+00:00"
+      "created_at": "2026-09-12T20:09:24.731821+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_16": {
-      "id": "3ec375d0-47ba-40ba-80b7-f304b5f87ff1",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_16": {
+      "id": "09fb0448-fa05-4da4-8eee-9dcfded1042d",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 16,
       "content": "nuating circumstances preventing payment.\n- Respond to any dispute or hardship documentation requests within the specified timeframes.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------\n\n- Billing System Administrators: Ensure failed payment alerts are generated accurately and trigger the correct notification workflow.\n- Billing Representatives: Monitor accounts in Payment\u2011Failure Status, provide assistance to customers, and document any extensions or exceptions applied.\n- Escalation Team: Evaluate recurring failures for potential fraud or systemic issues and authorize any necessary adjustments to the grace period.\n- Compliance Officer: Verify that all actions taken comply with regulatory requirements and internal policy standards.\n\nACCOUNT STATUS IMPACT\n---------------------\n\nThe postpaid account status is directly linked to the customer\u2019s payment performance. The following rules define how billing events affect account standing and outline the responsibilities of both customers and internal staff.",
       "content_hash": "00087494ecad14dd3210d2a193b93f29c77765232328be52e2b47298a8729bc0",
@@ -35137,13 +35137,13 @@
         0.025673899799585342,
         -0.026992032304406166
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723214+00:00"
+      "created_at": "2026-09-12T20:09:24.731834+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_17": {
-      "id": "748c98ec-ef53-4388-956a-f9a177f881b6",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_17": {
+      "id": "9d7bdc5d-e443-45c3-a324-827c38c5d969",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 17,
       "content": "is directly linked to the customer\u2019s payment performance. The following rules define how billing events affect account standing and outline the responsibilities of both customers and internal staff.\n\nGENERAL RULE\n------------\n- Current \u2013 The account is in good standing when the most recent invoice has been paid in full by the due date.\n- Past\u2011Due \u2013 The account moves to past\u2011due status when a payment is not received by the invoice due date.\n- Suspended \u2013 The account is suspended when payment remains outstanding after the prescribed grace period and internal escalation procedures have been executed.\n- Terminated \u2013 The account may be terminated if the past\u2011due balance remains unresolved following suspension and final notice periods, in accordance with applicable contract terms.",
       "content_hash": "9d6a3f33c25d6f3ddf9af41d23cb81bd64122b803add1ef1f675a3afb83c1dbd",
@@ -35536,13 +35536,13 @@
         0.04455500468611717,
         -0.05073888599872589
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723228+00:00"
+      "created_at": "2026-09-12T20:09:24.731847+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_18": {
-      "id": "c83329c0-c749-4833-b031-9b82e4b37f7c",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_18": {
+      "id": "413ce3d5-5a44-4074-8ada-3ae3dca8daeb",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 18,
       "content": "ave been executed.\n- Terminated \u2013 The account may be terminated if the past\u2011due balance remains unresolved following suspension and final notice periods, in accordance with applicable contract terms.\n\nOPERATIONAL STEPS\n-----------------\n1. Invoice Generation \u2013 Billing system creates the monthly invoice and records the due date.\n2. Payment Monitoring \u2013 Automated checks flag any invoice that remains unpaid after the due date.\n3. Grace Period Notification \u2013 Customer receives a reminder notice outlining the past\u2011due status and any applicable grace period.\n4. Escalation \u2013 If payment is still not received, the account is marked as suspended; internal staff initiate suspension procedures per the escalation workflow.\n5. Final Notice \u2013 A final notice is sent before termination, summarizing the outstanding balance and the impending termination date.\n6. Termination Processing \u2013 Upon continued non\u2011payment, staff execute termination actions, including service deactivation and account closure.",
       "content_hash": "b0436023b6d450c752719af9f176bd00294974ab7769a02b595237434f0b772c",
@@ -35935,13 +35935,13 @@
         0.02192942053079605,
         -0.0916009396314621
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723255+00:00"
+      "created_at": "2026-09-12T20:09:24.731859+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_19": {
-      "id": "936448c6-cebb-45ac-a820-2c2c1ba980c0",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_19": {
+      "id": "907ddfc9-5418-4dfb-9997-4a7082ba3532",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 19,
       "content": "outstanding balance and the impending termination date.\n6. Termination Processing \u2013 Upon continued non\u2011payment, staff execute termination actions, including service deactivation and account closure.\n\nEXCEPTIONS\n----------\n- Disputed Charges \u2013 If a customer formally disputes a charge, the account may remain in current status pending resolution, provided the dispute is documented and a temporary payment arrangement is in place.\n- Approved Payment Arrangements \u2013 When a customer secures an approved payment plan, the account status may be maintained as current for the duration of the arrangement, subject to compliance with the agreed schedule.\n- Regulatory Holds \u2013 Accounts subject to regulatory holds (e.g., court orders) are exempt from automatic suspension and follow the specific legal process.\n\nCUSTOMER RESPONSIBILITIES\n-------------------------\n- Pay the full invoice amount by the due date unless a formal dispute or approved payment arrangement is in place.\n- Respond promptly to any payment reminders or notices.\n- Notify the billing department of any changes to payment method or contact information that could affect payment processing.",
       "content_hash": "c4d9f2fdb551e16c2e0c7bfc40ea08a196fa0c5f484fa294c03c5f29417ce43a",
@@ -36334,13 +36334,13 @@
         0.04537813365459442,
         -0.09221719950437546
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723268+00:00"
+      "created_at": "2026-09-12T20:09:24.731872+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_20": {
-      "id": "432906b4-c9d5-4f6d-aaa6-3e7644e3338a",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_20": {
+      "id": "0233edc0-c3f5-43e7-a349-3935d863e3b8",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 20,
       "content": "ment is in place.\n- Respond promptly to any payment reminders or notices.\n- Notify the billing department of any changes to payment method or contact information that could affect payment processing.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------\n- Ensure invoices are generated accurately and delivered on schedule.\n- Monitor payment status and trigger notifications according to the defined timeline.\n- Document all communications, disputes, and payment arrangements in the customer\u2019s account record.\n- Follow the escalation workflow consistently, applying exceptions only when documented and authorized.\n\nEXCEPTIONS AND WAIVERS\n----------------------\n\nThe Postpaid Billing and Payment Policy includes defined circumstances under which standard billing rules may be modified or temporarily suspended. These provisions are intended to balance customer fairness with the operational integrity of Aether Wireless billing systems.\n\nAPPLICABLE RULES\n----------------\n- Waiver Eligibility \u2013 A waiver may be granted when a customer experiences a verifiable service interruption, a documented billing error, or an extraordinary hardship that prevents timely payment.\n- Scope of Waiver \u2013 Waivers may apply to late fees, service suspension, or the requirement to meet a specific payment deadline. They do not alter the underlying service charges for the billing period.",
       "content_hash": "9da8e4217d3dcb9fd32bd2507e62e957cb5b25387bd8f2e1335bcd313216c1aa",
@@ -36733,13 +36733,13 @@
         0.02776036038994789,
         -0.05800092592835426
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723282+00:00"
+      "created_at": "2026-09-12T20:09:24.731885+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_21": {
-      "id": "e44710c6-b67d-4518-b0f4-e7ec43fa1f23",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_21": {
+      "id": "68776ebd-9e2d-4149-9b58-679d7b0b3ee9",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 21,
       "content": "Scope of Waiver \u2013 Waivers may apply to late fees, service suspension, or the requirement to meet a specific payment deadline. They do not alter the underlying service charges for the billing period.\n\nOPERATIONAL STEPS\n-----------------\n1. Customer Request \u2013 The customer must submit a written request (email or portal ticket) detailing the reason for the waiver, including any supporting documentation (e.g., outage notice, medical certificate, or financial hardship statement).\n2. Initial Review \u2013 Billing staff reviews the request within a defined internal timeframe and verifies the supporting evidence.\n3. Decision \u2013\n- If approved, the staff records the waiver in the billing system, notes the effective dates, and communicates the outcome to the customer.\n- If denied, the staff provides a clear explanation and outlines any alternative assistance options.\n4. Documentation \u2013 All waiver decisions are logged with the request ID, reviewer name, and justification to ensure auditability.",
       "content_hash": "b1f6c2b0d8087c4841e2bd32361349cee6df6b1da3a9f15ee85e544de15da132",
@@ -37132,13 +37132,13 @@
         0.041890665888786316,
         0.011409534141421318
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723295+00:00"
+      "created_at": "2026-09-12T20:09:24.731898+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_22": {
-      "id": "e1617589-e758-4073-b833-0208cef1b9ac",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_22": {
+      "id": "d9ea7a58-7923-4d09-adfe-436387805911",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 22,
       "content": "s a clear explanation and outlines any alternative assistance options.\n4. Documentation \u2013 All waiver decisions are logged with the request ID, reviewer name, and justification to ensure auditability.\n\nEXCEPTIONS\n----------\n- System\u2011Generated Errors \u2013 When an automated billing error is identified (e.g., duplicate charge), the error is corrected without requiring a formal waiver request.\n- Regulatory Mandates \u2013 Any statutory requirement that overrides standard billing practices (e.g., emergency consumer protection orders) is applied automatically, superseding internal waiver procedures.\n- Promotional Adjustments \u2013 Temporary promotional credits or discounts are handled under the promotions policy and are not considered waivers.\n\nCUSTOMER RESPONSIBILITIES\n-------------------------\n- Provide accurate and complete information in the waiver request.\n- Respond promptly to any follow\u2011up inquiries from billing staff.\n- Honor any revised payment schedule communicated as part of the waiver approval.\n\nINTERNAL STAFF RESPONSIBILITIES\n-------------------------------\n- Assess waiver requests objectively and consistently, adhering to documented criteria.\n- Maintain confidentiality of customer information throughout the review process.\n- Ensure that any granted waiver is reflected accurately in the billing system to prevent future billing disputes.\n- Escalate complex or high\u2011value cases to the Billing Manager for final approval.\n\nROLES AND RESPONSIBILITIES\n--------------------------",
       "content_hash": "7738c0a7c2b18c4acdd29310bde6ee1c18511a97bab5cfb00d29beeb32a201ef",
@@ -37531,13 +37531,13 @@
         0.011248691007494926,
         -0.005270610097795725
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723308+00:00"
+      "created_at": "2026-09-12T20:09:24.731910+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_23": {
-      "id": "0fbecb89-354d-4204-8a3c-48b282b2f89a",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_23": {
+      "id": "f36df0a2-e1dc-4295-acce-17aea46dbfea",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 23,
       "content": "tely in the billing system to prevent future billing disputes.\n- Escalate complex or high\u2011value cases to the Billing Manager for final approval.\n\nROLES AND RESPONSIBILITIES\n--------------------------\n\nCustomer Responsibilities\n- Review the monthly invoice promptly and verify all listed charges.\n- Submit payment by the due date using an approved payment method (e.g., electronic funds transfer, credit/debit card, or authorized bank draft).\n- Notify the Billing Department of any billing discrepancies, address changes, or payment method updates within five business days of discovery.\n- Maintain sufficient funds or credit availability to cover the full invoice amount to avoid service interruptions.\n\nBilling Department Responsibilities\n- Generate accurate postpaid invoices on the scheduled billing cycle and distribute them to customers via the designated delivery channels (email, portal, or paper).\n- Record all received payments in the billing system no later than the business day following receipt.\n- Monitor accounts for missed or failed payments and initiate the defined escalation process (e.g., reminder notices, temporary service suspension) according to the policy workflow.\n- Communicate any billing errors or adjustments to the customer promptly and provide a corrected invoice when necessary.",
       "content_hash": "f5ac3b0773203c74ce8a9a329de1fd894af9d2137c96623902267e950898a998",
@@ -37930,13 +37930,13 @@
         0.024049660190939903,
         -0.0639687031507492
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723380+00:00"
+      "created_at": "2026-09-12T20:09:24.731923+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_24": {
-      "id": "567df78e-d3f5-4231-9a05-862a05d0cf64",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_24": {
+      "id": "c183e50e-9c86-4c7a-b3f6-e288bc494176",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 24,
       "content": "inder notices, temporary service suspension) according to the policy workflow.\n- Communicate any billing errors or adjustments to the customer promptly and provide a corrected invoice when necessary.\n\nFinance Operations Responsibilities\n- Reconcile daily payment transactions against bank statements and the internal accounting ledger.\n- Ensure that all payment methods comply with applicable regulatory and security standards.\n- Prepare periodic reports on payment performance, delinquency trends, and revenue recognition for senior management review.\n\nCustomer Service Responsibilities\n- Serve as the first point of contact for customers with billing inquiries, providing clear explanations of charges and payment options.\n- Escalate unresolved payment issues to the Billing Department according to the established escalation matrix.\n- Document all customer interactions related to billing in the CRM system to maintain an audit trail.\n\nIT/Systems Support Responsibilities\n- Maintain the integrity and availability of the billing platform, ensuring that invoice generation, payment processing, and account status updates function without interruption.\n- Implement and test backup and recovery procedures for billing data in accordance with the company\u2019s data protection policies.",
       "content_hash": "fc4f7541654ae2a92af2639fd91ce83cbc5db5a2a5d3fb5047f634a8a05415a7",
@@ -38329,13 +38329,13 @@
         0.05505066737532616,
         -0.08586955815553665
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723400+00:00"
+      "created_at": "2026-09-12T20:09:24.731936+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_25": {
-      "id": "c7c2a2db-bf12-4675-a76d-e89cd4ccf3c7",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_25": {
+      "id": "163ab48e-14cb-4cc5-bc57-4fc513bd471c",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 25,
       "content": "t processing, and account status updates function without interruption.\n- Implement and test backup and recovery procedures for billing data in accordance with the company\u2019s data protection policies.\n\nCompliance and Audit Responsibilities\n- Conduct regular audits of billing processes to verify adherence to internal policies and external regulatory requirements.\n- Report any identified non\u2011compliance or systemic issues to the Compliance Officer for corrective action.\n\nThese responsibilities collectively ensure accurate billing, timely payment collection, and consistent service delivery for postpaid accounts.\n\nKEY RULES SUMMARY\n-----------------",
       "content_hash": "1dcd33c007db497047bb7e9d0150b32b8ec19499f3950e93ff8efc15dd9890b7",
@@ -38728,13 +38728,13 @@
         0.08312458544969559,
         -0.09110777825117111
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723413+00:00"
+      "created_at": "2026-09-12T20:09:24.731949+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_26": {
-      "id": "0a236b97-f5ff-403d-a726-2aa69a3f3b69",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_26": {
+      "id": "0cf5a176-4e2b-421b-ad8a-f9f78202c2dd",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 26,
       "content": "corrective action.\n\nThese responsibilities collectively ensure accurate billing, timely payment collection, and consistent service delivery for postpaid accounts.\n\nKEY RULES SUMMARY\n-----------------",
       "content_hash": "de4a24748254ba038fc877cebb769ddaa60f77adc32d4ebe7d2bc72c0a346770",
@@ -39127,13 +39127,13 @@
         0.027508007362484932,
         -0.0517905056476593
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723426+00:00"
+      "created_at": "2026-09-12T20:09:24.731962+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_27": {
-      "id": "24deca12-5d0b-4aa7-9896-b12c70a6b669",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_27": {
+      "id": "ea77b2cd-f4da-467b-a9c2-14be11eea75f",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 27,
       "content": "Rule | Requirement | Operational Handling\nBilling Cycle Frequency | Postpaid accounts are billed on a regular recurring cycle. | System generates an invoice at the start of each cycle and records the cycle date.\nAccepted Payment Methods | Payments may be made using approved methods (e.g., credit/debit card, ACH, online portal). | Payment gateway validates method; successful transactions update account balance automatically.\nPayment Due Date | All invoices must be paid by the due date specified on the invoice. | Automated reminders are sent prior to the due date; the due date is tracked in the billing system.\nLate Payment Consequence | Late payment triggers a defined follow\u2011up process. | System flags overdue invoices, applies any applicable late fees, and notifies the customer.\nFailed Payment Procedure | If a payment attempt fails, the system must retry and notify the customer. | Automatic retry is scheduled; failure triggers an alert and a reminder to the customer.\nAccount Suspension Trigger | Accounts with unresolved payment issues may be suspended. | After the defined escalation period, the system changes account status to \u201cSuspended\u201d and logs the action.\nReactivation Requirement | Suspended accounts can be reactivated upon receipt of payment. | Once payment clears, the system restores active status and notifies the customer.\nBilling Dispute Handling | Customers may dispute charges within the policy\u2011defined window.",
       "content_hash": "c33691bb205751fc80cce3df744eaa033f18c826ff68192f0323fee352ceef77",
@@ -39526,13 +39526,13 @@
         0.06858346611261368,
         -0.10920900851488113
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723439+00:00"
+      "created_at": "2026-09-12T20:09:24.731974+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_28": {
-      "id": "ce88a14f-7915-4f4a-8c30-dc45465495d8",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_28": {
+      "id": "1a701a2e-811a-4546-93ec-4a50c75dba4c",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 28,
       "content": "upon receipt of payment. | Once payment clears, the system restores active status and notifies the customer.\nBilling Dispute Handling | Customers may dispute charges within the policy\u2011defined window. | Dispute tickets are created, and billing adjustments are processed pending resolution.\n\nFAQS\n----\n\nQ: What is the typical billing cycle for a postpaid account?\nA: Postpaid accounts are billed on a regular monthly cycle, with each cycle covering the usage and services provided during the preceding month.\n\nQ: Which payment methods are accepted for postpaid bills?\nA: Accepted payment methods include electronic funds transfer, credit or debit cards, and approved online payment portals. All methods must be linked to a valid account.\n\nQ: When is the payment due for a postpaid invoice?\nA: Payment is due on the date specified on the invoice, which is generally a set number of days after the billing cycle ends. The due date will be clearly indicated on each statement.\n\nQ: What happens if a payment is missed or fails?\nA: A missed or failed payment triggers a notification to the account holder. If the issue is not resolved within the grace period outlined in the notice, the account may be placed on a delinquent status, potentially affecting service continuity.",
       "content_hash": "fdd14a4f5b45fe184941f1665e8612165443537653706a3a2209526da7ddb9c7",
@@ -39925,13 +39925,13 @@
         0.04480018466711044,
         -0.06924407184123993
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723451+00:00"
+      "created_at": "2026-09-12T20:09:24.731987+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_29": {
-      "id": "ab42ddeb-d535-48eb-9066-5fb2b74b3707",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_29": {
+      "id": "805825a2-7ee1-4948-bbe3-3188ddc7ba77",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 29,
       "content": "ication to the account holder. If the issue is not resolved within the grace period outlined in the notice, the account may be placed on a delinquent status, potentially affecting service continuity.\n\nQ: How does a missed payment affect account status?\nA: Repeated missed payments can lead to the account being classified as delinquent, which may result in service suspension, additional collection actions, or termination as defined by the billing policy.\n\nQ: Can I set up automatic payments for my postpaid bill?\nA: Yes, customers may enroll in automatic payment options using a supported payment method to ensure timely settlement of each invoice.\n\nQ: How can I view or dispute a charge on my postpaid bill?\nA: Billing statements are accessible through the customer portal. Disputes should be submitted in writing within the timeframe indicated on the invoice, following the outlined dispute resolution process.\n\nQ: Who should I contact for billing inquiries or assistance?\nA: For any billing-related questions, customers should contact the Billing Department using the contact information provided on their invoice or through the official Aether Wireless support channels.",
       "content_hash": "84c99d9236128c91314f0c90c40a860ccb53eec102750bdcd9c87fff08c0b487",
@@ -40324,13 +40324,13 @@
         0.004204748664051294,
         -0.11490672081708908
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723464+00:00"
+      "created_at": "2026-09-12T20:09:24.732000+00:00"
     },
-    "e35e394b-65fe-41bb-a265-1be8c6b9ebac_30": {
-      "id": "f1070aed-f715-41a8-9178-88025803a603",
-      "document_id": "e35e394b-65fe-41bb-a265-1be8c6b9ebac",
+    "c3fb32a0-0804-430e-ba87-94b50cb3ee67_30": {
+      "id": "67755c3c-8d64-4e34-b139-df46fbaff768",
+      "document_id": "c3fb32a0-0804-430e-ba87-94b50cb3ee67",
       "chunk_index": 30,
       "content": "A: For any billing-related questions, customers should contact the Billing Department using the contact information provided on their invoice or through the official Aether Wireless support channels.",
       "content_hash": "71d191de50e897db426e9b2988eae2b59d53c8f36be2f84eb0a5524896cf1702",
@@ -40723,82 +40723,23 @@
         0.05454733967781067,
         -0.0276868287473917
       ],
-      "ingestion_run_id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+      "ingestion_run_id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "lifecycle_state": "active",
-      "created_at": "2026-09-12T17:53:10.723477+00:00"
+      "created_at": "2026-09-12T20:09:24.732013+00:00"
     }
   },
   "pipeline_runs": {
-    "5c06daa6-a8b6-4d29-b73e-0ac608eb9856": {
-      "id": "5c06daa6-a8b6-4d29-b73e-0ac608eb9856",
-      "pipeline_name": "ingestion",
-      "status": "success_with_errors",
-      "started_at": "2026-09-12T16:18:41.987110+00:00",
-      "finished_at": "2026-09-12T16:18:43.288322+00:00",
-      "stats": {
-        "files_new": 0,
-        "files_modified": 0,
-        "files_deleted": 0,
-        "files_unchanged": 0,
-        "files_failed": 3,
-        "chunks_written": 0
-      },
-      "error": null
-    },
-    "24ca4b9d-11f6-4167-b922-264d489d70cf": {
-      "id": "24ca4b9d-11f6-4167-b922-264d489d70cf",
-      "pipeline_name": "ingestion",
-      "status": "success_with_errors",
-      "started_at": "2026-09-12T16:20:32.359243+00:00",
-      "finished_at": "2026-09-12T16:20:33.688175+00:00",
-      "stats": {
-        "files_new": 0,
-        "files_modified": 0,
-        "files_deleted": 0,
-        "files_unchanged": 0,
-        "files_failed": 3,
-        "chunks_written": 0
-      },
-      "error": null
-    },
-    "e2f86816-28b4-480c-afdc-b0b354878636": {
-      "id": "e2f86816-28b4-480c-afdc-b0b354878636",
-      "pipeline_name": "ingestion",
-      "status": "running",
-      "started_at": "2026-09-12T16:25:47.681251+00:00",
-      "finished_at": null,
-      "stats": {},
-      "error": null
-    },
-    "668c18c8-7867-4bb9-b14f-8df524457e9f": {
-      "id": "668c18c8-7867-4bb9-b14f-8df524457e9f",
+    "398ee8d4-59ea-4387-a895-42a4326e4015": {
+      "id": "398ee8d4-59ea-4387-a895-42a4326e4015",
       "pipeline_name": "ingestion",
       "status": "success",
-      "started_at": "2026-09-12T17:51:45.289736+00:00",
-      "finished_at": "2026-09-12T17:53:11.014519+00:00",
+      "started_at": "2026-09-12T20:08:06.175922+00:00",
+      "finished_at": "2026-09-12T20:09:25.937156+00:00",
       "stats": {
+        "files_unchanged": 0,
+        "chunks_written": 102,
         "files_new": 3,
-        "files_modified": 0,
-        "files_deleted": 0,
-        "files_unchanged": 0,
-        "files_failed": 0,
-        "chunks_written": 102
-      },
-      "error": null
-    },
-    "0109b900-abdf-47fa-937d-03d40dabce47": {
-      "id": "0109b900-abdf-47fa-937d-03d40dabce47",
-      "pipeline_name": "ingestion",
-      "status": "success",
-      "started_at": "2026-09-12T17:53:31.001808+00:00",
-      "finished_at": "2026-09-12T17:54:24.775433+00:00",
-      "stats": {
-        "files_new": 0,
-        "files_modified": 1,
-        "files_deleted": 0,
-        "files_unchanged": 2,
-        "files_failed": 0,
-        "chunks_written": 31
+        "files_deleted": 0
       },
       "error": null
     }
