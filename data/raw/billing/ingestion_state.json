@@ -40742,6 +40742,18 @@
         "files_deleted": 0
       },
       "error": null
+    },
+    "574e43d6-7cc4-4bdf-b9ea-b1eff74dfcdf": {
+      "id": "574e43d6-7cc4-4bdf-b9ea-b1eff74dfcdf",
+      "pipeline_name": "ingestion",
+      "status": "success",
+      "started_at": "2026-09-12T20:17:05.592271+00:00",
+      "finished_at": "2026-09-12T20:17:05.803649+00:00",
+      "stats": {
+        "files_unchanged": 3,
+        "files_deleted": 0
+      },
+      "error": null
     }
   }
 }
