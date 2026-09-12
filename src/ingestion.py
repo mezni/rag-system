@@ -39,10 +39,10 @@ except ImportError:
 # =============================================================================
 
 class Settings(BaseSettings):
-    embedding_provider: str = Field(default="openai", alias="EMBEDDING_PROVIDER")
+    embedding_provider: str = Field(default="hf", alias="EMBEDDING_PROVIDER")
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
-    embedding_model: str = Field(default="text-embedding-3-small", alias="EMBEDDING_MODEL")
-    embedding_dim: int = Field(default=1536, alias="EMBEDDING_DIM")
+    embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2", alias="EMBEDDING_MODEL")
+    embedding_dim: int = Field(default=384, alias="EMBEDDING_DIM")
     embedding_batch_size: int = Field(default=64, alias="EMBEDDING_BATCH_SIZE")
 
     chunk_size_chars: int = Field(default=1500, alias="CHUNK_SIZE_CHARS")
@@ -289,24 +289,18 @@ def build_chunk_records(parsed: ParsedContent, settings: Settings) -> list[Chunk
 # =============================================================================
 
 def embed_chunks(chunks: list[ChunkRecord], settings: Settings) -> None:
-    if settings.embedding_provider != "openai":
-        raise NotImplementedError(
-            f"Embedding provider '{settings.embedding_provider}' not wired yet in v0."
-        )
+    import numpy as np
+    from sentence_transformers import SentenceTransformer
 
-    from openai import OpenAI
-
-    client = OpenAI(api_key=settings.openai_api_key)
+    model = SentenceTransformer(settings.embedding_model)
     batch_size = settings.embedding_batch_size
 
     for batch_start in range(0, len(chunks), batch_size):
         batch = chunks[batch_start: batch_start + batch_size]
-        response = client.embeddings.create(
-            model=settings.embedding_model,
-            input=[c.content for c in batch],
-        )
-        for chunk, item in zip(batch, response.data):
-            chunk.embedding = item.embedding
+        inputs = [c.content for c in batch]
+        embeddings = model.encode(inputs, convert_to_numpy=True)
+        for chunk, emb in zip(batch, embeddings):
+            chunk.embedding = emb.tolist()
 
 
 # =============================================================================
