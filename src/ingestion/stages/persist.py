@@ -1,15 +1,20 @@
 import json
+import logging
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from pydantic import BaseModel, Field
+
 from src.core.models.document import Document
 from src.core.models.chunk import Chunk
 from src.core.enums import LifecycleState, ChunkStatus
 
+logger = logging.getLogger("ingestion")
 
-class RunStats:
+
+class RunStats(BaseModel):
     """Statistics for a pipeline run."""
     files_new: int = 0
     files_modified: int = 0
@@ -37,7 +42,7 @@ class LocalStateStore:
                 with open(self.state_file, "r", encoding="utf-8") as f:
                     self.data = json.load(f)
             except Exception as e:
-                print(f"Could not read existing state file, starting fresh: {e}")
+                logger.warning("Could not read existing state file, starting fresh: %s", e)
 
     def save(self) -> None:
         with open(self.state_file, "w", encoding="utf-8") as f:

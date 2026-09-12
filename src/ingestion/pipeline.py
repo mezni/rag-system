@@ -91,41 +91,14 @@ class ChunkRecord:
 # File-Based State Storage
 # =============================================================================
 
-class LocalStateStore:
-    """Simulates persistent tables (documents, chunks, runs) using a JSON file."""
 
-    def __init__(self, state_file: Path):
-        self.state_file = state_file
-        self.data: dict[str, Any] = {
-            "documents": {},
-            "chunks": {},
-            "pipeline_runs": {}
-        }
-        self.load()
-
-    def load(self) -> None:
-        if self.state_file.exists():
-            try:
-                with open(self.state_file, "r", encoding="utf-8") as f:
-                    self.data = json.load(f)
-            except Exception as e:
-                logger.warning("Could not read existing state file, starting fresh: %s", e)
-
-    def save(self) -> None:
-        with open(self.state_file, "w", encoding="utf-8") as f:
-            json.dump(self.data, f, indent=2, default=str)
 
 
 # =============================================================================
 # Stage 1: discover
 # =============================================================================
 
-def _hash_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for block in iter(lambda: f.read(65536), b""):
-            h.update(block)
-    return h.hexdigest()
+
 
 
 def discover_files(source_dir: Path, extensions: tuple[str, ...]) -> list[DiscoveredFile]:
@@ -178,93 +151,27 @@ def diff_against_store(store: LocalStateStore, discovered: list[DiscoveredFile])
 # Stage 2: parse
 # =============================================================================
 
-def _parse_pdf(path: Path) -> ParsedContent:
-    if PdfReader is None:
-        raise RuntimeError("pypdf is not installed. Run `pip install pypdf`")
-    reader = PdfReader(str(path))
-    text_parts, lineage = [], []
-    for page_num, page in enumerate(reader.pages, start=1):
-        page_text = page.extract_text() or ""
-        if page_text.strip():
-            text_parts.append(page_text)
-            lineage.append({"page": page_num, "char_start": sum(len(t) for t in text_parts[:-1])})
-    return ParsedContent(text="\n\n".join(text_parts), lineage=lineage)
 
 
-def _parse_markdown(path: Path) -> ParsedContent:
-    raw = path.read_text(encoding="utf-8")
-    lineage = []
-    for match in re.finditer(r"^#{1,6}\s+.*$", raw, flags=re.MULTILINE):
-        lineage.append({"header": match.group().strip("# ").strip(), "char_start": match.start()})
-    return ParsedContent(text=raw, lineage=lineage)
 
 
-def _parse_text(path: Path) -> ParsedContent:
-    return ParsedContent(text=path.read_text(encoding="utf-8"), lineage=[])
-
-
-_PARSERS = {
-    ".pdf": _parse_pdf,
-    ".md": _parse_markdown,
-    ".txt": _parse_text,
-}
-
-
-def parse_file(path: Path) -> ParsedContent:
-    parser = _PARSERS.get(path.suffix.lower())
-    if parser is None:
-        raise ValueError(f"No parser registered for extension: {path.suffix}")
-    return parser(path)
 
 
 # =============================================================================
 # Stage 3: clean
 # =============================================================================
 
-def clean_text(text: str) -> str:
-    text = re.sub(r"[ \t]+", " ", text)
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.strip()
+
 
 
 # =============================================================================
 # Stage 4: chunk
 # =============================================================================
 
-def chunk_text(text: str, chunk_size: int, overlap: int) -> list[str]:
-    if len(text) <= chunk_size:
-        return [text] if text.strip() else []
-
-    chunks = []
-    start = 0
-    while start < len(text):
-        end = min(start + chunk_size, len(text))
-        if end < len(text):
-            boundary = text.rfind("\n\n", start, end)
-            if boundary == -1:
-                boundary = text.rfind(". ", start, end)
-            if boundary != -1 and boundary > start:
-                end = boundary + 1
-        chunk = text[start:end].strip()
-        if chunk:
-            chunks.append(chunk)
-        start = end - overlap if end - overlap > start else end
-    return chunks
 
 
-def build_chunk_records(parsed: ParsedContent, settings: Settings) -> list[ChunkRecord]:
-    raw_chunks = chunk_text(parsed.text, settings.chunk_size_chars, settings.chunk_overlap_chars)
-    records = []
-    for idx, content in enumerate(raw_chunks):
-        records.append(
-            ChunkRecord(
-                chunk_index=idx,
-                content=content,
-                content_hash=hashlib.sha256(content.encode("utf-8")).hexdigest(),
-                lineage={"source_blocks": len(parsed.lineage)},
-            )
-        )
-    return records
+
+
 
 
 # =============================================================================
