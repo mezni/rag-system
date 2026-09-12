@@ -90,8 +90,9 @@ logger = logging.getLogger("generate_docs")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # Change this to switch models — the only place the model name is set.
-MODEL = "openrouter/free"
+#MODEL = "openrouter/free"
 #MODEL = "minimax/minimax-m3:free"
+MODEL = "google/gemma-4-31b-it:free"
 
 TEMPERATURE = 0.3
 MAX_TOKENS = 4096

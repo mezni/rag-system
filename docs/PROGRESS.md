@@ -16,4 +16,5 @@ a refactor, a fix to a design flaw — gets a row here, in chronological order.
 | Step ID | Date | Problem | Solution | What Was Added | Status |
 |---------|------------|---------|----------|-----------------|--------|
 | 0.1 | | No project scaffold existed. | Bootstrap a Python project with a reproducible environment. | `uv init`, `.venv` virtual environment created. | done |
+| 0.2 | | Need fake Aether Wireless policy documents to work with. | Generate realistic fake documents with `generate_docs_hf` using Hugging Face. | `scripts/generate_docs_hf.py`. | done |
 | 1.1 | | No way to test ingestion end to end before designing the full architecture. | Build a minimal baseline: parse one PDF, embed it, confirm the vector dimension is correct. | `ingestion.py` baseline script; tested on a sample billing dispute policy PDF; confirmed 1536-dim vectors. | done |
