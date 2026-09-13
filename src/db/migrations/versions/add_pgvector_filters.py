@@ -57,6 +57,18 @@ def upgrade() -> None:
         "language = lineage->>'language'"
     )
 
+    # Inherit document-level taxonomy into chunks so each chunk is
+    # independently filterable (category, department, doc_type live in the
+    # parent document's meta payload, not the chunk lineage).
+    op.execute(
+        "UPDATE chunks c SET "
+        "category = COALESCE(NULLIF(c.category, ''), d.meta->>'category'), "
+        "department = COALESCE(NULLIF(c.department, ''), d.meta->>'department'), "
+        "classification = COALESCE(NULLIF(c.classification, ''), d.meta->>'classification'), "
+        "language = COALESCE(NULLIF(c.language, ''), d.meta->>'language') "
+        "FROM documents d WHERE d.id = c.document_id"
+    )
+
     op.execute(
         "CREATE INDEX ix_chunks_embedding_vector_hnsw ON chunks "
         "USING hnsw (embedding_vector vector_cosine_ops)"

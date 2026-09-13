@@ -16,6 +16,8 @@ class Settings(BaseSettings):
 
     supported_extensions: tuple[str, ...] = (".pdf", ".md", ".txt")
 
+    mount_anchor: str | None = Field(default=None, alias="MOUNT_ANCHOR")
+
     database_url: str | None = Field(default=None, alias="DATABASE_URL")
     openrouter_api_key: str | None = Field(default=None, alias="OPENROUTER_API_KEY")
     hf_token: str | None = Field(default=None, alias="HF_TOKEN")

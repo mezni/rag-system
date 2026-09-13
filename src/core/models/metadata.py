@@ -231,8 +231,20 @@ def build_chunk_metadata(
     embedding_dimensions: int = 0,
     distance_metric: str = "cosine",
     tokenizer_name: str = "",
+    category: str = "",
+    department: str = "",
+    doc_type: str = "document",
+    tenant_id: str = "default_tenant",
+    access_roles: Optional[List[str]] = None,
+    classification: str = "internal",
+    language: str = "en",
 ) -> ChunkMetadata:
-    """Build a :class:`ChunkMetadata` from chunker/embedder facts."""
+    """Build a :class:`ChunkMetadata` from chunker/embedder facts.
+
+    Document-level taxonomy (category, department, classification, tenant,
+    access_roles, language) is inherited so each chunk is independently
+    filterable without a join.
+    """
     return ChunkMetadata(
         doc_id=doc_id,
         source_path=source_path,
@@ -247,12 +259,13 @@ def build_chunk_metadata(
         version=version,
         is_active=True,
         status="active",
-        language="en",
-        classification="internal",
-        access_roles=["public"],
-        tenant_id="default_tenant",
-        department="",
-        doc_type="document",
+        language=language,
+        classification=classification,
+        access_roles=access_roles if access_roles is not None else ["public"],
+        tenant_id=tenant_id,
+        category=category,
+        department=department,
+        doc_type=doc_type,
         raw_file_hash=raw_file_hash,
         doc_content_hash=doc_content_hash,
         parser_engine=parser_engine,

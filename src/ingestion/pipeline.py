@@ -56,6 +56,37 @@ def _total_pages(parsed: "ParsedContent") -> int | None:
 # Domain types
 # =============================================================================
 
+def normalize_source_id(path: Path, source_dir: Path,
+                        mount_anchor: Path | None = None) -> str:
+    """Canonical document key: the file's path relative to the scan root.
+
+    Host runs (``<repo>/data/raw/...``) and container runs
+    (``/rag-system/data/raw/...``) resolve to the same relative key, so they
+    converge on the same ``source_id`` instead of deactivating each other.
+    Falls back to a mount-anchor-relative key, then to locating the scan-root
+    suffix inside foreign-absolute paths (legacy rows), then to the raw path.
+    """
+    try:
+        return path.resolve().relative_to(source_dir.resolve()).as_posix()
+    except ValueError:
+        pass
+    if mount_anchor is not None:
+        try:
+            return path.resolve().relative_to(mount_anchor.resolve()).as_posix()
+        except ValueError:
+            pass
+    parts_dir = list(source_dir.resolve().parts)
+    parts_path = list(Path(path).parts)
+    for i in range(len(parts_dir)):
+        suffix = parts_dir[i:]
+        for j in range(len(parts_path) - len(suffix) + 1):
+            if parts_path[j:j + len(suffix)] == suffix:
+                remainder = parts_path[j + len(suffix):]
+                if remainder:
+                    return "/".join(remainder)
+    return Path(path).as_posix()
+
+
 class DiscoveredFile:
     def __init__(self, path: Path, content_hash: str, mtime: float):
         self.path = path
@@ -83,12 +114,15 @@ class ChunkRecord:
 # Change detection
 # =============================================================================
 
-def diff_against_store(store: PostgreSQLStateStore, discovered: list[DiscoveredFile]) -> dict:
+def diff_against_store(store: PostgreSQLStateStore, discovered: list[DiscoveredFile],
+                       *, source_dir: Path, mount_anchor: Path | None = None) -> dict:
     existing = {
         doc["source_id"]: doc for doc in store.get_active_documents()
     }
 
-    discovered_by_path = {str(f.path.resolve()): f for f in discovered}
+    discovered_by_path = {
+        normalize_source_id(f.path, source_dir, mount_anchor): f for f in discovered
+    }
 
     new_files, modified_files, unchanged_files = [], [], []
     for path_str, disc in discovered_by_path.items():
@@ -157,9 +191,11 @@ def finish_run(store: PostgreSQLStateStore, run_id: str, status: str, stats: Run
 # =============================================================================
 
 def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Settings,
-                 run_id: str) -> int:
+                 run_id: str, *, source_dir: Path, mount_anchor: Path | None = None) -> int:
     parsed = parse_file(disc.path)
     parsed.text = clean_text(parsed.text)
+
+    source_id = normalize_source_id(disc.path, source_dir, mount_anchor)
 
     chunks = build_chunk_records(parsed, settings.chunk_size_chars, settings.chunk_overlap_chars)
     if not chunks:
@@ -170,7 +206,7 @@ def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Se
 
     # Upsert document (version increments on content change)
     doc_id, version = store.upsert_document(
-        source_id=str(disc.path.resolve()),
+        source_id=source_id,
         content_hash=disc.content_hash,
         lifecycle_state="active",
     )
@@ -205,6 +241,7 @@ def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Se
             embedding_model=settings.embedding_model,
             embedding_dimensions=embedding_dimensions,
             tokenizer_name=settings.embedding_model,
+            category=disc.path.parent.name,
         )
         store.upsert_chunk(
             document_id=doc_id,
@@ -235,9 +272,12 @@ def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
     stats = RunStats()
     logger.info("Started local ingestion run %s on %s", run_id, source_dir)
 
+    mount_anchor = Path(settings.mount_anchor) if settings.mount_anchor else None
+
     try:
         discovered = discover_files(source_dir, settings.supported_extensions)
-        diff = diff_against_store(store, discovered)
+        diff = diff_against_store(store, discovered, source_dir=source_dir,
+                                  mount_anchor=mount_anchor)
 
         stats.files_unchanged = len(diff["unchanged"])
         logger.info(
@@ -249,7 +289,8 @@ def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
         for disc in diff["new"] + diff["modified"]:
             is_new = disc in diff["new"]
             try:
-                n_chunks = process_file(store, disc, settings, run_id)
+                n_chunks = process_file(store, disc, settings, run_id,
+                                        source_dir=source_dir, mount_anchor=mount_anchor)
                 stats.chunks_written += n_chunks
                 if is_new:
                     stats.files_new += 1
