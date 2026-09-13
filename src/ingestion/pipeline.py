@@ -19,7 +19,7 @@ from src.ingestion.config import Settings
 from sqlalchemy import create_engine
 
 from .stages.clean import clean_text
-from .stages.chunk import chunk_text, build_chunk_records
+from .stages.chunk import build_chunk_records
 from .stages.embed import embed_chunks
 from .stages.parse import discover_files, parse_file, PARSER_ENGINE
 from .stages.persist import PostgreSQLStateStore, RunStats
