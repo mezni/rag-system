@@ -126,6 +126,14 @@ class PostgreSQLStateStore:
             if doc:
                 self._deactivate_version(session, doc)
 
+    def update_document_meta(self, doc_id: str, meta: dict) -> None:
+        """Replace the ``meta`` JSON payload for a document."""
+        with self.session as session:
+            doc = session.get(DocumentOrm, doc_id)
+            if doc:
+                doc.meta = meta
+                session.commit()
+
     def deactivate_source(self, source_id: str) -> None:
         """Deactivate every version of ``source_id`` and all of its chunks.
 

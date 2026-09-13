@@ -10,6 +10,7 @@ import os
 import sys
 import uuid
 from datetime import datetime, timezone
+from importlib.metadata import version as _package_version
 from pathlib import Path
 
 import yaml
@@ -26,12 +27,29 @@ from .stages.persist import PostgreSQLStateStore, RunStats
 from src.core.exceptions import IngestionError, FileProcessingError, EmbeddingError, ConfigurationError
 from src.core.enums import LifecycleState, ChunkStatus
 from src.core.models.sqlalchemy_models import DocumentOrm, ChunkOrm, PipelineRunOrm
+from src.core.models.metadata import build_document_metadata, build_chunk_metadata
 
 # Load logging configuration from config/logging.yaml
 with open(Path(__file__).resolve().parents[2] / "config" / "logging.yaml") as f:
     logging.config.dictConfig(yaml.safe_load(f))
 
 logger = logging.getLogger("ingestion")
+
+try:
+    _PIPELINE_VERSION = _package_version("rag-system")
+except Exception:
+    _PIPELINE_VERSION = "0.1.0"
+
+_PARSER_ENGINE = {
+    ".pdf": "pypdf",
+    ".md": "markdown",
+    ".txt": "plaintext",
+}
+
+
+def _total_pages(parsed: "ParsedContent") -> int | None:
+    pages = [block.get("page") for block in parsed.lineage if isinstance(block.get("page"), int)]
+    return max(pages) if pages else None
 
 
 # =============================================================================
@@ -155,17 +173,45 @@ def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Se
         source_id=str(disc.path.resolve()),
         content_hash=disc.content_hash,
         lifecycle_state="active",
-        metadata={"source": disc.path.name},
+    )
+    store.update_document_meta(
+        doc_id,
+        build_document_metadata(
+            source_path=str(disc.path.resolve()),
+            content_hash=disc.content_hash,
+            parser_engine=_PARSER_ENGINE.get(disc.path.suffix.lower(), ""),
+            category=disc.path.parent.name,
+            total_pages=_total_pages(parsed),
+            version=version,
+        ).model_dump(mode="json"),
     )
 
     # Upsert chunks
+    total_chunks = len(chunks)
+    embedding_dimensions = len(chunks[0].embedding) if chunks and chunks[0].embedding else 0
     for chunk in chunks:
+        chunk_meta = build_chunk_metadata(
+            doc_id=doc_id,
+            source_path=str(disc.path.resolve()),
+            content_hash=chunk.content_hash,
+            chunk_index=chunk.chunk_index,
+            total_chunks=total_chunks,
+            version=version,
+            raw_file_hash=disc.content_hash,
+            doc_content_hash=hashlib.sha256(parsed.text.encode("utf-8")).hexdigest(),
+            parser_engine=_PARSER_ENGINE.get(disc.path.suffix.lower(), ""),
+            ingestion_job_id=run_id,
+            pipeline_version=_PIPELINE_VERSION,
+            embedding_model=settings.embedding_model,
+            embedding_dimensions=embedding_dimensions,
+            tokenizer_name=settings.embedding_model,
+        )
         store.upsert_chunk(
             document_id=doc_id,
             chunk_index=chunk.chunk_index,
             content=chunk.content,
             content_hash=chunk.content_hash,
-            lineage=chunk.lineage,
+            lineage=chunk_meta.model_dump(mode="json"),
             embedding=chunk.embedding,
             ingestion_run_id=run_id,
             version=version,

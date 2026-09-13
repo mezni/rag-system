@@ -7,6 +7,7 @@ exports, and are produced at the vector-store boundary from the loader's source
 facts, the chunker's content fingerprints and the embedder's model provenance.
 """
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -170,3 +171,96 @@ class ChunkMetadata(BaseModel):
             distance_metric=self.distance_metric,
             tokenizer_name=self.tokenizer_name,
         )
+
+
+def build_document_metadata(
+    *,
+    source_path: str,
+    content_hash: str,
+    parser_engine: str = "",
+    category: str = "",
+    doc_type: str = "document",
+    title: Optional[str] = None,
+    author: Optional[str] = None,
+    total_pages: Optional[int] = None,
+    version: int = 1,
+    status: str = "active",
+) -> DocumentMetadata:
+    """Build a :class:`DocumentMetadata` from raw ingestion facts."""
+    path = Path(source_path)
+    return DocumentMetadata(
+        doc_id=source_path,
+        source_path=source_path,
+        file_name=path.name,
+        file_type=path.suffix.lstrip("."),
+        data_source="filesystem",
+        content_hash=content_hash,
+        parser_engine=parser_engine,
+        ingested_at=datetime.now(timezone.utc),
+        category=category,
+        doc_type=doc_type,
+        title=title,
+        author=author,
+        total_pages=total_pages,
+        version=version,
+        is_active=True,
+        status=status,
+        language="en",
+        classification="internal",
+        access_roles=["public"],
+        tenant_id="default_tenant",
+        department="",
+    )
+
+
+def build_chunk_metadata(
+    *,
+    doc_id: str,
+    source_path: str,
+    content_hash: str,
+    chunk_index: int,
+    total_chunks: int,
+    header_path: str = "",
+    version: int,
+    raw_file_hash: str = "",
+    doc_content_hash: str = "",
+    parser_engine: str = "",
+    ingestion_job_id: str = "",
+    pipeline_version: str = "",
+    embedding_model: str = "",
+    embedding_dimensions: int = 0,
+    distance_metric: str = "cosine",
+    tokenizer_name: str = "",
+) -> ChunkMetadata:
+    """Build a :class:`ChunkMetadata` from chunker/embedder facts."""
+    return ChunkMetadata(
+        doc_id=doc_id,
+        source_path=source_path,
+        source=source_path,
+        file_name=Path(source_path).name,
+        file_type=Path(source_path).suffix.lstrip("."),
+        data_source="filesystem",
+        content_hash=content_hash,
+        chunk_index=chunk_index,
+        total_chunks=total_chunks,
+        header_path=header_path,
+        version=version,
+        is_active=True,
+        status="active",
+        language="en",
+        classification="internal",
+        access_roles=["public"],
+        tenant_id="default_tenant",
+        department="",
+        doc_type="document",
+        raw_file_hash=raw_file_hash,
+        doc_content_hash=doc_content_hash,
+        parser_engine=parser_engine,
+        ingested_at=datetime.now(timezone.utc).isoformat(),
+        ingestion_job_id=ingestion_job_id,
+        pipeline_version=pipeline_version,
+        embedding_model=embedding_model,
+        embedding_dimensions=embedding_dimensions,
+        distance_metric=distance_metric,
+        tokenizer_name=tokenizer_name,
+    )
