@@ -14,7 +14,12 @@ class Settings(BaseSettings):
     chunk_size_chars: int = Field(default=1500, alias="CHUNK_SIZE_CHARS")
     chunk_overlap_chars: int = Field(default=200, alias="CHUNK_OVERLAP_CHARS")
 
-    supported_extensions: tuple[str, ...] = (".pdf", ".md", ".txt")
+    supported_extensions: tuple[str, ...] = (
+        ".pdf", ".md", ".txt", ".text", ".log",
+        ".docx", ".html", ".htm", ".csv",
+        ".xlsx", ".xls", ".pptx", ".json", ".xml",
+        ".rtf", ".epub", ".ipynb",
+    )
 
     mount_anchor: str | None = Field(default=None, alias="MOUNT_ANCHOR")
 
