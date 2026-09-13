@@ -57,24 +57,52 @@ versioning, and `.env` is gitignored.
    env-injected DB credentials.
 7. **Build the evaluation pipeline.** Implement the golden-set runner; it is
    both the test gate and the MRR/recall telemetry source.
-8. **Observability.** Structured JSON logs, per-stage tracing
-   (discover→parse→clean→chunk→embed→persist), latency and cost metrics
-   (embedding + LLM token spend per query), health/readiness endpoints.
+8. **Retries, circuit breakers, and Dead-Letter Queue (DLQ).** Today a single
+   unexpected exception (e.g. a corrupted PDF) is caught per-file and skipped,
+   but there is no automatic recovery for transient failures or a durable place
+   for permanently failing jobs.
+   - Wrap network/API calls (embedding provider, Hugging Face downloads, any
+     future LLM calls) in retries with exponential backoff + jitter (e.g.
+     `tenacity` or `backoff`), honoring error classes (retry on 429/5xx,
+     don't retry on 4xx/parse errors).
+   - Add a circuit breaker per upstream dependency so a degraded API stops
+     being hammered and the pipeline degrades to a cached/gradient path.
+   - Route permanently failing files to a DLQ — a durable table
+     (`dlq_messages` / failed-job records with payload, error type, traceback,
+     retry count, and source metadata) instead of silently counting
+     `files_failed` and continuing. Push retries back after operator
+     inspection; the existing `pipeline_runs.stats` should record DLQ counts.
+   - Fail loudly on persistent systemic failures (e.g. DB down) rather than
+     producing "success_with_errors" runs that conceal systemic incidents.
+9. **Structured observability & lineage tracking.** Basic stdout logging today
+   (`config/logging.yaml` → `StreamHandler`) gives no granular metrics for
+   pipeline duration, per-stage (discover→parse→clean→chunk→embed→persist)
+   bottlenecks, model/embedding latency, or total tokens processed.
+   - Emit structured JSON logs (one event per line, `trace_id`/`span_id`/
+     `run_id`/`doc_id` fields) and enrich every pipeline stage with timing
+     instrumentation.
+   - Integrate OpenTelemetry tracing (auto-instrument spans for DB, HTTP,
+     embedding calls; per-stage spans; root span per ingestion run) exported
+     to an OTLP collector feeding Datadog or Prometheus/Grafana.
+   - Operational metrics: per-stage duration histograms, files/chunks
+     processed, failures/DLQ counts, embedding + LLM latency, token spend per
+     run, and model/embedding cost (FinOps). Expose `/metrics` (Prometheus)
+     and health/readiness endpoints.
 
 ## P2 — Nice to have
 
-9. **Multi-source connectors** (RDBMS / partner API sources) and **reranking**
-   (cross-encoder or LLM-based) to lift precision on ambiguous questions.
-10. **Versioned prompt registry** — prompts are currently hardcoded; a bad
+10. **Multi-source connectors** (RDBMS / partner API sources) and **reranking**
+    (cross-encoder or LLM-based) to lift precision on ambiguous questions.
+11. **Versioned prompt registry** — prompts are currently hardcoded; a bad
     prompt change must be testable, gradually rolled out, and rolled back
     independently of code deploys.
-11. **Operational readiness.** pgBackRest / point-in-time recovery for
+12. **Operational readiness.** pgBackRest / point-in-time recovery for
     Postgres/pgvector, tuned `hnsw` params (e.g. `ef_search`) for retrieval
     latency at scale, load testing under expected agent-tool concurrency, and
     a rehearsed rollback runbook for bad document versions and bad prompts.
-12. **Cleanup.** Remove `src/ingestion.py`, merge `src/orchestration/cli.py`
+13. **Cleanup.** Remove `src/ingestion.py`, merge `src/orchestration/cli.py`
     into the pipeline module, delete unused `config/*.yaml`, and enforce
     production behavior when `ENVIRONMENT=production`.
-13. **Expand the golden dataset.** Broader coverage — edge cases, ambiguous
+14. **Expand the golden dataset.** Broader coverage — edge cases, ambiguous
     phrasing, multi-document questions — plus a process for support agents to
     contribute new cases.
