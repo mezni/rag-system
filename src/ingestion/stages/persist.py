@@ -4,12 +4,23 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 from typing import Any, Optional
 
+from sqlalchemy import func, cast
+from sqlalchemy.dialects.postgresql import ARRAY, TEXT
+
 from src.core.models.document import Document as DocumentPydantic
 from src.core.models.chunk import Chunk as ChunkPydantic
 from src.core.enums import LifecycleState, ChunkStatus
 from src.core.models.sqlalchemy_models import DocumentOrm, ChunkOrm, PipelineRunOrm
 
 logger = logging.getLogger("ingestion")
+
+_FILTER_FIELDS = ("tenant_id", "access_roles", "category", "department", "classification", "language")
+
+
+def _filter_fields(lineage: dict | None) -> dict:
+    """Extract queryable filter fields from a ChunkMetadata payload."""
+    lineage = lineage or {}
+    return {field: lineage.get(field) for field in _FILTER_FIELDS}
 
 
 class RunStats:
@@ -173,12 +184,67 @@ class PostgreSQLStateStore:
                 .all()
             )
 
+    def search_chunks(self, embedding: list[float],
+                      *,
+                      tenant_id: str | None = None,
+                      access_roles: list[str] | None = None,
+                      category: str | None = None,
+                      is_active: bool = True,
+                      limit: int = 10) -> list[dict]:
+        """Metadata-filtered cosine similarity search over chunk vectors.
+
+        Filters are applied *before* ranking (RBAC pre-filter, then vector
+        distance). ``distance`` is pgvector cosine distance in ``[0, 2]`` —
+        the smaller, the more relevant.
+        """
+        with self.session as session:
+            query = session.query(
+                ChunkOrm,
+                ChunkOrm.embedding_vector.cosine_distance(embedding).label("distance"),
+            ).filter(ChunkOrm.embedding_vector.is_not(None))
+
+            if tenant_id is not None:
+                query = query.filter(ChunkOrm.tenant_id == tenant_id)
+            if access_roles:
+                query = query.filter(
+                    func.jsonb_exists_any(
+                        ChunkOrm.access_roles, cast(access_roles, ARRAY(TEXT))
+                    )
+                )
+            if category is not None:
+                query = query.filter(ChunkOrm.category == category)
+            if is_active is not None:
+                query = query.filter(ChunkOrm.is_active.is_(is_active))
+
+            rows = query.order_by("distance").limit(limit).all()
+            return [
+                {
+                    "chunk_id": chunk.id,
+                    "document_id": chunk.document_id,
+                    "content": chunk.content,
+                    "content_hash": chunk.content_hash,
+                    "distance": float(distance),
+                    "chunk_index": chunk.chunk_index,
+                    "version": chunk.version,
+                    "status": chunk.status,
+                    "is_active": chunk.is_active,
+                    "tenant_id": chunk.tenant_id,
+                    "access_roles": chunk.access_roles,
+                    "category": chunk.category,
+                    "department": chunk.department,
+                    "classification": chunk.classification,
+                    "language": chunk.language,
+                }
+                for chunk, distance in rows
+            ]
+
     def upsert_chunk(self, document_id: str, chunk_index: int, content: str,
                      content_hash: str, lineage: dict | None = None,
                      embedding: list[float] | None = None,
                      ingestion_run_id: str | None = None,
                      version: int = 0) -> str:
         """Insert or update a chunk, returns chunk id."""
+        filters = _filter_fields(lineage)
         with self.session as session:
             # Try to find existing chunk
             chunk = (
@@ -191,6 +257,9 @@ class PostgreSQLStateStore:
                 chunk.content_hash = content_hash
                 chunk.lineage = lineage or {}
                 chunk.embedding = embedding
+                chunk.embedding_vector = embedding
+                for field, value in filters.items():
+                    setattr(chunk, field, value)
                 chunk.status = "active"
                 chunk.is_active = True
                 chunk.version = version
@@ -205,10 +274,12 @@ class PostgreSQLStateStore:
                     content_hash=content_hash,
                     lineage=lineage or {},
                     embedding=embedding,
+                    embedding_vector=embedding,
                     status="active",
                     version=version,
                     is_active=True,
                     ingestion_run_id=ingestion_run_id,
+                    **filters,
                 )
                 session.add(chunk)
             chunk_id = chunk.id

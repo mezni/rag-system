@@ -18,7 +18,7 @@ services:
       - .:/rag-system
 
   db:
-    image: postgres:15
+    image: pgvector/pgvector:pg15
     restart: always
     environment:
       POSTGRES_USER: rag_user
