@@ -108,6 +108,14 @@ class ChunkMetadata(BaseModel):
         default="",
         description='Section breadcrumb, e.g. "Billing Policy > Refunds"',
     )
+    sections: List[str] = Field(
+        default_factory=list,
+        description="Header breadcrumbs covered by this chunk (hierarchy tags)",
+    )
+    chunk_kind: str = Field(
+        default="text",
+        description="Structural kind: text | section | table",
+    )
     summary: Optional[str] = Field(
         default=None, description="1-sentence LLM summary, reserved for enrichment"
     )
@@ -221,6 +229,8 @@ def build_chunk_metadata(
     chunk_index: int,
     total_chunks: int,
     header_path: str = "",
+    sections: Optional[List[str]] = None,
+    chunk_kind: str = "text",
     version: int,
     raw_file_hash: str = "",
     doc_content_hash: str = "",
@@ -256,6 +266,8 @@ def build_chunk_metadata(
         chunk_index=chunk_index,
         total_chunks=total_chunks,
         header_path=header_path,
+        sections=sections if sections is not None else [],
+        chunk_kind=chunk_kind,
         version=version,
         is_active=True,
         status="active",

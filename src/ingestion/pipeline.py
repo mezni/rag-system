@@ -193,7 +193,12 @@ def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Se
 
     source_id = normalize_source_id(disc.path, source_dir, mount_anchor)
 
-    chunks = build_chunk_records(parsed, settings.chunk_size_chars, settings.chunk_overlap_chars)
+    chunks = build_chunk_records(
+        parsed,
+        settings.chunk_size_chars,
+        settings.chunk_overlap_chars,
+        strategy=settings.chunking_strategy,
+    )
     if not chunks:
         logger.warning("No chunks produced for %s (empty after cleaning?)", disc.path)
         return 0
@@ -228,6 +233,9 @@ def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Se
             content_hash=chunk.content_hash,
             chunk_index=chunk.chunk_index,
             total_chunks=total_chunks,
+            header_path=chunk.lineage.get("header_path", ""),
+            sections=chunk.lineage.get("sections") or [],
+            chunk_kind=chunk.lineage.get("chunk_kind", "text"),
             version=version,
             raw_file_hash=disc.content_hash,
             doc_content_hash=hashlib.sha256(parsed.text.encode("utf-8")).hexdigest(),

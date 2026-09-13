@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     chunk_size_chars: int = Field(default=1500, alias="CHUNK_SIZE_CHARS")
     chunk_overlap_chars: int = Field(default=200, alias="CHUNK_OVERLAP_CHARS")
+    chunking_strategy: str = Field(default="semantic", alias="CHUNKING_STRATEGY")
 
     supported_extensions: tuple[str, ...] = (
         ".pdf", ".md", ".txt", ".text", ".log",
