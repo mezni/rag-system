@@ -1,15 +1,8 @@
 #!/bin/bash
 set -e
 
-# Wait for PostgreSQL to be ready
-echo "Waiting for PostgreSQL..."
-until pg_isready -h db -U rag_user; do
-    echo "PostgreSQL is unavailable - sleeping"
-    sleep 1
-done
-
-echo "PostgreSQL is up - running migrations"
+echo "Running database migrations"
 alembic upgrade head
 
-# Start the application
-exec uv run src/ingestion/pipeline.py
+echo "Running ingestion pipeline"
+exec python -m src.ingestion.pipeline --source-dir /rag-system/data/raw/

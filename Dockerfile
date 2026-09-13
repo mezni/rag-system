@@ -14,9 +14,11 @@ RUN pip install --no-cache-dir -e .
 
 # Copy source code
 COPY src/ ./src/
+COPY docker/ ./docker/
+COPY alembic.ini ./
 
 # Expose port
 EXPOSE 8000
 
-# Run the application
-CMD ["uv", "run", "src/ingestion/pipeline.py"]
+# Run migrations then the pipeline
+CMD ["/bin/bash", "/rag-system/docker/entrypoint.sh"]

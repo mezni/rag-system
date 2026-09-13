@@ -53,44 +53,106 @@ class PostgreSQLStateStore:
         """No-op for DB store - changes are committed explicitly."""
         pass
 
-    # --- Document operations ---
+# --- Document operations ---
 
     def get_document(self, source_id: str) -> Optional[DocumentOrm]:
-        """Get a document by source_id, returns ORM object or None."""
+        """Get the current active document by source_id, returns ORM object or None."""
         with self.session as session:
-            return session.query(DocumentOrm).filter_by(source_id=source_id).first()
+            return (
+                session.query(DocumentOrm)
+                .filter_by(source_id=source_id, is_active=True)
+                .order_by(DocumentOrm.version.desc())
+                .first()
+            )
 
     def upsert_document(self, source_id: str, content_hash: str,
-                       lifecycle_state: str = "active",
-                       metadata: dict | None = None) -> str:
-        """Insert or update a document, returns document id."""
+                        lifecycle_state: str = "active",
+                        metadata: dict | None = None) -> tuple[str, int]:
+        """Insert or update a document, returning ``(document_id, version)``.
+
+        Version increments on modification: if the live version's content hash
+        differs, every existing version for ``source_id`` is deactivated and a
+        new row is created with ``version`` = previous + 1 and ``is_active``
+        True. Identical content is a no-op (active version is kept).
+        """
         with self.session as session:
-            doc = session.query(DocumentOrm).filter_by(source_id=source_id).first()
-            if doc:
-                doc.content_hash = content_hash
-                doc.lifecycle_state = lifecycle_state
-                doc.updated_at = datetime.now(timezone.utc)
-                if metadata:
-                    doc.meta = metadata
-            else:
-                doc = DocumentOrm(
-                    id=str(uuid.uuid4()),
-                    source_id=source_id,
-                    content_hash=content_hash,
-                    lifecycle_state=lifecycle_state,
-                    meta=metadata or {},
-                )
-                session.add(doc)
-            session.flush()
-            return doc.id
+            active = (
+                session.query(DocumentOrm)
+                .filter_by(source_id=source_id, is_active=True)
+                .order_by(DocumentOrm.version.desc())
+                .first()
+            )
+            if active is not None and active.content_hash == content_hash:
+                session.commit()
+                return active.id, active.version
+
+            versions = (
+                session.query(DocumentOrm)
+                .filter_by(source_id=source_id)
+                .order_by(DocumentOrm.version.desc())
+                .all()
+            )
+
+            # Deactivate all prior versions and their chunks
+            for versioned in versions:
+                versioned.is_active = False
+                session.query(ChunkOrm).filter(
+                    ChunkOrm.document_id == versioned.id,
+                    ChunkOrm.is_active.is_(True),
+                ).update({"is_active": False}, synchronize_session="fetch")
+
+            new_version = (versions[0].version if versions else 0) + 1
+            doc = DocumentOrm(
+                id=str(uuid.uuid4()),
+                source_id=source_id,
+                content_hash=content_hash,
+                lifecycle_state=lifecycle_state,
+                version=new_version,
+                is_active=True,
+                meta=metadata or {},
+            )
+            session.add(doc)
+            doc_id = doc.id
+            session.commit()
+            return doc_id, new_version
 
     def mark_document_deleted(self, doc_id: str) -> None:
-        """Mark a document as deleted (soft delete)."""
+        """Mark a document as deleted (soft delete).
+
+        Deactivates the affected version and its chunks; history is preserved.
+        """
         with self.session as session:
             doc = session.get(DocumentOrm, doc_id)
             if doc:
-                doc.lifecycle_state = "deleted"
-                doc.updated_at = datetime.now(timezone.utc)
+                self._deactivate_version(session, doc)
+
+    def deactivate_source(self, source_id: str) -> None:
+        """Deactivate every version of ``source_id`` and all of its chunks.
+
+        Deleted files keep their version history in the tables; only the live
+        visibility flags (``is_active``) are toggled.
+        """
+        with self.session as session:
+            versions = (
+                session.query(DocumentOrm)
+                .filter_by(source_id=source_id)
+                .all()
+            )
+            for versioned in versions:
+                self._deactivate_version(session, versioned)
+
+    def _deactivate_version(self, session, doc: DocumentOrm) -> None:
+        doc.is_active = False
+        doc.lifecycle_state = "deleted"
+        doc.updated_at = datetime.now(timezone.utc)
+        session.query(ChunkOrm).filter(
+            ChunkOrm.document_id == doc.id,
+            ChunkOrm.is_active.is_(True),
+        ).update(
+            {"is_active": False, "status": "deleted"},
+            synchronize_session="fetch",
+        )
+        session.commit()
 
     # --- Chunk operations ---
 
@@ -106,7 +168,8 @@ class PostgreSQLStateStore:
     def upsert_chunk(self, document_id: str, chunk_index: int, content: str,
                      content_hash: str, lineage: dict | None = None,
                      embedding: list[float] | None = None,
-                     ingestion_run_id: str | None = None) -> str:
+                     ingestion_run_id: str | None = None,
+                     version: int = 0) -> str:
         """Insert or update a chunk, returns chunk id."""
         with self.session as session:
             # Try to find existing chunk
@@ -121,6 +184,8 @@ class PostgreSQLStateStore:
                 chunk.lineage = lineage or {}
                 chunk.embedding = embedding
                 chunk.status = "active"
+                chunk.is_active = True
+                chunk.version = version
                 if ingestion_run_id:
                     chunk.ingestion_run_id = ingestion_run_id
             else:
@@ -133,11 +198,14 @@ class PostgreSQLStateStore:
                     lineage=lineage or {},
                     embedding=embedding,
                     status="active",
+                    version=version,
+                    is_active=True,
                     ingestion_run_id=ingestion_run_id,
                 )
                 session.add(chunk)
-            session.flush()
-            return chunk.id
+            chunk_id = chunk.id
+            session.commit()
+            return chunk_id
 
     def mark_chunks_stale(self, document_id: str) -> None:
         """Mark all active chunks for a document as stale."""
@@ -146,6 +214,7 @@ class PostgreSQLStateStore:
                 ChunkOrm.document_id == document_id,
                 ChunkOrm.status == "active",
             ).update({"status": "stale"}, synchronize_session="fetch")
+            session.commit()
 
     # --- Pipeline Run operations ---
 
@@ -159,7 +228,7 @@ class PostgreSQLStateStore:
                 started_at=datetime.now(timezone.utc),
             )
             session.add(run)
-            session.flush()
+            session.commit()
             return run.id
 
     def finish_run(self, run_id: str, status: str,
@@ -172,6 +241,7 @@ class PostgreSQLStateStore:
                 run.finished_at = datetime.now(timezone.utc)
                 if error:
                     run.error = error
+            session.commit()
             return {
                 "run_id": run_id,
                 "status": run.status if run else "not_found",
@@ -185,7 +255,7 @@ class PostgreSQLStateStore:
         with self.session as session:
             result = (
                 session.query(DocumentOrm)
-                .filter_by(lifecycle_state="active")
+                .filter_by(is_active=True)
                 .all()
             )
             return [
@@ -194,6 +264,8 @@ class PostgreSQLStateStore:
                     "source_id": doc.source_id,
                     "content_hash": doc.content_hash,
                     "lifecycle_state": doc.lifecycle_state,
+                    "version": doc.version,
+                    "is_active": doc.is_active,
                 }
                 for doc in result
             ]

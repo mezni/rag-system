@@ -3,6 +3,7 @@ name = "rag-system"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
+    "alembic>=1.14.0",
     "httpx>=0.28.1",
     "huggingface-hub>=1.31.0",
     "numpy>=1.24.0",
@@ -14,4 +15,5 @@ dependencies = [
     "pypdf>=6.18.1",
     "reportlab>=5.0.1",
     "sentence-transformers>=2.2.0",
+    "sqlalchemy>=2.0",
 ]

@@ -19,10 +19,12 @@ class DocumentOrm(Base):
     __tablename__ = "documents"
 
     id = Column(String, primary_key=True, default=lambda: func.uuid_generate())
-    source_id = Column(String, nullable=False, unique=True, index=True)
+    source_id = Column(String, nullable=False, index=True)
     source_type = Column(String, nullable=False, default="filesystem")
     content_hash = Column(String, nullable=False, index=True)
     lifecycle_state = Column(String, nullable=False, default="active")
+    version = Column(Integer, nullable=False, default=1)
+    is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(
         DateTime(timezone=True),
@@ -48,6 +50,8 @@ class ChunkOrm(Base):
     lineage = Column(JSON, nullable=True, default=dict)
     embedding = Column(JSON, nullable=True)
     status = Column(String, nullable=False, default="active")
+    version = Column(Integer, nullable=False, default=0)
+    is_active = Column(Boolean, nullable=False, default=True)
     ingestion_run_id = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -65,5 +69,8 @@ class PipelineRunOrm(Base):
 
 
 # Indexes for performance
+Index("ix_documents_source_id_is_active", DocumentOrm.source_id, DocumentOrm.is_active)
+Index("ix_documents_source_id_version", DocumentOrm.source_id, DocumentOrm.version)
 Index("ix_chunks_document_id_status", ChunkOrm.document_id, ChunkOrm.status)
+Index("ix_chunks_document_id_is_active", ChunkOrm.document_id, ChunkOrm.is_active)
 Index("ix_pipeline_runs_status", PipelineRunOrm.status)

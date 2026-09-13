@@ -4,24 +4,18 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 import logging
+import logging.config
 import os
-import re
 import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable, Any
 
-from pydantic import BaseModel, Field
-from pydantic_settings import BaseSettings
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import yaml
 
-from src.db.base import get_session, SessionLocal, Base
+from src.ingestion.config import Settings
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from .stages.clean import clean_text
 from .stages.chunk import chunk_text, build_chunk_records
@@ -31,33 +25,13 @@ from .stages.persist import PostgreSQLStateStore, RunStats
 
 from src.core.exceptions import IngestionError, FileProcessingError, EmbeddingError, ConfigurationError
 from src.core.enums import LifecycleState, ChunkStatus
+from src.core.models.sqlalchemy_models import DocumentOrm, ChunkOrm, PipelineRunOrm
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)-8s | %(message)s",
-)
+# Load logging configuration from config/logging.yaml
+with open(Path(__file__).resolve().parents[2] / "config" / "logging.yaml") as f:
+    logging.config.dictConfig(yaml.safe_load(f))
+
 logger = logging.getLogger("ingestion")
-
-
-# =============================================================================
-# Config
-# =============================================================================
-
-class Settings(BaseSettings):
-    embedding_provider: str = Field(default="hf", alias="EMBEDDING_PROVIDER")
-    openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
-    embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2", alias="EMBEDDING_MODEL")
-    embedding_dim: int = Field(default=384, alias="EMBEDDING_DIM")
-    embedding_batch_size: int = Field(default=64, alias="EMBEDDING_BATCH_SIZE")
-
-    chunk_size_chars: int = Field(default=1500, alias="CHUNK_SIZE_CHARS")
-    chunk_overlap_chars: int = Field(default=200, alias="CHUNK_OVERLAP_CHARS")
-
-    supported_extensions: tuple[str, ...] = (".pdf", ".md", ".txt")
-
-    class Config:
-        env_file = ".env"
-        populate_by_name = True
 
 
 # =============================================================================
@@ -88,37 +62,12 @@ class ChunkRecord:
 
 
 # =============================================================================
-# File-Based State Storage
+# Change detection
 # =============================================================================
 
-
-
-
-# =============================================================================
-# Stage 1: discover
-# =============================================================================
-
-
-
-
-def discover_files(source_dir: Path, extensions: tuple[str, ...]) -> list[DiscoveredFile]:
-    found = []
-    for path in sorted(source_dir.rglob("*")):
-        if path.is_file() and path.suffix.lower() in extensions:
-            found.append(
-                DiscoveredFile(
-                    path=path,
-                    content_hash=_hash_file(path),
-                    mtime=path.stat().st_mtime,
-                )
-            )
-    return found
-
-
-def diff_against_store(store: LocalStateStore, discovered: list[DiscoveredFile]) -> dict:
+def diff_against_store(store: PostgreSQLStateStore, discovered: list[DiscoveredFile]) -> dict:
     existing = {
-        source_id: doc for source_id, doc in store.data["documents"].items()
-        if doc.get("lifecycle_state") == "active"
+        doc["source_id"]: doc for doc in store.get_active_documents()
     }
 
     discovered_by_path = {str(f.path.resolve()): f for f in discovered}
@@ -148,108 +97,12 @@ def diff_against_store(store: LocalStateStore, discovered: list[DiscoveredFile])
 
 
 # =============================================================================
-# Stage 2: parse
+# Stage 6: persist
 # =============================================================================
-
-
-
-
-
-
-
-# =============================================================================
-# Stage 3: clean
-# =============================================================================
-
-
-
-
-# =============================================================================
-# Stage 4: chunk
-# =============================================================================
-
-
-
-
-
-
-
-# =============================================================================
-# Stage 5: embed
-# =============================================================================
-
-
-
-
-# =============================================================================
-# Stage 6: persist (Local JSON)
-# =============================================================================
-
-def persist_document(store: LocalStateStore, path: Path, content_hash: str,
-                     chunks: list[ChunkRecord], run_id: str) -> None:
-    source_id = str(path.resolve())
-    doc = store.data["documents"].get(source_id)
-
-    if not doc:
-        doc_id = str(uuid.uuid4())
-        doc = {
-            "id": doc_id,
-            "source_type": "filesystem",
-            "source_id": source_id,
-            "content_hash": content_hash,
-            "lifecycle_state": "active",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-        }
-        store.data["documents"][source_id] = doc
-    else:
-        doc_id = doc["id"]
-        doc["content_hash"] = content_hash
-        doc["updated_at"] = datetime.now(timezone.utc).isoformat()
-
-    # Mark old chunks for this document as stale
-    for cid, cdata in store.data["chunks"].items():
-        if cdata["document_id"] == doc_id and cdata["lifecycle_state"] == "active":
-            cdata["lifecycle_state"] = "stale"
-
-    # Insert / update new active chunks
-    for chunk in chunks:
-        chunk_key = f"{doc_id}_{chunk.chunk_index}"
-        store.data["chunks"][chunk_key] = {
-            "id": str(uuid.uuid4()),
-            "document_id": doc_id,
-            "chunk_index": chunk.chunk_index,
-            "content": chunk.content,
-            "content_hash": chunk.content_hash,
-            "lineage": chunk.lineage,
-            "embedding": chunk.embedding,
-            "ingestion_run_id": run_id,
-            "lifecycle_state": "active",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-        }
-
-    store.save()
-
 
 def mark_documents_deleted(store: PostgreSQLStateStore, deleted_rows: list[dict]) -> None:
-    if not deleted_rows:
-        return
-    deleted_ids = {row["id"] for row in deleted_rows}
-
-    with store.session as session:
-        # Mark documents as deleted
-        for doc_id in deleted_ids:
-            doc = session.get(DocumentOrm, doc_id)
-            if doc:
-                doc.lifecycle_state = "deleted"
-                doc.updated_at = datetime.now(timezone.utc)
-
-        # Mark chunks as deleted
-        session.query(ChunkOrm).filter(
-            ChunkOrm.document_id.in_(deleted_ids),
-            ChunkOrm.status == "active",
-        ).update({"status": "deleted"}, synchronize_session="fetch")
-        session.flush()
+    for row in deleted_rows:
+        store.deactivate_source(row["source_id"])
 
 
 # =============================================================================
@@ -257,7 +110,6 @@ def mark_documents_deleted(store: PostgreSQLStateStore, deleted_rows: list[dict]
 # =============================================================================
 
 def start_run(store: PostgreSQLStateStore) -> str:
-    from src.core.models.sqlalchemy_models import PipelineRunOrm
     with store.session as session:
         run = PipelineRunOrm(
             id=str(uuid.uuid4()),
@@ -266,8 +118,8 @@ def start_run(store: PostgreSQLStateStore) -> str:
             started_at=datetime.now(timezone.utc),
         )
         session.add(run)
-        session.flush()
-    return run.id
+        session.commit()
+        return run.id
 
 
 def finish_run(store: PostgreSQLStateStore, run_id: str, status: str, stats: RunStats,
@@ -279,7 +131,7 @@ def finish_run(store: PostgreSQLStateStore, run_id: str, status: str, stats: Run
             run.finished_at = datetime.now(timezone.utc)
             run.stats = stats.model_dump() if hasattr(stats, 'model_dump') else stats.__dict__
             run.error = error
-            session.flush()
+            session.commit()
 
 
 # =============================================================================
@@ -291,15 +143,15 @@ def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Se
     parsed = parse_file(disc.path)
     parsed.text = clean_text(parsed.text)
 
-    chunks = build_chunk_records(parsed, settings)
+    chunks = build_chunk_records(parsed, settings.chunk_size_chars, settings.chunk_overlap_chars)
     if not chunks:
         logger.warning("No chunks produced for %s (empty after cleaning?)", disc.path)
         return 0
 
     embed_chunks(chunks, settings)
 
-    # Upsert document
-    doc_id = store.upsert_document(
+    # Upsert document (version increments on content change)
+    doc_id, version = store.upsert_document(
         source_id=str(disc.path.resolve()),
         content_hash=disc.content_hash,
         lifecycle_state="active",
@@ -316,17 +168,19 @@ def process_file(store: PostgreSQLStateStore, disc: DiscoveredFile, settings: Se
             lineage=chunk.lineage,
             embedding=chunk.embedding,
             ingestion_run_id=run_id,
+            version=version,
         )
 
     return len(chunks)
 
 
 def run_ingestion(source_dir: Path, settings: Settings) -> RunStats:
-    # Create PostgreSQL engine from settings/environment
+    # Create PostgreSQL engine. Prefer the process environment (set by
+    # docker compose) over settings which may have loaded a bound .env file.
     database_url = (
-        getattr(settings, "database_url", None)
-        or os.environ.get("DATABASE_URL")
-        or "postgresql+psycopg2://rag_user:rag_password@localhost:15432/rag_ingestion"
+        os.environ.get("DATABASE_URL")
+        or getattr(settings, "database_url", None)
+        or "postgresql+psycopg2://rag_user:rag_password@localhost:5432/rag_ingestion"
     )
     engine = create_engine(database_url, future=True)
     store = PostgreSQLStateStore(engine)
@@ -385,8 +239,6 @@ def main() -> None:
                         help="Directory to scan for documents")
     args = parser.parse_args()
 
-    # Create dummy settings for environment loading without DATABASE_URL requirement
-    os.environ.setdefault("DATABASE_URL", "none")
     settings = Settings()
 
     if not args.source_dir.exists():

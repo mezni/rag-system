@@ -1,18 +1,19 @@
-version: '3.8'
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
+    entrypoint: ["/bin/bash", "/rag-system/docker/entrypoint.sh"]
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=${DATABASE_URL}
+      - PYTHONPATH=/rag-system
+      - DATABASE_URL=postgresql+psycopg2://rag_user:rag_password@db:5432/rag_ingestion
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - HF_TOKEN=${HF_TOKEN}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - .:/rag-system
 
@@ -28,6 +29,12 @@ services:
       - ./docker/postgres/init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql:ro
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag_user -d rag_ingestion"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
 volumes:
   pg_data:

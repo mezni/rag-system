@@ -1,10 +1,10 @@
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-from src.ingestion.pipeline import Settings
-from src.ingestion.pipeline import ChunkRecord # Assuming ChunkRecord is defined in pipeline.py
+from src.ingestion.config import Settings
+from src.core.models.chunk import Chunk as ChunkModel
 
-def embed_chunks(chunks: list[ChunkRecord], settings: Settings) -> None:
+def embed_chunks(chunks: list[ChunkModel], settings: Settings) -> None:
     model = SentenceTransformer(settings.embedding_model)
     batch_size = settings.embedding_batch_size
 
