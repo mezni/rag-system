@@ -26,6 +26,7 @@ dependencies = [
     "reportlab>=5.0.1",
     "sentence-transformers>=2.2.0",
     "sqlalchemy>=2.0",
+    "streamlit>=1.36",
 ]
 
 [dependency-groups]

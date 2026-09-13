@@ -1,4 +1,4 @@
-.PHONY: help init db migrations run test lint
+.PHONY: help init db migrations run ui test lint
 
 help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "} {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
@@ -18,6 +18,9 @@ migrations: ## Create new Alembic migration
 
 run: ## Run the ingestion pipeline
 	uv run src/ingestion/pipeline.py
+
+ui: ## Run the Streamlit ops dashboard
+	PYTHONPATH=. uv run streamlit run src/ui/app.py
 
 test: ## Run tests
 	uv run pytest
