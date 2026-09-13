@@ -25,27 +25,23 @@ from __future__ import annotations
 import hashlib
 import logging
 import re
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from llama_index.core import Document as LIDocument
 from llama_index.core.node_parser import MarkdownNodeParser
 from llama_index.core.schema import BaseNode
-from llama_index.readers.file import (
-    CSVReader,
-    DocxReader,
-    EpubReader,
-    FlatReader,
-    HTMLTagReader,
-    IPYNBReader,
-    MarkdownReader,
-    PDFReader,
-    PandasExcelReader,
-    PptxReader,
-    RTFReader,
-    XMLReader,
-)
-from llama_index.readers.json import JSONReader
+from llama_index.readers.file.docs.base import DocxReader, PDFReader
+from llama_index.readers.file.epub.base import EpubReader
+from llama_index.readers.file.flat.base import FlatReader
+from llama_index.readers.file.html.base import HTMLTagReader
+from llama_index.readers.file.ipynb.base import IPYNBReader
+from llama_index.readers.file.rtf.base import RTFReader
+from llama_index.readers.file.slides.base import PptxReader
+from llama_index.readers.file.tabular.base import CSVReader, PandasExcelReader
+from llama_index.readers.file.xml.base import XMLReader
+from llama_index.readers.json.base import JSONReader
 
 from src.core.exceptions import FileProcessingError
 
