@@ -1,18 +1,13 @@
-"""Base stage abstraction."""
+"""Contract for an ingestion pipeline stage."""
 
-from abc import ABC, abstractmethod
+from typing import Protocol
 
 from src.application.ingestion.context import IngestionContext
 
 
-class Stage(ABC):
-    """Abstract contract for ingestion pipeline stages.
+class Stage(Protocol):
+    """Contract for an ingestion pipeline stage."""
 
-    Every stage transforms the context in place and hands it back, enabling a
-    uniform pipeline: ``context -> execute(context) -> context``.
-    """
-
-    @abstractmethod
     def execute(self, context: IngestionContext) -> IngestionContext:
-        """Run this stage against the given context and return it."""
-        raise NotImplementedError
+        """Process the ingestion context."""
+        ...

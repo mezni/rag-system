@@ -1,23 +1,31 @@
-"""Pipeline execution context shared across stages."""
+"""Shared state carried through the ingestion pipeline."""
 
-from typing import Any
+from pydantic import BaseModel, ConfigDict, Field
 
-from pydantic import BaseModel
-
-from src.domain.models import ChangeStatus, Chunk, DocumentInput, Embedding
+from src.domain.ingestion_run import IngestionRun
+from src.domain.models import (
+    DocumentChunk,
+    DocumentEmbedding,
+    DocumentInput,
+)
 
 
 class IngestionContext(BaseModel):
-    """Carries state through the ingestion pipeline stages.
+    """Shared state carried through the ingestion pipeline."""
 
-    ``document`` is the entry point. Each stage fills the field it owns as it
-    runs: parsed_content -> cleaned_content -> chunks -> embeddings -> index.
-    """
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    document: DocumentInput
-    change_status: ChangeStatus | None = None
+    document_input: DocumentInput
+
+    run: IngestionRun
+
     parsed_content: str | None = None
     cleaned_content: str | None = None
-    chunks: list[Chunk] | None = None
-    embeddings: list[Embedding] | None = None
-    index: Any | None = None
+
+    chunks: list[DocumentChunk] = Field(default_factory=list)
+    embeddings: list[DocumentEmbedding] = Field(default_factory=list)
+
+    indexed_chunks: int = 0
+
+    status: str = "pending"
+    error: str | None = None

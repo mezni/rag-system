@@ -1,34 +1,102 @@
 """Filesystem document source."""
 
-import mimetypes
+import hashlib
 from pathlib import Path
 
-from src.core.config import FilesystemConfig
-from src.domain.models import DocumentInput, SourceType
+from src.domain.models import DocumentInput
 
 
 class FilesystemSource:
-    """Discovers files in the configured input directory and yields ``DocumentInput``."""
+    """Discovers documents from a local filesystem directory."""
 
-    def __init__(self, config: FilesystemConfig) -> None:
-        self._config = config
+    def __init__(
+        self,
+        input_dir: str | Path,
+        processed_dir: str | Path,
+        archive: bool = True,
+    ) -> None:
+        self.input_dir = Path(input_dir)
+        self.processed_dir = Path(processed_dir)
+        self.archive = archive
 
     def discover(self) -> list[DocumentInput]:
-        input_dir = self._config.input_dir
-        if not input_dir.is_dir():
-            raise FileNotFoundError(f"Input directory not found: {input_dir}")
+        """Discover files from the input directory."""
+        if not self.input_dir.exists():
+            raise FileNotFoundError(f"Input directory not found: {self.input_dir}")
 
-        return [
-            self._to_document(path)
-            for path in sorted(input_dir.iterdir())
-            if path.is_file()
-        ]
+        if not self.input_dir.is_dir():
+            raise NotADirectoryError(f"Input path is not a directory: {self.input_dir}")
 
-    def _to_document(self, path: Path) -> DocumentInput:
+        documents: list[DocumentInput] = []
+
+        for path in sorted(self.input_dir.iterdir()):
+            if not path.is_file():
+                continue
+
+            documents.append(self._create_document_input(path))
+
+        return documents
+
+    def _create_document_input(self, path: Path) -> DocumentInput:
+        """Create a normalized DocumentInput from a file."""
+
+        content = path.read_bytes()
+
+        content_hash = hashlib.sha256(content).hexdigest()
+
         return DocumentInput(
-            source_type=SourceType.FILESYSTEM,
-            source_id=str(path),
+            source_type="filesystem",
+            source_id=str(path.resolve()),
             name=path.name,
-            content=path.read_text(encoding="utf-8", errors="replace"),
-            mime_type=mimetypes.guess_type(path.name)[0] or "application/octet-stream",
+            content=content,
+            mime_type=self._detect_mime_type(path),
+            content_hash=content_hash,
+            metadata={
+                "path": str(path),
+                "size": path.stat().st_size,
+            },
         )
+
+    def finalize(self, document: DocumentInput) -> None:
+        """Archive or delete a successfully processed document."""
+
+        source_path = Path(
+            document.metadata["path"]
+        )
+
+        if not source_path.exists():
+            raise FileNotFoundError(
+                f"Source file not found: {source_path}"
+            )
+
+        if self.archive:
+            self.processed_dir.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            destination = self.processed_dir / source_path.name
+
+            source_path.replace(destination)
+            return
+
+        source_path.unlink()
+
+    @staticmethod
+    def _detect_mime_type(path: Path) -> str | None:
+        """Detect MIME type from the file extension."""
+        mime_types = {
+            ".txt": "text/plain",
+            ".pdf": "application/pdf",
+            ".docx": (
+                "application/vnd.openxmlformats-officedocument"
+                ".wordprocessingml.document"
+            ),
+            ".html": "text/html",
+            ".htm": "text/html",
+            ".md": "text/markdown",
+            ".json": "application/json",
+            ".csv": "text/csv",
+        }
+
+        return mime_types.get(path.suffix.lower())

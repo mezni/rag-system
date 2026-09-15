@@ -1,3 +1,7 @@
+application:
+  name: rag-system
+  environment: development
+
 sources:
   filesystem:
     input_dir: data/raw
