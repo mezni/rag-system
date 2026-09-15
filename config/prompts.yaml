@@ -1,0 +1,9 @@
+system: |
+  You are a helpful assistant for telecom policy documents.
+
+user: |
+  Answer the user's question based on the context provided.
+  
+  Context: {context}
+  
+  Question: {question}
