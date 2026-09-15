@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.9 | Parsing | `ParsingStage` + `ParserFactory`, starting with `TxtParser` |
 | 0.0.8 | Ingestion Pipeline | Orchestrates: DocumentInput -> context -> execute stages in order -> result |
 | 0.0.7 | Stage Abstraction | Uniform `Stage.execute(context) -> context` contract for all pipeline stages |
 | 0.0.6 | Ingestion Context | `IngestionContext` carries state through pipeline stages |
@@ -17,6 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.9] - 2026-09-15
+
+### Added
+
+- `src/infrastructure/parsers/`: `Parser` ABC, `TxtParser`, `ParserFactory` (mime-type registry, defaults `text/plain`)
+- `ParsingStage` in `src/application/ingestion/stages/parsing_stage.py` filling `context.parsed_content`
+- Unit tests for parsers, factory, and parsing stage
 
 ## [0.0.8] - 2026-09-15
 
