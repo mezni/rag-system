@@ -1,5 +1,6 @@
 from src.application.ingestion.context import IngestionContext
 from src.application.ingestion.stages.embedding import EmbeddingStage
+from src.domain.ingestion_run import IngestionRun
 from src.domain.models import DocumentChunk, DocumentInput
 
 
@@ -23,10 +24,14 @@ def create_context() -> IngestionContext:
         name="policy.txt",
         content=b"Refund policy",
         mime_type="text/plain",
+        content_hash="abc123",
     )
 
     return IngestionContext(
         document_input=document,
+        run=IngestionRun.create(
+            document_id=document.source_id,
+        ),
         cleaned_content="Refund policy",
         chunks=[
             DocumentChunk(
