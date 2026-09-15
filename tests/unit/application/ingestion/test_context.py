@@ -2,7 +2,7 @@ import pytest
 from pydantic import ValidationError
 
 from src.application.ingestion.context import IngestionContext
-from src.domain.models import DocumentInput, SourceType
+from src.domain.models import Chunk, DocumentInput, SourceType
 
 
 def _document() -> DocumentInput:
@@ -29,16 +29,17 @@ def test_context_initial_state() -> None:
 def test_context_progresses_through_pipeline() -> None:
     ctx = IngestionContext(document=_document())
 
+    chunk = Chunk(chunk_id="f1#0", document_id="f1", text="chunk one", chunk_index=0)
     ctx.parsed_content = "parsed"
     ctx.cleaned_content = "cleaned"
-    ctx.chunks = ["chunk one", "chunk two"]
-    ctx.embeddings = [[0.1, 0.2], [0.3, 0.4]]
+    ctx.chunks = [chunk]
+    ctx.embeddings = [[0.1, 0.2]]
     ctx.index = {"chunk_0": 1}
 
     assert ctx.parsed_content == "parsed"
     assert ctx.cleaned_content == "cleaned"
-    assert ctx.chunks == ["chunk one", "chunk two"]
-    assert ctx.embeddings == [[0.1, 0.2], [0.3, 0.4]]
+    assert ctx.chunks == [chunk]
+    assert ctx.embeddings == [[0.1, 0.2]]
     assert ctx.index == {"chunk_0": 1}
 
 
@@ -52,7 +53,7 @@ def test_context_serialization_roundtrip() -> None:
         document=_document(),
         parsed_content="parsed",
         cleaned_content="cleaned",
-        chunks=["one"],
+        chunks=[Chunk(chunk_id="f1#0", document_id="f1", text="one", chunk_index=0)],
         embeddings=[[1.0]],
         index={"k": "v"},
     )

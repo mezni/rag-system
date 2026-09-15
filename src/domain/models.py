@@ -27,3 +27,13 @@ class DocumentInput(BaseModel):
     content: str
     mime_type: str
     metadata: dict[str, str] = Field(default_factory=dict)
+
+
+class Chunk(BaseModel):
+    """A fragment of a cleaned document, ready for embedding and indexing."""
+
+    chunk_id: str
+    document_id: str
+    text: str
+    chunk_index: int
+    metadata: dict[str, str] = Field(default_factory=dict)

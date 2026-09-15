@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from src.domain.models import DocumentInput
+from src.domain.models import Chunk, DocumentInput
 
 
 class IngestionContext(BaseModel):
@@ -17,6 +17,6 @@ class IngestionContext(BaseModel):
     document: DocumentInput
     parsed_content: str | None = None
     cleaned_content: str | None = None
-    chunks: list[str] | None = None
+    chunks: list[Chunk] | None = None
     embeddings: list[list[float]] | None = None
     index: Any | None = None

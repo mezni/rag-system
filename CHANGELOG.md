@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.11 | Chunking | `Chunk` model + fixed-size `ChunkingStage` (size + overlap) |
 | 0.0.10 | Cleaning | Deterministic normalization of parsed content |
 | 0.0.9 | Parsing | `ParsingStage` + `ParserFactory`, starting with `TxtParser` |
 | 0.0.8 | Ingestion Pipeline | Orchestrates: DocumentInput -> context -> execute stages in order -> result |
@@ -19,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.11] - 2026-09-15
+
+### Added
+
+- `Chunk` domain model (`chunk_id`, `document_id`, `text`, `chunk_index`, `metadata`) in `src/domain/models.py`
+- `ChunkingStage` in `src/application/ingestion/stages/chunking_stage.py` with fixed-size `chunk_text` (size + overlap); `IngestionContext.chunks` is now `list[Chunk]`
+- Unit tests for the chunker and chunking stage
 
 ## [0.0.10] - 2026-09-15
 
