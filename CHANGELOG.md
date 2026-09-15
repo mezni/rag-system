@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.17 | Postgres Repository | `PostgresIngestionRunRepository` implements `IngestionRunRepository` upsert/get |
 | 0.0.16 | Persistence | `IngestionRun` lifecycle persisted via `IngestionRunRepository` contract (PostgreSQL-ready) |
 | 0.0.15 | Archive/Delete | Post-success cleanup of raw files: archive -> move to processed, else delete |
 | 0.0.14 | Change Detection (tests) | Extended edge-case tests for content hashing |
@@ -25,6 +26,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.17] - 2026-09-15
+
+### Added
+
+- `src/infrastructure/persistence/postgres/ingestion_run_repository.py`: `PostgresIngestionRunRepository` implementing the `IngestionRunRepository` protocol
+- `save` performs an upsert (`ON CONFLICT (run_id) DO UPDATE`) so state transitions produce one row
+- `get` retrieves by `run_id` and reconstructs `IngestionRun` via `dict_row`
+- Unit test verifying the Postgres repository satisfies the repository contract
 
 ## [0.0.16] - 2026-09-15
 
