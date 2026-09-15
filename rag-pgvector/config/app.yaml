@@ -1,0 +1,11 @@
+ingestion:
+  source_dir: data/raw
+  output_dir: data/processed
+  chunk_size: 1000
+  chunk_overlap: 200
+  embedding_model: ${EMBEDDING_MODEL}
+  batch_size: 64
+
+storage:
+  driver: pgvector
+  database_url: ${DATABASE_URL}

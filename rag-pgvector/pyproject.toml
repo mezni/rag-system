@@ -1,0 +1,20 @@
+[project]
+name = "rag-pgvector"
+version = "0.1.0"
+description = "Retrieval-Augmented Generation system with pgvector persistence"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true

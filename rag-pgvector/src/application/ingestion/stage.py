@@ -1,0 +1,1 @@
+"""Base stage abstraction."""
