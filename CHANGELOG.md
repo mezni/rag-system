@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.18 | Run Tracking | Pipeline persists RUNNING → SUCCEEDED/FAILED via `IngestionRunRepository` |
 | 0.0.17 | Postgres Repository | `PostgresIngestionRunRepository` implements `IngestionRunRepository` upsert/get |
 | 0.0.16 | Persistence | `IngestionRun` lifecycle persisted via `IngestionRunRepository` contract (PostgreSQL-ready) |
 | 0.0.15 | Archive/Delete | Post-success cleanup of raw files: archive -> move to processed, else delete |
@@ -26,6 +27,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.18] - 2026-09-15
+
+### Added
+
+- `IngestionPipeline` now accepts a `run_repository` and owns the run lifecycle: starts the run, persists `RUNNING`/`SUCCEEDED`, and on any stage failure persists `FAILED` with the error before re-raising
+- Stages stay persistence-agnostic; the pipeline is the orchestration boundary
+- Pipeline tests: FakeRunRepository, succeeded-run persistence, failed-run persistence
 
 ## [0.0.17] - 2026-09-15
 
