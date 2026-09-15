@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.16 | Persistence | `IngestionRun` lifecycle persisted via `IngestionRunRepository` contract (PostgreSQL-ready) |
 | 0.0.15 | Archive/Delete | Post-success cleanup of raw files: archive -> move to processed, else delete |
 | 0.0.14 | Change Detection (tests) | Extended edge-case tests for content hashing |
 | 0.0.13 | Change Detection | SHA-256 content hash -> NEW / UNCHANGED / MODIFIED; skip unchanged |
@@ -24,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.16] - 2026-09-15
+
+### Added
+
+- `psycopg[binary]>=3.2` dependency in `pyproject.toml`
+- `src/domain/repositories.py`: `IngestionRunRepository` protocol (`save` / `get`)
+- `database/migrations/001_create_ingestion_runs.sql`: `ingestion_runs` table plus document-id and status indexes
+- Unit tests: in-memory repository roundtrip, missing-run lookup, failed-run preservation, same-run-id overwrite
 
 ## [0.0.15] - 2026-09-15
 
