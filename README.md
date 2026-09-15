@@ -1,11 +1,25 @@
-# rag-system
+# rag-pgvector
 
-A Retrieval-Augmented Generation (RAG) system.
+Retrieval-Augmented Generation (RAG) system backed by PostgreSQL/pgvector.
 
-## Requirements
+## Scope
 
-- Python 3.12+
-- [uv](https://docs.astral.sh/uv/)
+Currently implemented: **ingestion only**.
+
+Retrieval, evaluation, UI, and observability are intentionally not implemented yet.
+
+## Structure
+
+```
+src/
+├── core/            # Configuration loading
+├── domain/          # Domain models
+├── application/     # Application services
+│   └── ingestion/   # Ingestion pipeline: stages, context, orchestration
+│       └── stages/  # change_detection, parsing, cleaning, chunking, embedding, indexing
+└── infrastructure/  # External integrations (currently: document sources)
+    └── sources/     # filesystem_source
+```
 
 ## Setup
 
@@ -14,19 +28,3 @@ uv venv
 uv sync
 cp .env.example .env
 ```
-
-## Usage
-
-```bash
-uv run <script>
-```
-
-## Development
-
-```bash
-source .venv/bin/activate
-```
-
-## License
-
-TBD

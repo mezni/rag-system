@@ -34,3 +34,9 @@ nox/
 .vscode/
 *.swp
 .DS_Store
+
+# Data
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
