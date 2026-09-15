@@ -3,7 +3,11 @@ name = "rag-pgvector"
 version = "0.1.0"
 description = "Retrieval-Augmented Generation system with pgvector persistence"
 requires-python = ">=3.12"
-dependencies = ["PyYAML>=6", "pydantic>=2"]
+dependencies = [
+    "PyYAML>=6",
+    "openai>=3.14.0",
+    "pydantic>=2",
+]
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff", "mypy", "types-PyYAML"]

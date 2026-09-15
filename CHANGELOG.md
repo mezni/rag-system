@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.12 | Embeddings | `Embedder` abstraction + `OpenAIEmbedder`; Chunk[] -> Embedding[] |
 | 0.0.11 | Chunking | `Chunk` model + fixed-size `ChunkingStage` (size + overlap) |
 | 0.0.10 | Cleaning | Deterministic normalization of parsed content |
 | 0.0.9 | Parsing | `ParsingStage` + `ParserFactory`, starting with `TxtParser` |
@@ -20,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.12] - 2026-09-15
+
+### Added
+
+- `Embedding` domain model in `src/domain/models.py`; `IngestionContext.embeddings` is now `list[Embedding]`
+- `src/infrastructure/embeddings/`: `Embedder` ABC and `OpenAIEmbedder` (`text-embedding-3-small`, injectable client for tests); `openai` dependency added
+- `EmbeddingStage` in `src/application/ingestion/stages/embedding_stage.py` mapping chunk text -> vectors -> `Embedding[]`
+- Unit tests for the embedding stage and OpenAI embedder
 
 ## [0.0.11] - 2026-09-15
 

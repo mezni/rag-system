@@ -37,3 +37,11 @@ class Chunk(BaseModel):
     text: str
     chunk_index: int
     metadata: dict[str, str] = Field(default_factory=dict)
+
+
+class Embedding(BaseModel):
+    """A vector representation of a single chunk."""
+
+    chunk_id: str
+    document_id: str
+    vector: list[float]
