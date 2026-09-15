@@ -1,6 +1,6 @@
 """Ingestion run tracking model."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import StrEnum
 from uuid import UUID, uuid4
 
@@ -42,17 +42,17 @@ class IngestionRun(BaseModel):
         """Mark the run as running."""
 
         self.status = IngestionStatus.RUNNING
-        self.started_at = datetime.now(timezone.utc)
+        self.started_at = datetime.now(UTC)
 
     def succeed(self) -> None:
         """Mark the run as successful."""
 
         self.status = IngestionStatus.SUCCEEDED
-        self.completed_at = datetime.now(timezone.utc)
+        self.completed_at = datetime.now(UTC)
 
     def fail(self, error: str) -> None:
         """Mark the run as failed."""
 
         self.status = IngestionStatus.FAILED
-        self.completed_at = datetime.now(timezone.utc)
+        self.completed_at = datetime.now(UTC)
         self.error = error
