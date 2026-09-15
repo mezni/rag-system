@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional
 from uuid import UUID, uuid4
@@ -8,8 +7,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
 
 
-@dataclass
-class Metadata:
+class Metadata(BaseModel):
     """Metadata for a document, such as source, page numbers, etc."""
     source: Optional[str] = None
     title: Optional[str] = None
@@ -17,15 +15,18 @@ class Metadata:
     chunk_index: Optional[int] = None
     language: str = "en"
 
+    model_config = {"populate_by_name": True}
 
-@dataclass
-class Document:
+
+class Document(BaseModel):
     """A processed document with content and metadata."""
     content: str
-    metadata: Metadata = field(default_factory=Metadata)
+    metadata: Metadata = Field(default_factory=Metadata)
     id: Optional[str] = None
 
-    def to_dict(self) -> dict:
+    model_config = {"populate_by_name": True}
+
+    def model_dump(self) -> dict:
         """Convert document to dictionary representation."""
         return {
             "id": self.id,
@@ -40,7 +41,7 @@ class Document:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> Document:
+    def model_validate_dict(cls, data: dict) -> Document:
         """Create document from dictionary representation."""
         metadata_data = data.get("metadata", {})
         metadata = Metadata(
@@ -57,15 +58,16 @@ class Document:
         )
 
 
-@dataclass
-class Chunk:
+class Chunk(BaseModel):
     """A text chunk extracted from a document for embedding and retrieval."""
     content: str
     document_id: str
     chunk_index: int
-    metadata: Metadata = field(default_factory=Metadata)
+    metadata: Metadata = Field(default_factory=Metadata)
 
-    def to_dict(self) -> dict:
+    model_config = {"populate_by_name": True}
+
+    def model_dump(self) -> dict:
         """Convert chunk to dictionary representation."""
         return {
             "content": self.content,
@@ -80,7 +82,7 @@ class Chunk:
         }
 
     @classmethod
-    def from_dict(cls, data: dict) -> Chunk:
+    def model_validate_dict(cls, data: dict) -> Chunk:
         """Create chunk from dictionary representation."""
         metadata_data = data.get("metadata", {})
         metadata = Metadata(
