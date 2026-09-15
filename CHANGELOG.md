@@ -9,8 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.3] - 2026-09-15
+
+### Added
+
+- `config/app.yaml` with `sources.filesystem` settings
+- `src/core/config.py`: YAML → Python configuration (`AppConfig`, `FilesystemConfig`)
+- `PyYAML` dependency
 
 ## [0.0.2] - 2026-09-15
 
