@@ -9,10 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.5 | Filesystem Source | Discover files in `data/raw` and produce `DocumentInput[]` |
 | 0.0.4 | Document Contract | `DocumentInput` boundary model for everything entering ingestion |
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.5] - 2026-09-15
+
+### Added
+
+- `FilesystemSource` in `src/infrastructure/sources/filesystem_source.py`: `discover()` reads files in the configured input dir and returns `DocumentInput[]`
+- Unit tests for the filesystem source
 
 ## [0.0.4] - 2026-09-15
 
