@@ -1,5 +1,7 @@
 """Domain models for the ingestion pipeline."""
 
+import uuid
+from datetime import UTC, datetime
 from enum import StrEnum
 
 from pydantic import BaseModel, Field
@@ -18,6 +20,25 @@ class ChangeStatus(StrEnum):
     NEW = "new"
     UNCHANGED = "unchanged"
     MODIFIED = "modified"
+
+
+class RunStatus(StrEnum):
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class RunRecord(BaseModel):
+    """Operational record of a single ingestion run (RAGOps foundation)."""
+
+    run_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: RunStatus = RunStatus.RUNNING
+    started_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    completed_at: datetime | None = None
+    documents_processed: int = 0
+    chunks_created: int = 0
+    embeddings_created: int = 0
+    error: str | None = None
 
 
 class DocumentInput(BaseModel):
