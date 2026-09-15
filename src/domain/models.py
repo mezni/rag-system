@@ -14,6 +14,12 @@ class SourceType(StrEnum):
     CONFLUENCE = "confluence"
 
 
+class ChangeStatus(StrEnum):
+    NEW = "new"
+    UNCHANGED = "unchanged"
+    MODIFIED = "modified"
+
+
 class DocumentInput(BaseModel):
     """The contract for everything entering the ingestion pipeline.
 

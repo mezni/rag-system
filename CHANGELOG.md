@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|----------------|---------------|
+| 0.0.14 | Change Detection (tests) | Extended edge-case tests for content hashing |
+| 0.0.13 | Change Detection | SHA-256 content hash -> NEW / UNCHANGED / MODIFIED; skip unchanged |
 | 0.0.12 | Embeddings | `Embedder` abstraction + `OpenAIEmbedder`; Chunk[] -> Embedding[] |
 | 0.0.11 | Chunking | `Chunk` model + fixed-size `ChunkingStage` (size + overlap) |
 | 0.0.10 | Cleaning | Deterministic normalization of parsed content |
@@ -21,6 +23,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | 0.0.3 | Configuration | YAML config loading into typed Python configuration objects |
 | 0.0.2 | Ingestion Structure | Ingestion pipeline skeleton: config, core, domain, application, infrastructure |
 | 0.0.1 | Init Project | Initial project scaffolding |
+
+## [0.0.14] - 2026-09-15
+
+### Added
+
+- Edge-case tests for change detection: unicode content hashing, empty-content hash
+
+## [0.0.13] - 2026-09-15
+
+### Added
+
+- `ChangeStatus` enum (`NEW`/`UNCHANGED`/`MODIFIED`) and `change_status` on `IngestionContext`
+- `src/infrastructure/change_detection/`: `ChangeTracker` ABC and `JsonChangeTracker`
+- `ChangeDetectionStage` in `src/application/ingestion/stages/change_detection_stage.py` using SHA-256 content hash; stores latest hash
+- Pipeline now skips remaining stages when status is `UNCHANGED`
+- Unit tests for the tracker, change detection stage, and pipeline skip behavior
 
 ## [0.0.12] - 2026-09-15
 

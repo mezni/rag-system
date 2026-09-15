@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from src.domain.models import Chunk, DocumentInput, Embedding
+from src.domain.models import ChangeStatus, Chunk, DocumentInput, Embedding
 
 
 class IngestionContext(BaseModel):
@@ -15,6 +15,7 @@ class IngestionContext(BaseModel):
     """
 
     document: DocumentInput
+    change_status: ChangeStatus | None = None
     parsed_content: str | None = None
     cleaned_content: str | None = None
     chunks: list[Chunk] | None = None
