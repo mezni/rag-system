@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.18  | Vector Storage | pgvector, `ChunkDB`/`EmbeddingDB`, chunks+embeddings migration |
 | 0.1.17  | Embeddings | `ChunkEmbedding`/`EmbeddedDocument`, `LocalEmbeddingProvider`, `EmbedStage` |
 | 0.1.16  | Chunking | `DocumentChunk`/`ChunkedDocument`, `CharacterTextChunker`, `ChunkStage` |
 | 0.1.15  | Metadata | `DocumentMetadata`/`EnrichedDocument`, `FilesystemMetadataExtractor`, `EnrichStage` |
@@ -26,6 +27,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.18] - 2026-09-16
+
+### Added
+- **Infrastructure:** Docker Compose postgres service switched to `pgvector/pgvector:pg17`; `pgvector` added as Python dependency
+- **Database models:** `ChunkDB` in `src/db/models/chunk.py` (chunks table with `document_id` FK cascade) and `EmbeddingDB` in `src/db/models/embedding.py` (embeddings table with pgvector `Vector(8)` column, unique `chunk_id` FK cascade)
+- **Registration:** `src/db/models/__init__.py` and `src/db/base.py` now expose `ChunkDB` and `EmbeddingDB`
+- **Migration:** `1f3f84629772` — enables the `vector` extension, creates `chunks` and `embeddings` tables with indexes
 
 ## [0.1.17] - 2026-09-16
 
