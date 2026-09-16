@@ -20,7 +20,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## v0.1.7 - Atomic Document Versioning (Current)
+## v0.1.8 - Source & Ingestion Boundary (Current)
+
+**Objective**: Define document source domain model, ingestion result model, and loader interface without coupling to specific source types (PDF, DOCX, SharePoint, web pages, etc.).
+
+**Changes**:
+- `src/domain/documents/source.py` → `DocumentSourceType` enum (`FILE`, `WEB`, `SHAREPOINT`, `CONFLUENCE`, `DATABASE`) and `DocumentSource` pydantic model with `source_type`, `uri`, `external_id`, `metadata` fields
+- `src/domain/documents/ingestion.py` → `IngestedDocument` pydantic model normalizing output from any loader, with `source`, `title`, `content`, `metadata`, `last_modified`
+- `src/application/documents/ingestion/loader.py` → `DocumentLoader` ABC with `supports()` and `load()` abstract methods, enabling polymorphism: `FileDocumentLoader`, `WebDocumentLoader`, `SharePointDocumentLoader`, `ConfluenceDocumentLoader`, `DatabaseDocumentLoader`
+- `src/infrastructure/ingestion/file_loader.py` → `FileDocumentLoader` first concrete implementation loading plain-text from local filesystem via `Path.read_text()`, implementing `DocumentLoader.supports()` and `DocumentLoader.load()`
+- `tests/unit/domain/documents/test_document_source.py` → 2 unit tests verifying `DocumentSource` creation with `source_type`, `uri`, `external_id`, `metadata`
+- `tests/unit/infrastructure/ingestion/test_file_loader.py` → 1 unit test verifying `FileDocumentLoader.load()` returns correct `IngestedDocument` with `title` from `path.stem` and full `content`
+- Boundary established: application knows what a `DocumentSource` is, but not how it is read; loader boundary enables future `WebDocumentLoader`, `SharePointDocumentLoader`, etc. without changing application code
+- All 14 tests passing (5 unit/integration from prior steps + 3 repository tests + 3 versioning tests + 2 source tests + 1 file loader test)
+- `uv run ruff check .` clean
+
+---
+
+## v0.1.7 - Atomic Document Versioning (Previous)
 
 **Objective**: Add atomic document updates with version tracking via DocumentVersionRepository and transaction-boundary service layer.
 
