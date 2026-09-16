@@ -11,6 +11,8 @@ dependencies = [
     "pydantic",
     "llama-index",
     "psycopg>=3.3.5",
+    "sqlalchemy>=2.0.54",
+    "alembic>=1.20.0",
 ]
 
 [project.optional-dependencies]

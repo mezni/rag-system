@@ -2,13 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelchangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Version History
 
 | Version | Feature Domain | Key Objective |
 |---------|---------------|---------------|
+| 0.1.5 | Alembic Migrations | Add SQLAlchemy ORM models and Alembic database migration infrastructure for PostgreSQL document storage |
 | 0.1.4 | Release Readiness | Infrastructure and domain layer complete; RAG system ready for vector indexing and retrieval implementation |
 | 0.1.3 | Infrastructure | Add PostgreSQL Pydantic configuration and connection management with psycopg |
 | 0.1.2 | PostgreSQL + Docker Compose | Add PostgreSQL database with pgvector via Docker Compose, configure rag_telco database and rag_user |
@@ -17,7 +18,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## v0.1.4 - Release Readiness (Current)
+## v0.1.5 - Alembic Migrations (Current)
+
+**Objective**: Add SQLAlchemy ORM models and Alembic database migration infrastructure for PostgreSQL document storage.
+
+**Changes**:
+- `src/infrastructure/persistence/postgres/models/document.py` → `DocumentModel` SQLAlchemy ORM model with `__tablename__ = "documents"`, columns: id (UUID primary key), source, title, content (Text), content_hash (String(64)), version (Integer, default=1), created_at/updated_at (DateTime with timezone)
+- `src/infrastructure/persistence/postgres/settings.py` → `PostgresSettings` pydantic model with host, port, database, user fields; `password` property reading from `.env`; `url` property building SQLAlchemy connection string `postgresql+psycopg://user:password@host:port/database`
+- `database/migrations/env.py` → Alembic environment configured to import `Base` from `DocumentModel` and `PostgresSettings` from settings, setting `sqlalchemy.url` from `PostgresSettings.url` so migrations use the same connection config as the application
+- `alembic.ini` → `sqlalchemy.url =` (empty, filled by env.py at runtime)
+- `database/migrations/versions/8c04059a0aa6_initial_schema.py` → auto-generated migration creating `documents` table with columns: id (uuid, primary key), source (String, not null), title (String, not null), content (Text, not null), content_hash (String(64), not null), version (Integer, not null, default=1), created_at/updated_at (DateTime with timezone)
+- Migration verified: `uv run alembic upgrade head` successfully applies the schema to the running PostgreSQL container
+- Table confirmed: `documents` with columns id (uuid), source (varchar), title (varchar), content (text), content_hash (varchar(64)), version (integer), created_at/updated_at (timestamp with tz)
+
+---
+
+## v0.1.4 - Release Readiness (Previous)
 
 **Objective**: Infrastructure and domain layer complete; RAG system ready for vector indexing and retrieval implementation.
 
