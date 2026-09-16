@@ -60,3 +60,23 @@ def test_find_document_by_content_hash(database_session):
 
     assert document is not None
     assert document.source_uri == "data/raw/billing/hash-test.md"
+
+
+def test_document_repository_returns_domain_model(database_session):
+    repository = DocumentRepository(database_session)
+
+    database_document = repository.create(
+        source="filesystem",
+        source_uri="data/raw/billing/domain.md",
+        title="Billing Policy",
+        content_hash="d" * 64,
+    )
+
+    database_session.commit()
+
+    document = repository.get_domain_by_id(database_document.id)
+
+    assert document is not None
+    assert document.source == "filesystem"
+    assert document.title == "Billing Policy"
+    assert document.content_hash == "d" * 64

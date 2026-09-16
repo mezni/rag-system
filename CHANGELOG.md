@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.4   | Models & Tests | `DocumentDB` model, integration test suite |
 | 0.1.5   | Repository   | `DocumentRepository` persistence layer, test isolation |
+| 0.1.6   | Domain Model | Pydantic `Document` app model, DB→domain conversion |
 
 ## [0.1.1] - 2026-09-16
 
@@ -61,3 +62,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 ### Changed
 - **Test isolation:** `database_session` fixture now clears all rows from mapped tables before each test to prevent `MultipleResultsFound` from accumulated committed data
+
+## [0.1.6] - 2026-09-16
+
+### Added
+- **Domain model:** Pydantic `Document` in `src/models/document.py` — `extra="forbid"`, validated `content_hash` (len 64), optional `id`/`created_at`/`updated_at`
+- **Model registry:** `src/models/__init__.py` re-exports `Document`
+- **Conversion:** `DocumentRepository.to_domain()` maps `DocumentDB` → `Document`; `get_domain_by_id()` returns the application model
+- **Testing:** `tests/unit/models/test_document.py`, `test_document_repository_returns_domain_model` integration test
