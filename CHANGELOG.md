@@ -2,26 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelot.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Version History
 
 | Version | Feature Domain | Key Objective |
 |---------|---------------|---------------|
+| 0.1.3 | Infrastructure | Add PostgreSQL Pydantic configuration and connection management with psycopg |
 | 0.1.2 | PostgreSQL + Docker Compose | Add PostgreSQL database with pgvector via Docker Compose, configure rag_telco database and rag_user |
 | 0.1.1 | Domain Layer | Add domain models (Document, Chunk, DocumentRecord) and unit tests for RAG system |
 | 0.1.0 | Foundation | Establish Python project structure, configuration loading, LLM client, and prompt manager for telecom policy RAG system |
 
 ---
 
-## v0.1.2 - PostgreSQL + Docker Compose (Current)
+## v0.1.3 - Infrastructure (Current)
+
+**Objective**: Add PostgreSQL Pydantic configuration and connection management with psycopg, enabling structured connection handling and dependency injection.
+
+**Changes**:
+- `src/infrastructure/persistence/postgres/config.py` → `PostgresConfig` pydantic model with validated fields (host, port, database, user)
+- `src/infrastructure/persistence/postgres/connection.py` → `PostgresConnection` class managing connections via `psycopg.connect()`, with context manager support and environment variable integration
+- `tests/unit/infrastructure/persistence/postgres/test_config.py` → 2 unit tests verifying `PostgresConfig` defaults and port validation rejection
+- `tests/integration/postgres/test_connection.py` → 1 integration test confirming `PostgresConnection` can execute SQL (`SELECT 1`) and return `(1,)`
+- Configuration follows dependency injection pattern: `PostgresConfig` → `PostgresConnection`, enabling testability with alternative configurations
+- Password remains in `.env` per security best practices; non-secret settings read from environment
+
+---
+
+## v0.1.2 - PostgreSQL + Docker Compose (Previous)
 
 **Objective**: Add PostgreSQL database with pgvector via Docker Compose, configure rag_telco database and rag_user, and verify connection stack.
 
 **Changes**:
-- `docker-compose.yml` → PostgreSQL service with `pgvector/pgvector:pg17`, healthchecks, volume persistence (`postgres_data`), port mapping 5433:5432
-- `.env` → PostgreSQL secrets: `POSTGRES_DB=rag_telco`, `POSTGRES_USER=rag_user`, `POSTGRES_PASSWORD=change_me`, `POSTGRES_PORT=5433`
+- `docker-compose.yml` → PostgreSQL service with `pgvector/pgvector:pg17`, healthchecks, volume persistence (`postgres_data`), port mapping 5432:5432
+- `.env` → PostgreSQL secrets: `POSTGRES_DB=rag_telco`, `POSTGRES_USER=rag_user`, `POSTGRES_PASSWORD=change_me`, `POSTGRES_PORT=5432`
 - `.env.example` → Safe-to-commit environment variables for PostgreSQL configuration
 - `config/database.yaml` → Connection settings: host, port, database name, user (password omitted, sourced from `.env`)
 - PostgreSQL container started and verified: `docker compose up -d postgres`, `docker compose ps` shows healthy status
@@ -62,7 +77,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Future entries will cover:
 - RAG component implementation (ingestion, vector storage, retrieval)
 - LlamaIndex integration and abstractions
-- PostgreSQL/pgvector setup (already completed in v0.1.2)
 - Data ingestion pipelines
 - Evaluation and testing frameworks
 - Docker deployment configuration
