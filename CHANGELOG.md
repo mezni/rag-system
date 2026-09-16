@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.9   | Service Layer | `DocumentService` application service, service tests |
 | 0.1.8   | Validation    | `DocumentCreate` schema, stricter field constraints, validation tests |
 | 0.1.7   | Configuration | Layered YAML + env settings, `load_yaml_config` |
 | 0.1.6   | Domain Model | Pydantic `Document` app model, DB→domain conversion |
@@ -17,6 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.9] - 2026-09-16
+
+### Added
+- **Service:** `DocumentService` in `src/services/document_service.py` — application service wrapping `DocumentRepository` with commit-aware operations (`create_document`, `get_document`, `get_by_source_uri`, `delete_document`)
+- **Exports:** `src/services/__init__.py` re-exports `DocumentService`
+- **Testing:** `tests/unit/services/test_document_service.py` covering create/get/delete against the real PostgreSQL test database
+
+### Changed
+- **Test fixtures:** `tests/conftest.py` cleanup now runs in teardown via `delete(DocumentDB)` instead of clearing all mapped tables before each test
 
 ## [0.1.8] - 2026-09-16
 

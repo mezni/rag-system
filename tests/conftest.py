@@ -2,12 +2,12 @@ import os
 
 import pytest
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session
 
-load_dotenv()
+from src.db.models.document import DocumentDB
 
-from src.db.base import Base  # noqa: E402
+load_dotenv()
 
 
 @pytest.fixture
@@ -28,9 +28,7 @@ def database_engine():
 @pytest.fixture
 def database_session(database_engine):
     with Session(database_engine) as session:
-        for table in reversed(Base.metadata.sorted_tables):
-            session.execute(table.delete())
-        session.commit()
-
         yield session
-        session.rollback()
+
+        session.execute(delete(DocumentDB))
+        session.commit()
