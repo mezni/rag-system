@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.10  | Ingestion | Document discovery: `DocumentSource`, `FilesystemSource`, `DiscoveryStage` |
 | 0.1.9   | Service Layer | `DocumentService` application service, service tests |
 | 0.1.8   | Validation    | `DocumentCreate` schema, stricter field constraints, validation tests |
 | 0.1.7   | Configuration | Layered YAML + env settings, `load_yaml_config` |
@@ -18,6 +19,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.10] - 2026-09-16
+
+### Added
+- **Ingestion context:** `DocumentInput` in `src/ingestion/context.py` — frozen Pydantic model (`source`, `source_uri`, `path`) representing a discovered document
+- **Sources:** `DocumentSource` base interface in `src/ingestion/sources/base.py`; `FilesystemSource` in `src/ingestion/sources/filesystem.py` with recursive glob-discovery across `*.md`, `*.txt`, `*.pdf`
+- **Stages:** Generic `PipelineStage[InputT, OutputT]` base in `src/ingestion/stages/base.py`; `DiscoveryStage` in `src/ingestion/stages/discover.py` running a source's `discover()`
+- **Sample data:** `data/raw/billing/sample-policy.md`
+- **Testing:** `tests/unit/ingestion/test_filesystem_source.py`, `tests/unit/ingestion/test_discovery_stage.py`
+
+### Known Issues
+- `src/ingestion/pipeline.py` still imports the removed `IngestionContext` and `Stage` — awaiting its replacement
 
 ## [0.1.9] - 2026-09-16
 
