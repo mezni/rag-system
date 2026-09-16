@@ -39,6 +39,7 @@ class EmbedStage(PipelineStage[ChunkedDocument, EmbeddedDocument]):
         return EmbeddedDocument(
             document=data.document,
             content_hash=data.content_hash,
+            metadata=data.metadata,
             chunks=data.chunks,
             embeddings=embeddings,
         )

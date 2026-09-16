@@ -15,5 +15,6 @@ class ChunkStage(PipelineStage[EnrichedDocument, ChunkedDocument]):
         return ChunkedDocument(
             document=data.document,
             content_hash=data.content_hash,
+            metadata=data.metadata,
             chunks=chunks,
         )

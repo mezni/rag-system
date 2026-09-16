@@ -120,6 +120,7 @@ class ChunkedDocument(BaseModel):
 
     document: DocumentInput
     content_hash: str
+    metadata: DocumentMetadata
     chunks: list[DocumentChunk]
 
 
@@ -141,5 +142,6 @@ class EmbeddedDocument(BaseModel):
 
     document: DocumentInput
     content_hash: str
+    metadata: DocumentMetadata
     chunks: list[DocumentChunk]
     embeddings: list[ChunkEmbedding]

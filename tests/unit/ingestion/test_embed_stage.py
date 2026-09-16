@@ -48,6 +48,7 @@ def test_embed_stage(tmp_path: Path) -> None:
     input_document = ChunkedDocument(
         document=document,
         content_hash="a" * 64,
+        metadata=metadata,
         chunks=[chunk],
     )
 

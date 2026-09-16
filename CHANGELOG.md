@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.19  | Chunk Persistence | ORM relationships, `ChunkRepository`/`EmbeddingRepository`, `IngestionPersistenceService` |
 | 0.1.18  | Vector Storage | pgvector, `ChunkDB`/`EmbeddingDB`, chunks+embeddings migration |
 | 0.1.17  | Embeddings | `ChunkEmbedding`/`EmbeddedDocument`, `LocalEmbeddingProvider`, `EmbedStage` |
 | 0.1.16  | Chunking | `DocumentChunk`/`ChunkedDocument`, `CharacterTextChunker`, `ChunkStage` |
@@ -27,6 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.19] - 2026-09-16
+
+### Added
+- **ORM relationships:** `DocumentDB.chunks` (cascade `all, delete-orphan`) and `ChunkDB.document` via `back_populates` with `TYPE_CHECKING` imports
+- **Repositories:** `ChunkRepository` in `src/db/repositories/chunks.py` (`create`, `get_by_document_id`, `delete_by_document_id`) and `EmbeddingRepository` in `src/db/repositories/embeddings.py` (`create`, `get_by_chunk_id`)
+- **Service:** `IngestionPersistenceService` in `src/services/ingestion_persistence_service.py` persisting an `EmbeddedDocument`, its chunks, and embeddings in one transaction with rollback on failure
+- **Context:** `ChunkedDocument` and `EmbeddedDocument` now carry `metadata: DocumentMetadata`; `ChunkStage` and `EmbedStage` thread it through
+- **Testing:** `tests/integration/test_ingestion_persistence.py`
 
 ## [0.1.18] - 2026-09-16
 
