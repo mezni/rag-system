@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.20  | Pipeline | `IngestionPipeline` orchestrating all stages, filesystem factory, E2E tests |
 | 0.1.19  | Chunk Persistence | ORM relationships, `ChunkRepository`/`EmbeddingRepository`, `IngestionPersistenceService` |
 | 0.1.18  | Vector Storage | pgvector, `ChunkDB`/`EmbeddingDB`, chunks+embeddings migration |
 | 0.1.17  | Embeddings | `ChunkEmbedding`/`EmbeddedDocument`, `LocalEmbeddingProvider`, `EmbedStage` |
@@ -28,6 +29,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.20] - 2026-09-16
+
+### Added
+- **Pipeline:** `IngestionPipeline` in `src/ingestion/pipeline.py` rewritten on the `PipelineStage` API — chains discover → load → parse → clean → enrich → chunk → embed stages, skips unchanged documents via `DocumentChangeType`, raises `NotImplementedError` for modified documents (reserving indexing/versioning), and persists via `IngestionPersistenceService`
+- **Factory:** `create_filesystem_ingestion_pipeline` in `src/ingestion/factory.py` wiring a filesystem-based source/loader, Markdown+Text `ParserRegistry`, text cleaner, metadata extractor, character chunker, and local embedding provider
+- **Testing:** `tests/integration/test_ingestion_pipeline.py` with end-to-end pipeline test and unchanged-document skip test
 
 ## [0.1.19] - 2026-09-16
 
