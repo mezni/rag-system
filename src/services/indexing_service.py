@@ -6,6 +6,7 @@ from src.core.enums import IndexOperation
 from src.db.repositories.chunks import ChunkRepository
 from src.db.repositories.documents import DocumentRepository
 from src.db.repositories.embeddings import EmbeddingRepository
+from src.db.repositories.index_versions import IndexVersionRepository
 from src.ingestion.context import EmbeddedDocument
 
 
@@ -17,6 +18,7 @@ class IndexingService:
         self.documents = DocumentRepository(session)
         self.chunks = ChunkRepository(session)
         self.embeddings = EmbeddingRepository(session)
+        self.index_versions = IndexVersionRepository(session)
 
     def add(self, data: EmbeddedDocument) -> UUID:
         """Add a new document to the index."""
@@ -107,13 +109,21 @@ class IndexingService:
         document_id: UUID,
         data: EmbeddedDocument,
     ) -> None:
+        index_version = self._get_active_index_version()
+
         for chunk, embedding in zip(
             data.chunks,
             data.embeddings,
             strict=True,
         ):
+            if embedding.dimensions != index_version.embedding_dimensions:
+                raise ValueError(
+                    "Embedding dimensions do not match the active index version"
+                )
+
             database_chunk = self.chunks.create(
                 document_id=document_id,
+                index_version_id=index_version.id,
                 chunk_index=chunk.chunk_index,
                 content=chunk.content,
                 content_hash=chunk.content_hash,
@@ -127,6 +137,14 @@ class IndexingService:
                 dimensions=embedding.dimensions,
                 vector=embedding.vector,
             )
+
+    def _get_active_index_version(self):
+        version = self.index_versions.get_active()
+
+        if version is None:
+            raise RuntimeError("No active index version exists")
+
+        return version
 
     @staticmethod
     def _build_document_data(

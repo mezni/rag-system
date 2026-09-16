@@ -10,6 +10,7 @@ from src.db.base import Base
 
 if TYPE_CHECKING:
     from src.db.models.document import DocumentDB
+    from src.db.models.index_version import IndexVersionDB
 
 
 class ChunkDB(Base):
@@ -70,5 +71,10 @@ class ChunkDB(Base):
 
     document: Mapped["DocumentDB"] = relationship(
         "DocumentDB",
+        back_populates="chunks",
+    )
+
+    index_version: Mapped["IndexVersionDB"] = relationship(
+        "IndexVersionDB",
         back_populates="chunks",
     )

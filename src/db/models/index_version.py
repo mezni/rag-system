@@ -1,11 +1,15 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import DateTime, Integer, String, func
 from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.base import Base
+
+if TYPE_CHECKING:
+    from src.db.models.chunk import ChunkDB
 
 
 class IndexVersionDB(Base):
@@ -48,4 +52,9 @@ class IndexVersionDB(Base):
     activated_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
+    )
+
+    chunks: Mapped[list["ChunkDB"]] = relationship(
+        "ChunkDB",
+        back_populates="index_version",
     )

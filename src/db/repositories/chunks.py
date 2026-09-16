@@ -15,6 +15,7 @@ class ChunkRepository:
     def create(
         self,
         document_id: UUID,
+        index_version_id: UUID,
         chunk_index: int,
         content: str,
         content_hash: str,
@@ -23,6 +24,7 @@ class ChunkRepository:
     ) -> ChunkDB:
         chunk = ChunkDB(
             document_id=document_id,
+            index_version_id=index_version_id,
             chunk_index=chunk_index,
             content=content,
             content_hash=content_hash,

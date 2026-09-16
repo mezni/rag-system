@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.23  | Version-Aware Indexing | chunk↔version relationships, `IndexVersionRepository` in `IndexingService`, dimension validation |
 | 0.1.22  | Index Versions | `IndexVersion`/`IndexVersionDB`, `index_versions` migration, `IndexVersionRepository` |
 | 0.1.21  | Indexing | `IndexOperation`, `IndexRequest`, `IndexingService` add/update/delete, reindex flow |
 | 0.1.20  | Pipeline | `IngestionPipeline` orchestrating all stages, filesystem factory, E2E tests |
@@ -31,6 +32,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.23] - 2026-09-16
+
+### Added
+- **ORM relationships:** `ChunkDB.index_version` ↔ `IndexVersionDB.chunks` via `back_populates`
+- **Repository:** `ChunkRepository.create` now accepts and persists `index_version_id`
+- **Service:** `IndexingService` wires `IndexVersionRepository`, resolves the active version via `_get_active_index_version` (raises `RuntimeError` if none active), and validates each embedding's dimensions against the active version before persisting
+- **Testing:** `tests/integration/test_index_versioning.py`; integration `conftest.py` seeds an active version (v1, `local-deterministic`, 8 dims); previously skipped pipeline tests now run and pass
 
 ## [0.1.22] - 2026-09-16
 
