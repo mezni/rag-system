@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.27  | Run Tracking | `IngestionResult`, run counter updates, per-document isolation, complete/fail |
 | 0.1.26  | Ingestion Runs | `IngestionRun`/`IngestionRunDB`, `ingestion_runs` migration, `IngestionRunService` |
 | 0.1.25  | Reindex Service | `add_to_version`, BUILDING/ACTIVE-gated persistence, `ReindexService` build-activate flow |
 | 0.1.24  | Version Lifecycle | `IndexVersionStatus` enum, `VersioningService`, create/activate/fail lifecycle |
@@ -35,6 +36,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.27] - 2026-09-16
+
+### Added
+- **Model:** `IngestionResult` (`run_id`, counts, `document_ids`) in `src/ingestion/context.py`
+- **Repository:** `IngestionRunRepository.update_counts`
+- **Service:** `IngestionRunService.update_counts`
+- **Pipeline:** `run()` now starts an ingestion run, isolates per-document failures (increments `failed_count`, continues), aggregates counters into the run, then completes; pipeline-level failures mark the run failed and re-raise
+- **Testing:** pipeline integration tests updated to assert on `IngestionResult`
 
 ## [0.1.26] - 2026-09-16
 

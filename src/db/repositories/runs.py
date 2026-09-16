@@ -60,3 +60,28 @@ class IngestionRunRepository:
         self.session.flush()
 
         return run
+
+    def update_counts(
+        self,
+        run: IngestionRunDB,
+        *,
+        discovered_count: int | None = None,
+        processed_count: int | None = None,
+        skipped_count: int | None = None,
+        failed_count: int | None = None,
+    ) -> IngestionRunDB:
+        if discovered_count is not None:
+            run.discovered_count = discovered_count
+
+        if processed_count is not None:
+            run.processed_count = processed_count
+
+        if skipped_count is not None:
+            run.skipped_count = skipped_count
+
+        if failed_count is not None:
+            run.failed_count = failed_count
+
+        self.session.flush()
+
+        return run

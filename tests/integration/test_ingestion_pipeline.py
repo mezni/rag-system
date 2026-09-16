@@ -27,7 +27,12 @@ def test_ingestion_pipeline_end_to_end(
 
     results = pipeline.run()
 
-    assert len(results) == 1
+    assert results.run_id is not None
+    assert results.discovered_count == 1
+    assert results.processed_count == 1
+    assert results.skipped_count == 0
+    assert results.failed_count == 0
+    assert len(results.document_ids) == 1
 
     document = (
         database_session.query(DocumentDB)
@@ -82,8 +87,9 @@ def test_ingestion_skips_unchanged_document(
     first_result = pipeline.run()
     second_result = pipeline.run()
 
-    assert len(first_result) == 1
-    assert len(second_result) == 0
+    assert first_result.processed_count == 1
+    assert second_result.processed_count == 0
+    assert second_result.skipped_count == 1
 
     documents = (
         database_session.query(DocumentDB)
@@ -115,7 +121,8 @@ def test_modified_document_is_reindexed(
 
     first_result = pipeline.run()
 
-    assert len(first_result) == 1
+    assert first_result.discovered_count == 1
+    assert first_result.processed_count == 1
 
     document = (
         database_session.query(DocumentDB)
@@ -145,7 +152,9 @@ def test_modified_document_is_reindexed(
 
     second_result = pipeline.run()
 
-    assert len(second_result) == 1
+    assert second_result.discovered_count == 1
+    assert second_result.processed_count == 1
+    assert len(second_result.document_ids) == 1
 
     database_session.refresh(document)
 

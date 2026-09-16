@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from pathlib import Path
+from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.core.enums import DocumentChangeType
 
@@ -145,3 +146,16 @@ class EmbeddedDocument(BaseModel):
     metadata: DocumentMetadata
     chunks: list[DocumentChunk]
     embeddings: list[ChunkEmbedding]
+
+
+class IngestionResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    run_id: UUID
+
+    discovered_count: int = Field(default=0, ge=0)
+    processed_count: int = Field(default=0, ge=0)
+    skipped_count: int = Field(default=0, ge=0)
+    failed_count: int = Field(default=0, ge=0)
+
+    document_ids: list[UUID] = Field(default_factory=list)
