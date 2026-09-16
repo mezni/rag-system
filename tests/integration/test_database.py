@@ -1,14 +1,17 @@
 from src.db.repositories.documents import DocumentRepository
+from src.models.document import DocumentCreate
 
 
 def test_create_and_get_document(database_session):
     repository = DocumentRepository(database_session)
 
     document = repository.create(
-        source="filesystem",
-        source_uri="data/raw/billing/sample.md",
-        title="Billing Policy",
-        content_hash="a" * 64,
+        DocumentCreate(
+            source="filesystem",
+            source_uri="data/raw/billing/sample.md",
+            title="Billing Policy",
+            content_hash="a" * 64,
+        )
     )
 
     database_session.commit()
@@ -26,10 +29,12 @@ def test_find_document_by_source_uri(database_session):
     repository = DocumentRepository(database_session)
 
     repository.create(
-        source="filesystem",
-        source_uri="data/raw/roaming/roaming.md",
-        title="Roaming Policy",
-        content_hash="b" * 64,
+        DocumentCreate(
+            source="filesystem",
+            source_uri="data/raw/roaming/roaming.md",
+            title="Roaming Policy",
+            content_hash="b" * 64,
+        )
     )
 
     database_session.commit()
@@ -48,10 +53,12 @@ def test_find_document_by_content_hash(database_session):
     content_hash = "c" * 64
 
     repository.create(
-        source="filesystem",
-        source_uri="data/raw/billing/hash-test.md",
-        title="Hash Test",
-        content_hash=content_hash,
+        DocumentCreate(
+            source="filesystem",
+            source_uri="data/raw/billing/hash-test.md",
+            title="Hash Test",
+            content_hash=content_hash,
+        )
     )
 
     database_session.commit()
@@ -65,12 +72,14 @@ def test_find_document_by_content_hash(database_session):
 def test_document_repository_returns_domain_model(database_session):
     repository = DocumentRepository(database_session)
 
-    database_document = repository.create(
+    data = DocumentCreate(
         source="filesystem",
         source_uri="data/raw/billing/domain.md",
         title="Billing Policy",
         content_hash="d" * 64,
     )
+
+    database_document = repository.create(data)
 
     database_session.commit()
 

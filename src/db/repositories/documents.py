@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.db.models.document import DocumentDB
-from src.models.document import Document
+from src.models.document import Document, DocumentCreate
 
 
 class DocumentRepository:
@@ -13,21 +13,13 @@ class DocumentRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
 
-    def create(
-        self,
-        *,
-        source: str,
-        source_uri: str,
-        content_hash: str,
-        title: str | None = None,
-        status: str = "active",
-    ) -> DocumentDB:
+    def create(self, data: DocumentCreate) -> DocumentDB:
         document = DocumentDB(
-            source=source,
-            source_uri=source_uri,
-            content_hash=content_hash,
-            title=title,
-            status=status,
+            source=data.source,
+            source_uri=data.source_uri,
+            title=data.title,
+            content_hash=data.content_hash,
+            status=data.status,
         )
 
         self.session.add(document)
@@ -67,7 +59,8 @@ class DocumentRepository:
 
         return self.to_domain(document)
 
-    def to_domain(self, document: DocumentDB) -> Document:
+    @staticmethod
+    def to_domain(document: DocumentDB) -> Document:
         return Document(
             id=document.id,
             source=document.source,

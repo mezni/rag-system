@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.8   | Validation    | `DocumentCreate` schema, stricter field constraints, validation tests |
 | 0.1.7   | Configuration | Layered YAML + env settings, `load_yaml_config` |
 | 0.1.6   | Domain Model | Pydantic `Document` app model, DB→domain conversion |
 | 0.1.5   | Repository   | `DocumentRepository` persistence layer, test isolation |
@@ -16,6 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.8] - 2026-09-16
+
+### Added
+- **Model:** `DocumentCreate` in `src/models/document.py` — input-only schema with `content_hash` validated via `^[a-fA-F0-9]{64}$`, field-length limits on `source`/`title`/`status`
+- **Validation tests:** `test_document_create`, `test_document_rejects_invalid_hash`, `test_document_status_defaults_to_active`
+- **Exports:** `src/models/__init__.py` re-exports `DocumentCreate`
+
+### Changed
+- **Repository:** `DocumentRepository.create()` now accepts a `DocumentCreate` instead of individual keyword arguments
+- **Model constraints:** `Document.content_hash` now uses the same hex-regex pattern as `DocumentCreate`; `source`, `title`, `status` all enforce field-length limits
 
 ## [0.1.7] - 2026-09-16
 

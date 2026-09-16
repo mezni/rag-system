@@ -1,3 +1,6 @@
-from src.models.document import Document
+from src.models.document import Document, DocumentCreate
 
-__all__ = ["Document"]
+__all__ = [
+    "Document",
+    "DocumentCreate",
+]

@@ -1,8 +1,11 @@
-from src.models.document import Document
+import pytest
+from pydantic import ValidationError
+
+from src.models.document import Document, DocumentCreate
 
 
-def test_document_model():
-    document = Document(
+def test_document_create():
+    document = DocumentCreate(
         source="filesystem",
         source_uri="data/raw/billing/sample.md",
         title="Billing Policy",
@@ -11,4 +14,22 @@ def test_document_model():
 
     assert document.source == "filesystem"
     assert document.title == "Billing Policy"
+
+
+def test_document_rejects_invalid_hash():
+    with pytest.raises(ValidationError):
+        DocumentCreate(
+            source="filesystem",
+            source_uri="data/raw/billing/sample.md",
+            content_hash="invalid",
+        )
+
+
+def test_document_status_defaults_to_active():
+    document = DocumentCreate(
+        source="filesystem",
+        source_uri="data/raw/billing/sample.md",
+        content_hash="a" * 64,
+    )
+
     assert document.status == "active"
