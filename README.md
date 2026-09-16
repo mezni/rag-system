@@ -1,4 +1,4 @@
-# aether-rag
+# rag-system
 
 A RAG (Retrieval-Augmented Generation) system.
 

@@ -1,9 +1,15 @@
 # Changelog
 
-All notable changes to `aether-rag` will be documented in this file.
+All notable changes to `rag-system` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pec-2.0.0).
+
+## Version History
+
+| Version | Feature Domain | Key Objectives |
+|---------|---------------|----------------|
+| 0.1.0   | Core          | Initial release with config, errors, ids, clock |
 
 ## [0.1.0] - 2026-09-16
 
