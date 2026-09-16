@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|---------------|---------------|
+| 0.1.7 | [Next Feature] | Add next phase of RAG system implementation |
 | 0.1.6 | Document Repository | Add SQLAlchemy DocumentRepository with CRUD operations and SQLAlchemy session management for PostgreSQL document storage |
 | 0.1.5 | Alembic Migrations | Add SQLAlchemy ORM models and Alembic database migration infrastructure for PostgreSQL document storage |
 | 0.1.4 | Release Readiness | Infrastructure and domain layer complete; RAG system ready for vector indexing and retrieval implementation |
@@ -19,7 +20,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## v0.1.6 - Document Repository (Current)
+## v0.1.7 - Atomic Document Versioning (Current)
+
+**Objective**: Add atomic document updates with version tracking via DocumentVersionRepository and transaction-boundary service layer.
+
+**Changes**:
+- `src/infrastructure/persistence/postgres/models/document_version.py` → `DocumentVersionModel` SQLAlchemy ORM model with `__tablename__ = "document_versions"`, columns: id (UUID primary key), document_id (UUID, foreign key), version (Integer), content (Text), content_hash (String(64)), created_at (DateTime with timezone)
+- `src/infrastructure/persistence/postgres/repositories/document_version_repository.py` → `DocumentVersionRepository` class with `create()`, `get_latest_version()` methods, using `flush()` instead of `commit()` for transaction boundary
+- `src/infrastructure/persistence/postgres/repositories/document_repository.py` → `DocumentRepository` updated to use `self.session.flush()` instead of `self.session.commit()`, moving transaction ownership to service layer
+- `src/application/documents/document_service.py` → `DocumentService` class coordinating `create_document()` and `update_document()` operations with content-hash-based change detection, creating version records atomically
+- `src/domain/documents/version.py` → `DocumentVersion` pydantic domain model with id, document_id, version, content, content_hash, created_at
+- `src/domain/documents/hash.py` → `calculate_content_hash()` function computing SHA-256 hash of document content
+- `database/migrations/versions/83d883a08035_create_document_versions_table.py` → auto-generated migration creating `document_versions` table with columns: id (uuid, primary key), document_id (uuid, not null), version (integer, not null), content (text, not null), content_hash (varchar(64), not null), created_at (timestamp with tz)
+- Transaction boundary established: service layer uses `with session.begin():` for atomic document + version operations (COMMIT on success, ROLLBACK on failure)
+- All 11 tests passing (5 unit/integration from prior steps + 3 repository tests + 3 versioning tests)
+- `uv run ruff check .` clean
+
+---
+
+## v0.1.6 - Document Repository (Previous)
 
 **Objective**: Add SQLAlchemy DocumentRepository with CRUD operations and SQLAlchemy session management for PostgreSQL document storage.
 

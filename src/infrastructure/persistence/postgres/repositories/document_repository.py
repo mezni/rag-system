@@ -17,7 +17,7 @@ class DocumentRepository:
         self.session = session
 
     def create(self, document: DocumentRecord) -> DocumentRecord:
-        """Persist a new document."""
+        """Persist a new document within the current transaction."""
 
         model = DocumentModel(
             id=document.id,
@@ -31,7 +31,7 @@ class DocumentRepository:
         )
 
         self.session.add(model)
-        self.session.commit()
+        self.session.flush()
         self.session.refresh(model)
 
         return self._to_domain(model)
@@ -56,7 +56,7 @@ class DocumentRepository:
         return [self._to_domain(model) for model in models]
 
     def update(self, document: DocumentRecord) -> DocumentRecord:
-        """Update an existing document."""
+        """Update an existing document within the current transaction."""
 
         model = self.session.get(DocumentModel, document.id)
 
@@ -72,13 +72,13 @@ class DocumentRepository:
         model.version = document.version
         model.updated_at = datetime.now(timezone.utc)
 
-        self.session.commit()
+        self.session.flush()
         self.session.refresh(model)
 
         return self._to_domain(model)
 
     def delete(self, document_id: UUID) -> bool:
-        """Delete a document by ID."""
+        """Delete a document within the current transaction."""
 
         model = self.session.get(DocumentModel, document_id)
 
@@ -86,7 +86,7 @@ class DocumentRepository:
             return False
 
         self.session.delete(model)
-        self.session.commit()
+        self.session.flush()
 
         return True
 
