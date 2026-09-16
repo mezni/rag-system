@@ -9,68 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
-| 0.1.1   | Core          | Initial release with config, errors, ids, clock |
-| 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
-| 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
-| 0.1.4   | Models & Tests | `DocumentDB` model, integration test suite |
-| 0.1.5   | Repository   | `DocumentRepository` persistence layer, test isolation |
-| 0.1.6   | Domain Model | Pydantic `Document` app model, DB→domain conversion |
 | 0.1.7   | Configuration | Layered YAML + env settings, `load_yaml_config` |
-
-## [0.1.1] - 2026-09-16
-
-### Added
-- **Config:** Pydantic settings with `.env` file support and profile loading
-- **Core:** Error types (`AetherError`, `ConfigError`, `NotFoundError`), UUID-based ID generation, UTC clock
-- **Project scaffold:** `pyproject.toml`, `.env.example`, `.gitignore`, `README.md`, test directory structure
-
-### Changed
-- Initial project creation
-## [0.1.2] - 2026-09-16
-
-### Added
-- **Infra:** Docker Compose (`docker-compose.yml`) with PostgreSQL 17 service, healthchecks, volume `postgres_data`
-- **Infra:** Makefile (`Makefile`) with `up`, `down`, `ps`, `logs`, `db-shell` targets
-- **Config:** `.env.example` updated with `APP_ENV`, `DATABASE_URL`, `OPENROUTER_API_KEY`
-
-## [0.1.3] - 2026-09-16
-
-### Added
-- **Database:** `src/db` module with `base.py` (SQLAlchemy `DeclarativeBase`), `engine.py` (`create_database_engine`), `session.py` (`SessionLocal`)
-- **Migrations:** Alembic with `alembic.ini`, `migrations/env.py`, `migrations/versions/`
-
-### Fixed
-- **DB Shell:** `db-shell` Makefile target now connects via TCP (`-h localhost -p 5432`) to match the superuser role
-- **Alembic:** `load_dotenv()` now runs before app imports in `migrations/env.py` so `DATABASE_URL` is resolved correctly
-
-## [0.1.4] - 2026-09-16
-
-### Added
-- **Model:** `DocumentDB` in `src/db/models/document.py` — `documents` table with typed SQLAlchemy 2.x mappings (`id`, `source`, `source_uri`, `title`, `content_hash`, `status`, `created_at`, `updated_at`)
-- **Model registry:** `src/db/base.py` imports `DocumentDB` so `Base.metadata` includes the `documents` table for Alembic autogenerate
-- **Migration:** `create_documents_table` (`58229e17449f`) creates the `documents` table
-- **Testing:** `tests/integration/` with `database_session` fixture (`conftest.py`) and `test_database.py` verifying `DocumentDB` insert + query round-trip
-
-### Changed
-- **Migration style:** Auto-fixed Alembic-generated files for ruff compliance
-
-## [0.1.5] - 2026-09-16
-
-### Added
-- **Repository:** `DocumentRepository` in `src/db/repositories/documents.py` with `create`, `get_by_id`, `get_by_source_uri`, `get_by_content_hash`, `delete`
-- **Fixtures:** Root `tests/conftest.py` with `database_engine` and `database_session` fixtures
-- **Testing:** `test_create_and_get_document`, `test_find_document_by_source_uri`, `test_find_document_by_content_hash`
-
-### Changed
-- **Test isolation:** `database_session` fixture now clears all rows from mapped tables before each test to prevent `MultipleResultsFound` from accumulated committed data
-
-## [0.1.6] - 2026-09-16
-
-### Added
-- **Domain model:** Pydantic `Document` in `src/models/document.py` — `extra="forbid"`, validated `content_hash` (len 64), optional `id`/`created_at`/`updated_at`
-- **Model registry:** `src/models/__init__.py` re-exports `Document`
-- **Conversion:** `DocumentRepository.to_domain()` maps `DocumentDB` → `Document`; `get_domain_by_id()` returns the application model
-- **Testing:** `tests/unit/models/test_document.py`, `test_document_repository_returns_domain_model` integration test
+| 0.1.6   | Domain Model | Pydantic `Document` app model, DB→domain conversion |
+| 0.1.5   | Repository   | `DocumentRepository` persistence layer, test isolation |
+| 0.1.4   | Models & Tests | `DocumentDB` model, integration test suite |
+| 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
+| 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
+| 0.1.1   | Core          | Initial release with config, errors, ids, clock |
 
 ## [0.1.7] - 2026-09-16
 
@@ -84,3 +29,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 ### Changed
 - **DB engine:** `src/db/engine.py` now pulls `DATABASE_URL` from `get_settings()` instead of `os.getenv()`
+
+## [0.1.6] - 2026-09-16
+
+### Added
+- **Domain model:** Pydantic `Document` in `src/models/document.py` — `extra="forbid"`, validated `content_hash` (len 64), optional `id`/`created_at`/`updated_at`
+- **Model registry:** `src/models/__init__.py` re-exports `Document`
+- **Conversion:** `DocumentRepository.to_domain()` maps `DocumentDB` → `Document`; `get_domain_by_id()` returns the application model
+- **Testing:** `tests/unit/models/test_document.py`, `test_document_repository_returns_domain_model` integration test
+
+## [0.1.5] - 2026-09-16
+
+### Added
+- **Repository:** `DocumentRepository` in `src/db/repositories/documents.py` with `create`, `get_by_id`, `get_by_source_uri`, `get_by_content_hash`, `delete`
+- **Fixtures:** Root `tests/conftest.py` with `database_engine` and `database_session` fixtures
+- **Testing:** `test_create_and_get_document`, `test_find_document_by_source_uri`, `test_find_document_by_content_hash`
+
+### Changed
+- **Test isolation:** `database_session` fixture now clears all rows from mapped tables before each test to prevent `MultipleResultsFound` from accumulated committed data
+
+## [0.1.4] - 2026-09-16
+
+### Added
+- **Model:** `DocumentDB` in `src/db/models/document.py` — `documents` table with typed SQLAlchemy 2.x mappings (`id`, `source`, `source_uri`, `title`, `content_hash`, `status`, `created_at`, `updated_at`)
+- **Model registry:** `src/db/base.py` imports `DocumentDB` so `Base.metadata` includes the `documents` table for Alembic autogenerate
+- **Migration:** `create_documents_table` (`58229e17449f`) creates the `documents` table
+- **Testing:** `tests/integration/` with `database_session` fixture (`conftest.py`) and `test_database.py` verifying `DocumentDB` insert + query round-trip
+
+### Changed
+- **Migration style:** Auto-fixed Alembic-generated files for ruff compliance
+
+## [0.1.3] - 2026-09-16
+
+### Added
+- **Database:** `src/db` module with `base.py` (SQLAlchemy `DeclarativeBase`), `engine.py` (`create_database_engine`), `session.py` (`SessionLocal`)
+- **Migrations:** Alembic with `alembic.ini`, `migrations/env.py`, `migrations/versions/`
+
+### Fixed
+- **DB Shell:** `db-shell` Makefile target now connects via TCP (`-h localhost -p 5432`) to match the superuser role
+- **Alembic:** `load_dotenv()` now runs before app imports in `migrations/env.py` so `DATABASE_URL` is resolved correctly
+
+## [0.1.2] - 2026-09-16
+
+### Added
+- **Infra:** Docker Compose (`docker-compose.yml`) with PostgreSQL 17 service, healthchecks, volume `postgres_data`
+- **Infra:** Makefile (`Makefile`) with `up`, `down`, `ps`, `logs`, `db-shell` targets
+- **Config:** `.env.example` updated with `APP_ENV`, `DATABASE_URL`, `OPENROUTER_API_KEY`
+
+## [0.1.1] - 2026-09-16
+
+### Added
+- **Config:** Pydantic settings with `.env` file support and profile loading
+- **Core:** Error types (`AetherError`, `ConfigError`, `NotFoundError`), UUID-based ID generation, UTC clock
+- **Project scaffold:** `pyproject.toml`, `.env.example`, `.gitignore`, `README.md`, test directory structure
+
+### Changed
+- Initial project creation

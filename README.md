@@ -6,12 +6,15 @@ A RAG (Retrieval-Augmented Generation) system.
 
 - Python >= 3.12
 - [uv](https://docs.astral.sh/uv/)
+- PostgreSQL 17 (via Docker Compose)
 
 ## Setup
 
 ```bash
-uv sync
 cp .env.example .env
+docker compose up -d
+uv sync
+uv run alembic upgrade head
 ```
 
 ## Development
@@ -23,7 +26,10 @@ uv run ruff check .
 
 ## Layout
 
-- `config/profiles/` – JSON environment profiles
-- `src/config/` – settings and profile loading
+- `config/` – YAML application settings (`settings.yaml`)
+- `src/config/` – layered settings (`.env` environment + YAML file)
 - `src/core/` – errors, ids, clock primitives
+- `src/db/` – SQLAlchemy engine, session, models, Alembic migrations
+- `src/models/` – Pydantic application/domain models
 - `tests/unit/` – unit tests
+- `tests/integration/` – integration tests (require the running database)
