@@ -13,4 +13,4 @@ logs:
 	docker compose logs -f postgres
 
 db-shell:
-	docker compose exec postgres psql -U rag -d rag_system
+	docker compose exec postgres psql -U rag -d rag_system -h localhost -p 5432
