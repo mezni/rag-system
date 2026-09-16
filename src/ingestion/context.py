@@ -96,3 +96,28 @@ class EnrichedDocument(BaseModel):
     content_hash: str
     format: str
     metadata: DocumentMetadata
+
+
+class DocumentChunk(BaseModel):
+    """A chunk of an enriched document."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    chunk_id: str
+    document: DocumentInput
+    content: str
+    content_hash: str
+    chunk_index: int
+    start_char: int
+    end_char: int
+    metadata: DocumentMetadata
+
+
+class ChunkedDocument(BaseModel):
+    """An enriched document split into chunks."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    document: DocumentInput
+    content_hash: str
+    chunks: list[DocumentChunk]

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.16  | Chunking | `DocumentChunk`/`ChunkedDocument`, `CharacterTextChunker`, `ChunkStage` |
 | 0.1.15  | Metadata | `DocumentMetadata`/`EnrichedDocument`, `FilesystemMetadataExtractor`, `EnrichStage` |
 | 0.1.14  | Cleaning | `CleanedDocument`, `TextDocumentCleaner`, `CleanStage` |
 | 0.1.13  | Parsing | `ParsedDocument`, Markdown/Text parsers, `ParserRegistry`, `ParseStage` |
@@ -24,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.16] - 2026-09-16
+
+### Added
+- **Ingestion context:** `DocumentChunk` and `ChunkedDocument` in `src/ingestion/context.py` — models for character-range chunks of an enriched document
+- **Chunking:** `DocumentChunker` base interface in `src/ingestion/chunking.py`; `CharacterTextChunker` in `src/ingestion/chunkers/text.py` splitting content into fixed-size overlapping chunks with configuration validation
+- **Exports:** `src/ingestion/chunkers/__init__.py` re-exports `CharacterTextChunker`
+- **Stage:** `ChunkStage[EnrichedDocument, ChunkedDocument]` in `src/ingestion/stages/chunk.py`
+- **Testing:** `tests/unit/ingestion/test_chunking.py`
 
 ## [0.1.15] - 2026-09-16
 
