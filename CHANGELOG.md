@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 |---------|---------------|----------------|
 | 0.1.0   | Core          | Initial release with config, errors, ids, clock |
 | 0.1.1   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
+| 0.2.0   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 
 ## [0.1.0] - 2026-09-16
 
@@ -27,3 +28,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 - **Infra:** Docker Compose (`docker-compose.yml`) with PostgreSQL 17 service, healthchecks, volume `postgres_data`
 - **Infra:** Makefile (`Makefile`) with `up`, `down`, `ps`, `logs`, `db-shell` targets
 - **Config:** `.env.example` updated with `APP_ENV`, `DATABASE_URL`, `OPENROUTER_API_KEY`
+
+## [0.2.0] - 2026-09-16
+
+### Added
+- **Database:** `src/db` module with `base.py` (SQLAlchemy `DeclarativeBase`), `engine.py` (`create_database_engine`), `session.py` (`SessionLocal`)
+- **Migrations:** Alembic with `alembic.ini`, `migrations/env.py`, `migrations/versions/`
+
+### Fixed
+- **DB Shell:** `db-shell` Makefile target now connects via TCP (`-h localhost -p 5432`) to match the superuser role
+- **Alembic:** `load_dotenv()` now runs before app imports in `migrations/env.py` so `DATABASE_URL` is resolved correctly
