@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.12  | Loading | `RawDocument`, `DocumentLoader`, `FilesystemLoader`, `LoadStage` |
 | 0.1.11  | Change Detection | SHA-256 hashing, `ChangeDetector`, `DocumentChangeType` |
 | 0.1.10  | Ingestion | Document discovery: `DocumentSource`, `FilesystemSource`, `DiscoveryStage` |
 | 0.1.9   | Service Layer | `DocumentService` application service, service tests |
@@ -20,6 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.12] - 2026-09-16
+
+### Added
+- **Ingestion context:** `RawDocument` in `src/ingestion/context.py` — Pydantic model pairing a `DocumentInput` with its loaded `content` and `content_hash`
+- **Loaders:** `DocumentLoader` base interface in `src/ingestion/loaders/base.py`; `FilesystemLoader` in `src/ingestion/loaders/filesystem.py` reads UTF-8 text from a filesystem path
+- **Exports:** `src/ingestion/loaders/__init__.py` re-exports `DocumentLoader`, `FilesystemLoader`
+- **Stage:** `LoadStage[DocumentChange, RawDocument]` in `src/ingestion/stages/load.py`
+- **Testing:** `tests/unit/ingestion/test_filesystem_loader.py`, `tests/unit/ingestion/test_load_stage.py`
 
 ## [0.1.11] - 2026-09-16
 

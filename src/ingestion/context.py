@@ -30,3 +30,15 @@ class DocumentChange(BaseModel):
     change_type: DocumentChangeType
     content_hash: str
     previous_content_hash: str | None = None
+
+
+class RawDocument(BaseModel):
+    """Raw content loaded from a document source."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+
+    document: DocumentInput
+    content: str
+    content_hash: str
