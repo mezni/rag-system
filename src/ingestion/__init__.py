@@ -1,1 +1,1 @@
-"""Ingestion package for rag-system."""
+"""Document ingestion package."""

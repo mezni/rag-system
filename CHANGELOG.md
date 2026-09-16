@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.15  | Metadata | `DocumentMetadata`/`EnrichedDocument`, `FilesystemMetadataExtractor`, `EnrichStage` |
 | 0.1.14  | Cleaning | `CleanedDocument`, `TextDocumentCleaner`, `CleanStage` |
 | 0.1.13  | Parsing | `ParsedDocument`, Markdown/Text parsers, `ParserRegistry`, `ParseStage` |
 | 0.1.12  | Loading | `RawDocument`, `DocumentLoader`, `FilesystemLoader`, `LoadStage` |
@@ -23,6 +24,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.15] - 2026-09-16
+
+### Added
+- **Ingestion context:** `DocumentMetadata` and `EnrichedDocument` in `src/ingestion/context.py` — models for extracted file metadata and enriched documents
+- **Metadata:** `MetadataExtractor` base interface in `src/ingestion/metadata.py`; `FilesystemMetadataExtractor` in `src/ingestion/metadata_extractor.py` reading `stat()` fields and markdown headings for the title
+- **Stage:** `EnrichStage[CleanedDocument, EnrichedDocument]` in `src/ingestion/stages/enrich.py`
+- **Package init:** `src/ingestion/__init__.py` reduced to a module docstring
+- **Testing:** `tests/unit/ingestion/test_metadata.py`, `tests/unit/ingestion/test_enrich_stage.py`
 
 ## [0.1.14] - 2026-09-16
 

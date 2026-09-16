@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict
@@ -68,3 +69,30 @@ class CleanedDocument(BaseModel):
     content: str
     content_hash: str
     format: str
+
+
+class DocumentMetadata(BaseModel):
+    """Metadata extracted from a document."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    source: str
+    source_uri: str
+    file_name: str
+    extension: str
+    document_type: str
+    title: str | None = None
+    file_size_bytes: int
+    modified_at: datetime
+
+
+class EnrichedDocument(BaseModel):
+    """Cleaned document with extracted metadata."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    document: DocumentInput
+    content: str
+    content_hash: str
+    format: str
+    metadata: DocumentMetadata
