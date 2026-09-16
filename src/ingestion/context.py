@@ -55,3 +55,16 @@ class ParsedDocument(BaseModel):
     content: str
     content_hash: str
     format: str
+
+
+class CleanedDocument(BaseModel):
+    """Cleaned textual representation of a document."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+
+    document: DocumentInput
+    content: str
+    content_hash: str
+    format: str

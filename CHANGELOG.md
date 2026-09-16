@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.14  | Cleaning | `CleanedDocument`, `TextDocumentCleaner`, `CleanStage` |
 | 0.1.13  | Parsing | `ParsedDocument`, Markdown/Text parsers, `ParserRegistry`, `ParseStage` |
 | 0.1.12  | Loading | `RawDocument`, `DocumentLoader`, `FilesystemLoader`, `LoadStage` |
 | 0.1.11  | Change Detection | SHA-256 hashing, `ChangeDetector`, `DocumentChangeType` |
@@ -22,6 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.14] - 2026-09-16
+
+### Added
+- **Ingestion context:** `CleanedDocument` in `src/ingestion/context.py` — Pydantic model for cleaned textual content
+- **Cleaning:** `DocumentCleaner` base interface in `src/ingestion/cleaning.py`; `TextDocumentCleaner` in `src/ingestion/cleaners/text.py` normalizing line endings, stripping trailing whitespace, collapsing excessive blank lines, and trimming the content
+- **Exports:** `src/ingestion/cleaners/__init__.py` re-exports `TextDocumentCleaner`
+- **Stage:** `CleanStage[ParsedDocument, CleanedDocument]` in `src/ingestion/stages/clean.py`
+- **Testing:** `tests/unit/ingestion/test_text_cleaner.py`, `tests/unit/ingestion/test_clean_stage.py`
 
 ## [0.1.13] - 2026-09-16
 
