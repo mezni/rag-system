@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|---------------|---------------|
-| 0.1.7 | [Next Feature] | Add next phase of RAG system implementation |
+| 0.1.9 | Ingestion Orchestration | Add DocumentIngestionService orchestrating loader selection and document persistence through the existing DocumentService |
+| 0.1.8 | Source & Ingestion Boundary | Define document source domain model, ingestion result model, and loader interface without coupling to specific source types |
+| 0.1.7 | Atomic Document Versioning | Add atomic document updates with version tracking via DocumentVersionRepository and transaction-boundary service layer |
 | 0.1.6 | Document Repository | Add SQLAlchemy DocumentRepository with CRUD operations and SQLAlchemy session management for PostgreSQL document storage |
 | 0.1.5 | Alembic Migrations | Add SQLAlchemy ORM models and Alembic database migration infrastructure for PostgreSQL document storage |
 | 0.1.4 | Release Readiness | Infrastructure and domain layer complete; RAG system ready for vector indexing and retrieval implementation |
@@ -20,7 +22,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## v0.1.8 - Source & Ingestion Boundary (Current)
+## v0.1.9 - Ingestion Orchestration (Current)
+
+**Objective**: Add DocumentIngestionService orchestrating loader selection and document persistence through the existing DocumentService.
+
+**Changes**:
+- `src/application/documents/ingestion/service.py` → `DocumentIngestionService` class with `ingest()` method and `_find_loader()` helper, selecting the correct `DocumentLoader` for a given `DocumentSource` and delegating persistence to `DocumentService`
+- `src/application/documents/ingestion/loader.py` → `DocumentLoader` ABC already defined in v0.1.8, enabling polymorphism
+- `tests/unit/application/documents/ingestion/test_service.py` → 2 unit tests: `test_ingestion_service` verifies loader selection → `loader.load()` → `DocumentService.create_document()` pipeline; `test_ingestion_service_rejects_unsupported_source` verifies `ValueError` when no loader supports the source type
+- Dependency injection pattern: `DocumentIngestionService` receives `loaders: list[DocumentLoader]` and `document_service: DocumentService` via constructor, enabling testability with `Mock` objects and future concrete loaders
+- All 16 tests passing (5 unit/integration from prior steps + 3 repository tests + 3 versioning tests + 2 source tests + 1 file loader test + 2 ingestion service tests)
+- `uv run ruff check .` clean
+
+---
+
+## v0.1.8 - Source & Ingestion Boundary (Previous)
 
 **Objective**: Define document source domain model, ingestion result model, and loader interface without coupling to specific source types (PDF, DOCX, SharePoint, web pages, etc.).
 
@@ -52,6 +68,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Transaction boundary established: service layer uses `with session.begin():` for atomic document + version operations (COMMIT on success, ROLLBACK on failure)
 - All 11 tests passing (5 unit/integration from prior steps + 3 repository tests + 3 versioning tests)
 - `uv run ruff check .` clean
+
+---
+
+## v0.1.6 - Document Repository (Previous)
+
+**Objective**: Add SQLAlchemy DocumentRepository with CRUD operations and SQLAlchemy session management for PostgreSQL document storage.
+
+**Changes**:
+- `src/infrastructure/persistence/postgres/repositories/document_repository.py` → `DocumentRepository` class with `create()`, `get_by_id()`, `list_all()`, `update()`, `delete()` methods bridging `DocumentRecord` (domain) and `DocumentModel` (SQLAlchemy ORM)
+- `src/infrastructure/persistence/postgres/session.py` → `DatabaseSession` class creating SQLAlchemy engine and session factory from `PostgresSettings`
+- `tests/integration/postgres/test_document_repository.py` → 3 integration tests verifying document create+get, update, and list operations with PostgreSQL
+- Repository pattern established as boundary between domain layer (`DocumentRecord`) and persistence layer (`DocumentModel` / PostgreSQL), preventing SQLAlchemy model leakage
+- All 8 tests passing (5 unit/integration from prior steps + 3 new repository tests)
+- `uv run ruff check .` clean
+
+---
+
+## v0.1.5 - Alembic Migrations (Previous)
+
+**Objective**: Add SQLAlchemy ORM models and Alembic database migration infrastructure for PostgreSQL document storage.
+
+**Changes**:
+- `src/infrastructure/persistence/postgres/models/document.py` → `DocumentModel` SQLAlchemy ORM model with `__tablename__ = "documents"`, columns: id (UUID primary key), source, title, content (Text), content_hash (String(64)), version (Integer, default=1), created_at/updated_at (DateTime with timezone)
+- `src/infrastructure/persistence/postgres/settings.py` → `PostgresSettings` pydantic model with host, port, database, user fields; `password` property reading from `.env`; `url` property building SQLAlchemy connection string `postgresql+psycopg://user:password@host:port/database`
+- `database/migrations/env.py` → Alembic environment configured to import `Base` from `DocumentModel` and `PostgresSettings` from settings, setting `sqlalchemy.url` from `PostgresSettings.url` so migrations use the same connection config as the application
+- `alembic.ini` → `sqlalchemy.url =` (empty, filled by env.py at runtime)
+- `database/migrations/versions/8c04059a0aa6_initial_schema.py` → auto-generated migration creating `documents` table with columns: id (uuid, primary key), source (String, not null), title (String, not null), content (Text, not null), content_hash (String(64), not null), version (Integer, not null, default=1), created_at/updated_at (DateTime with timezone)
+- Migration verified: `uv run alembic upgrade head` successfully applies the schema to the running PostgreSQL container
+- Table confirmed: `documents` with columns id (uuid), source (varchar), title (varchar), content (text), content_hash (varchar(64)), version (integer), created_at/updated_at (timestamp with tz)
+- All 5 prior tests passing (2 config, 2 domain record, 1 connection test)
 
 ---
 
