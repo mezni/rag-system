@@ -16,3 +16,10 @@ class IndexOperation(StrEnum):
     UPDATE = "update"
     DELETE = "delete"
     REINDEX = "reindex"
+
+
+class IndexVersionStatus(StrEnum):
+    BUILDING = "building"
+    ACTIVE = "active"
+    RETIRED = "retired"
+    FAILED = "failed"

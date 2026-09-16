@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import Session
 
 from src.db.models.document import DocumentDB
+from src.db.models.index_version import IndexVersionDB
 
 load_dotenv()
 
@@ -31,4 +32,5 @@ def database_session(database_engine):
         yield session
 
         session.execute(delete(DocumentDB))
+        session.execute(delete(IndexVersionDB))
         session.commit()

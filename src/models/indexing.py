@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.core.enums import IndexOperation
+from src.core.enums import IndexOperation, IndexVersionStatus
 
 
 class IndexRequest(BaseModel):
@@ -19,7 +19,7 @@ class IndexVersion(BaseModel):
 
     id: UUID | None = None
     version_number: int = Field(ge=1)
-    status: str = Field(min_length=1, max_length=50)
+    status: IndexVersionStatus
     embedding_model: str = Field(min_length=1, max_length=255)
     embedding_dimensions: int = Field(gt=0)
     created_at: datetime | None = None

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.24  | Version Lifecycle | `IndexVersionStatus` enum, `VersioningService`, create/activate/fail lifecycle |
 | 0.1.23  | Version-Aware Indexing | chunk↔version relationships, `IndexVersionRepository` in `IndexingService`, dimension validation |
 | 0.1.22  | Index Versions | `IndexVersion`/`IndexVersionDB`, `index_versions` migration, `IndexVersionRepository` |
 | 0.1.21  | Indexing | `IndexOperation`, `IndexRequest`, `IndexingService` add/update/delete, reindex flow |
@@ -32,6 +33,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.24] - 2026-09-16
+
+### Added
+- **Enums:** `IndexVersionStatus` (`BUILDING`, `ACTIVE`, `RETIRED`, `FAILED`) in `src/core/enums.py`
+- **Repository:** `IndexVersionRepository` lifecycle — `get_next_version_number`, `create_building`, `activate` (retires prior active versions), `mark_failed`
+- **Service:** `VersioningService` (`create_version`, `activate_version`, `fail_version`, `get_active_version`)
+- **Model:** `IndexVersion` status now typed as `IndexVersionStatus` in `src/models/indexing.py`
+- **Testing:** `tests/integration/test_versioning_service.py`; integration teardown now cleans `index_versions` for deterministic isolation
 
 ## [0.1.23] - 2026-09-16
 
