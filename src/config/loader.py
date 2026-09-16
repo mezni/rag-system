@@ -1,21 +1,23 @@
-from __future__ import annotations
-
-import json
 from pathlib import Path
 from typing import Any
 
-_BASE_DIR = Path(__file__).resolve().parents[2]
-_PROFILES_DIR = _BASE_DIR / "config" / "profiles"
+import yaml
 
 
-def list_profiles() -> list[str]:
-    if not _PROFILES_DIR.exists():
-        return []
-    return sorted(p.stem for p in _PROFILES_DIR.glob("*.json"))
+def load_yaml_config(path: str | Path) -> dict[str, Any]:
+    """Load a YAML configuration file."""
+    config_path = Path(path)
 
+    if not config_path.exists():
+        raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
-def load_profile(name: str) -> dict[str, Any]:
-    path = _PROFILES_DIR / f"{name}.json"
-    if not path.exists():
-        raise FileNotFoundError(f"Profile '{name}' not found at {path}")
-    return json.loads(path.read_text(encoding="utf-8"))
+    with config_path.open("r", encoding="utf-8") as file:
+        data = yaml.safe_load(file)
+
+    if data is None:
+        return {}
+
+    if not isinstance(data, dict):
+        raise ValueError(f"Configuration root must be a mapping: {config_path}")
+
+    return data

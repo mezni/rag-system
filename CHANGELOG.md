@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.4   | Models & Tests | `DocumentDB` model, integration test suite |
 | 0.1.5   | Repository   | `DocumentRepository` persistence layer, test isolation |
 | 0.1.6   | Domain Model | Pydantic `Document` app model, DB→domain conversion |
+| 0.1.7   | Configuration | Layered YAML + env settings, `load_yaml_config` |
 
 ## [0.1.1] - 2026-09-16
 
@@ -70,3 +71,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 - **Model registry:** `src/models/__init__.py` re-exports `Document`
 - **Conversion:** `DocumentRepository.to_domain()` maps `DocumentDB` → `Document`; `get_domain_by_id()` returns the application model
 - **Testing:** `tests/unit/models/test_document.py`, `test_document_repository_returns_domain_model` integration test
+
+## [0.1.7] - 2026-09-16
+
+### Added
+- **Config loader:** `load_yaml_config()` in `src/config/loader.py` reads YAML files and returns a mapping, raising `FileNotFoundError`/`ValueError` on invalid input
+- **Settings:** Layered config in `src/config/settings.py` — `EnvironmentSettings` (pydantic-settings, `.env`-backed), `YamlConfig` (application/logging), top-level `Settings` with `application_name`, `environment_name`, `database_url`, `openrouter_api_key` properties
+- **Caching:** `get_settings()` uses `functools.lru_cache` to return a single settings instance
+- **Exports:** `src/config/__init__.py` re-exports `Settings` and `get_settings`
+- **Dependency:** `pyyaml>=6.0` added to `pyproject.toml`
+- **Testing:** `tests/unit/config/test_settings.py`
+
+### Changed
+- **DB engine:** `src/db/engine.py` now pulls `DATABASE_URL` from `get_settings()` instead of `os.getenv()`

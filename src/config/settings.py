@@ -1,34 +1,78 @@
-from __future__ import annotations
-
+from functools import lru_cache
 from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+from pydantic import BaseModel, Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-_ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
+from src.config.loader import load_yaml_config
 
+BASE_DIR = Path(__file__).resolve().parents[2]
+CONFIG_DIR = BASE_DIR / "config"
 
-class Settings(BaseSettings):
-    app_env: str = "development"
-    app_debug: bool = False
-    log_level: str = "INFO"
-
-    model_config = {
-        "env_file": str(_ENV_FILE),
-        "env_file_encoding": "utf-8",
-        "extra": "ignore",
-    }
+load_dotenv(BASE_DIR / ".env")
 
 
-_settings: Settings | None = None
+class ApplicationConfig(BaseModel):
+    name: str = "rag-system"
+    environment: str = "dev"
 
 
+class LoggingConfig(BaseModel):
+    level: str = "INFO"
+
+
+class YamlConfig(BaseModel):
+    application: ApplicationConfig
+    logging: LoggingConfig
+
+
+class EnvironmentSettings(BaseSettings):
+    """Environment-specific settings loaded from .env."""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
+    app_env: str = Field(default="dev")
+    database_url: str
+    openrouter_api_key: str | None = None
+
+
+class Settings(BaseModel):
+    """Complete application configuration."""
+
+    environment: EnvironmentSettings
+    yaml: YamlConfig
+
+    @property
+    def application_name(self) -> str:
+        return self.yaml.application.name
+
+    @property
+    def environment_name(self) -> str:
+        return self.yaml.application.environment
+
+    @property
+    def database_url(self) -> str:
+        return self.environment.database_url
+
+    @property
+    def openrouter_api_key(self) -> str | None:
+        return self.environment.openrouter_api_key
+
+
+@lru_cache
 def get_settings() -> Settings:
-    global _settings
-    if _settings is None:
-        _settings = Settings()
-    return _settings
+    """Return cached application settings."""
+    environment = EnvironmentSettings()
 
+    yaml_data = load_yaml_config(CONFIG_DIR / "settings.yaml")
+    yaml_config = YamlConfig.model_validate(yaml_data)
 
-def reset_settings() -> None:
-    global _settings
-    _settings = None
+    return Settings(
+        environment=environment,
+        yaml=yaml_config,
+    )
