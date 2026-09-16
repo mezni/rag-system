@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.11  | Change Detection | SHA-256 hashing, `ChangeDetector`, `DocumentChangeType` |
 | 0.1.10  | Ingestion | Document discovery: `DocumentSource`, `FilesystemSource`, `DiscoveryStage` |
 | 0.1.9   | Service Layer | `DocumentService` application service, service tests |
 | 0.1.8   | Validation    | `DocumentCreate` schema, stricter field constraints, validation tests |
@@ -19,6 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.11] - 2026-09-16
+
+### Added
+- **Enum:** `DocumentChangeType` in `src/core/enums.py` (`new`, `modified`, `unchanged`)
+- **Hashing:** `calculate_file_hash` in `src/core/hashing.py` — streaming SHA-256 over 1 MiB chunks
+- **Ingestion context:** `DocumentChange` in `src/ingestion/context.py` — frozen Pydantic model pairing a `DocumentInput` with `change_type`, `content_hash`, optional `previous_content_hash`
+- **Change detection:** `ChangeDetector` in `src/ingestion/change_detection.py` — classifies documents as `NEW` (no previous hash), `MODIFIED` (hash differs), or `UNCHANGED`
+- **Testing:** `tests/unit/core/test_hashing.py`, `tests/unit/ingestion/test_change_detection.py` (new/unchanged/modified)
 
 ## [0.1.10] - 2026-09-16
 
