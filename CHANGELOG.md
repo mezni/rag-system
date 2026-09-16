@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|---------------|---------------|
+| 0.1.10 | Source Metadata Persistence | Add source_type, source_uri, external_id columns to documents table and persist DocumentSource through the full pipeline |
 | 0.1.9 | Ingestion Orchestration | Add DocumentIngestionService orchestrating loader selection and document persistence through the existing DocumentService |
 | 0.1.8 | Source & Ingestion Boundary | Define document source domain model, ingestion result model, and loader interface without coupling to specific source types |
 | 0.1.7 | Atomic Document Versioning | Add atomic document updates with version tracking via DocumentVersionRepository and transaction-boundary service layer |
@@ -22,7 +23,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## v0.1.9 - Ingestion Orchestration (Current)
+## v0.1.10 - Source Metadata Persistence (Current)
+
+**Objective**: Add `source_type`, `source_uri`, `external_id` columns to `documents` table and persist `DocumentSource` through the full pipeline (`DocumentRecord` → `DocumentModel` → PostgreSQL → `Repository.get_by_id()` → `DocumentRecord`).
+
+**Changes**:
+- `src/domain/documents/models.py` → `DocumentRecord.source` changed from `str` to `DocumentSource`, giving the domain model structural understanding of the source
+- `src/infrastructure/persistence/postgres/models/document.py` → `DocumentModel` added columns: `source_type` (String(50)), `source_uri` (Text), `external_id` (String(255), nullable), enabling source metadata to survive database round-trips
+- `src/infrastructure/persistence/postgres/repositories/document_repository.py` → `DocumentRepository.create()` and `update()` populate `source_type`, `source_uri`, `external_id` from `DocumentSource`; `_to_domain()` reconstructs `DocumentSource` from model columns
+- `src/application/documents/ingestion/service.py` → `DocumentIngestionService.ingest()` passes `source=source` (full `DocumentSource`) instead of `source=source.uri`, so original source information survives the entire pipeline
+- `database/migrations/versions/3813d8d517d7_add_document_source_metadata.py` → adds `source_type`, `source_uri`, `external_id` columns, drops old `source` column
+- `database/migrations/versions/b65d365e813f_recreate_document_versions_table.py` → recreates `document_versions` table after it was temporarily dropped during metadata migration
+- `tests/unit/domain/documents/test_document_record.py` → 2 unit tests use `DocumentSource` instead of plain string for `source` field
+- `tests/integration/postgres/test_document_repository.py` → 3 integration tests use `DocumentSource` with `DocumentSourceType.FILE` for `source`
+- `tests/unit/application/documents/ingestion/test_service.py` → 2 unit tests verify `DocumentIngestionService` loader selection pipeline and unsupported source rejection
+- All 16 tests passing (5 unit/integration from prior steps + 3 repository tests + 3 versioning tests + 2 source tests + 1 file loader test + 2 ingestion service tests)
+- `uv run ruff check .` clean
+
+---
+
+## v0.1.9 - Ingestion Orchestration (Previous)
 
 **Objective**: Add DocumentIngestionService orchestrating loader selection and document persistence through the existing DocumentService.
 

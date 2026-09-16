@@ -28,7 +28,7 @@ class DocumentIngestionService:
         ingested = loader.load(source)
 
         document = DocumentRecord(
-            source=source.uri,
+            source=source,
             title=ingested.title,
             content=ingested.content,
             content_hash="",

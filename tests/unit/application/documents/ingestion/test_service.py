@@ -40,7 +40,7 @@ def test_ingestion_service():
 
     document_service.create_document.return_value = (
         DocumentRecord(
-            source="policy.txt",
+            source=source,
             title="Refund Policy",
             content="Refunds are allowed within 30 days.",
             content_hash="abc123",

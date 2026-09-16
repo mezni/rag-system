@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 
 from src.application.documents.document_service import DocumentService
 from src.domain.documents.models import DocumentRecord
+from src.domain.documents.source import DocumentSource, DocumentSourceType
 from src.infrastructure.persistence.postgres.models.document import DocumentModel
 from src.infrastructure.persistence.postgres.repositories.document_repository import (
     DocumentRepository,
@@ -32,7 +33,10 @@ def test_create_document_creates_version():
     database, session, service = create_service()
 
     document = DocumentRecord(
-        source="test",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/refund-policy.txt",
+        ),
         title="Refund Policy",
         content="Refunds are available within 30 days.",
         content_hash="",
@@ -63,7 +67,10 @@ def test_unchanged_content_does_not_create_new_version():
     database, session, service = create_service()
 
     document = DocumentRecord(
-        source="test",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/refund-policy.txt",
+        ),
         title="Refund Policy",
         content="Refunds are available within 30 days.",
         content_hash="",
@@ -104,7 +111,10 @@ def test_changed_content_creates_new_version():
     database, session, service = create_service()
 
     document = DocumentRecord(
-        source="test",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/refund-policy.txt",
+        ),
         title="Refund Policy",
         content="Refunds are available within 30 days.",
         content_hash="",

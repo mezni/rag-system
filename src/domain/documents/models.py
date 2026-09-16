@@ -6,6 +6,8 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 
+from src.domain.documents.source import DocumentSource
+
 
 class Metadata(BaseModel):
     """Metadata for a document, such as source, page numbers, etc."""
@@ -104,10 +106,10 @@ class DocumentRecord(BaseModel):
 
     id: UUID = Field(default_factory=uuid4)
 
-    source: str
+    source: DocumentSource
+
     title: str
     content: str
-
     content_hash: str
 
     version: int = 1

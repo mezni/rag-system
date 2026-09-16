@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 
 from src.domain.documents.models import DocumentRecord
+from src.domain.documents.source import DocumentSource, DocumentSourceType
 from src.infrastructure.persistence.postgres.repositories.document_repository import (
     DocumentRepository,
 )
@@ -21,7 +22,10 @@ def test_create_and_get_document():
     repository = create_repository()
 
     document = DocumentRecord(
-        source="test",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/refund-policy.txt",
+        ),
         title="Test Policy",
         content="Test policy content.",
         content_hash="abc123",
@@ -45,7 +49,10 @@ def test_update_document():
     repository = create_repository()
 
     document = DocumentRecord(
-        source="test",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/refund-policy.txt",
+        ),
         title="Original Policy",
         content="Original content.",
         content_hash="hash1",
@@ -72,7 +79,10 @@ def test_list_documents():
     repository = create_repository()
 
     document = DocumentRecord(
-        source="test",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/list-test-policy.txt",
+        ),
         title="List Test Policy",
         content="List test content.",
         content_hash="hash-list",

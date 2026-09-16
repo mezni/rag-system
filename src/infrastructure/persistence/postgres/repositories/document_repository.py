@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.domain.documents.models import DocumentRecord
+from src.domain.documents.source import DocumentSource, DocumentSourceType
 from src.infrastructure.persistence.postgres.models.document import DocumentModel
 
 
@@ -21,7 +22,9 @@ class DocumentRepository:
 
         model = DocumentModel(
             id=document.id,
-            source=document.source,
+            source_type=document.source.source_type.value,
+            source_uri=document.source.uri,
+            external_id=document.source.external_id,
             title=document.title,
             content=document.content,
             content_hash=document.content_hash,
@@ -65,7 +68,9 @@ class DocumentRepository:
                 f"Document not found: {document.id}"
             )
 
-        model.source = document.source
+        model.source_type = document.source.source_type.value
+        model.source_uri = document.source.uri
+        model.external_id = document.source.external_id
         model.title = document.title
         model.content = document.content
         model.content_hash = document.content_hash
@@ -96,7 +101,11 @@ class DocumentRepository:
 
         return DocumentRecord(
             id=model.id,
-            source=model.source,
+            source=DocumentSource(
+                source_type=DocumentSourceType(model.source_type),
+                uri=model.source_uri,
+                external_id=model.external_id,
+            ),
             title=model.title,
             content=model.content,
             content_hash=model.content_hash,

@@ -21,9 +21,19 @@ class DocumentModel(Base):
         default=uuid.uuid4,
     )
 
-    source: Mapped[str] = mapped_column(
-        String,
+    source_type: Mapped[str] = mapped_column(
+        String(50),
         nullable=False,
+    )
+
+    source_uri: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+    )
+
+    external_id: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
     )
 
     title: Mapped[str] = mapped_column(

@@ -1,9 +1,15 @@
+"""Unit tests for DocumentRecord domain model."""
+
 from src.domain.documents.models import DocumentRecord
+from src.domain.documents.source import DocumentSource, DocumentSourceType
 
 
 def test_document_record_defaults():
     document = DocumentRecord(
-        source="filesystem",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/refund-policy.txt",
+        ),
         title="Refund Policy",
         content="Refunds are allowed within 30 days.",
         content_hash="abc123",
@@ -17,7 +23,10 @@ def test_document_record_defaults():
 
 def test_document_record_preserves_content():
     document = DocumentRecord(
-        source="filesystem",
+        source=DocumentSource(
+            source_type=DocumentSourceType.FILE,
+            uri="data/policies/refund-policy.txt",
+        ),
         title="Refund Policy",
         content="Refunds are allowed within 30 days.",
         content_hash="abc123",
