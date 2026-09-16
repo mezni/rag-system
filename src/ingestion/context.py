@@ -121,3 +121,25 @@ class ChunkedDocument(BaseModel):
     document: DocumentInput
     content_hash: str
     chunks: list[DocumentChunk]
+
+
+class ChunkEmbedding(BaseModel):
+    """Embedding generated for a document chunk."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    chunk_id: str
+    vector: list[float]
+    model_name: str
+    dimensions: int
+
+
+class EmbeddedDocument(BaseModel):
+    """Document chunks with their embeddings."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    document: DocumentInput
+    content_hash: str
+    chunks: list[DocumentChunk]
+    embeddings: list[ChunkEmbedding]

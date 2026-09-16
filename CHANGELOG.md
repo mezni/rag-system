@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.17  | Embeddings | `ChunkEmbedding`/`EmbeddedDocument`, `LocalEmbeddingProvider`, `EmbedStage` |
 | 0.1.16  | Chunking | `DocumentChunk`/`ChunkedDocument`, `CharacterTextChunker`, `ChunkStage` |
 | 0.1.15  | Metadata | `DocumentMetadata`/`EnrichedDocument`, `FilesystemMetadataExtractor`, `EnrichStage` |
 | 0.1.14  | Cleaning | `CleanedDocument`, `TextDocumentCleaner`, `CleanStage` |
@@ -25,6 +26,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.17] - 2026-09-16
+
+### Added
+- **Ingestion context:** `ChunkEmbedding` and `EmbeddedDocument` in `src/ingestion/context.py` — models for per-chunk vectors and embedded documents
+- **Embeddings:** `EmbeddingProvider` base interface in `src/embeddings/base.py`; `LocalEmbeddingProvider` in `src/embeddings/local.py` producing normalized, deterministic SHA-256-derived vectors for development and tests
+- **Exports:** `src/embeddings/__init__.py` re-exports `EmbeddingProvider` and `LocalEmbeddingProvider`
+- **Stage:** `EmbedStage[ChunkedDocument, EmbeddedDocument]` in `src/ingestion/stages/embed.py`
+- **Testing:** `tests/unit/embeddings/test_local.py`, `tests/unit/ingestion/test_embed_stage.py`
 
 ## [0.1.16] - 2026-09-16
 
