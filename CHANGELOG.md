@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.4   | Models & Tests | `DocumentDB` model, integration test suite |
+| 0.1.5   | Repository   | `DocumentRepository` persistence layer, test isolation |
 
 ## [0.1.1] - 2026-09-16
 
@@ -50,3 +51,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 ### Changed
 - **Migration style:** Auto-fixed Alembic-generated files for ruff compliance
+
+## [0.1.5] - 2026-09-16
+
+### Added
+- **Repository:** `DocumentRepository` in `src/db/repositories/documents.py` with `create`, `get_by_id`, `get_by_source_uri`, `get_by_content_hash`, `delete`
+- **Fixtures:** Root `tests/conftest.py` with `database_engine` and `database_session` fixtures
+- **Testing:** `test_create_and_get_document`, `test_find_document_by_source_uri`, `test_find_document_by_content_hash`
+
+### Changed
+- **Test isolation:** `database_session` fixture now clears all rows from mapped tables before each test to prevent `MultipleResultsFound` from accumulated committed data
