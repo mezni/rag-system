@@ -28,8 +28,15 @@ uv run ruff check .
 
 - `config/` – YAML application settings (`settings.yaml`)
 - `src/config/` – layered settings (`.env` environment + YAML file)
-- `src/core/` – errors, ids, clock primitives
+- `src/core/` – errors, ids, clock, enums, hashing primitives
 - `src/db/` – SQLAlchemy engine, session, models, Alembic migrations
 - `src/models/` – Pydantic application/domain models
+- `src/services/` – application services (e.g. `DocumentService`)
+- `src/ingestion/` – document ingestion pipeline
+  - `sources/` – document discovery (`FilesystemSource`)
+  - `stages/` – pipeline stages (discover, load, parse, clean, enrich)
+  - `loaders/` – raw content loading (`FilesystemLoader`)
+  - `parsers/` – format-specific parsing (Markdown, Text)
+  - `cleaners/` – text normalization (`TextDocumentCleaner`)
 - `tests/unit/` – unit tests
 - `tests/integration/` – integration tests (require the running database)
