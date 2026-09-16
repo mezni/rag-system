@@ -94,3 +94,118 @@ def test_ingestion_skips_unchanged_document(
     )
 
     assert len(documents) == 1
+
+
+def test_modified_document_is_reindexed(
+    database_session,
+    tmp_path: Path,
+) -> None:
+    document_path = tmp_path / "billing-policy.md"
+
+    document_path.write_text(
+        "# Billing Policy\n\n"
+        "Original billing policy.\n",
+        encoding="utf-8",
+    )
+
+    pipeline = create_filesystem_ingestion_pipeline(
+        session=database_session,
+        input_dir=tmp_path,
+    )
+
+    first_result = pipeline.run()
+
+    assert len(first_result) == 1
+
+    document = (
+        database_session.query(DocumentDB)
+        .filter(
+            DocumentDB.source_uri == str(document_path)
+        )
+        .one()
+    )
+
+    original_hash = document.content_hash
+
+    original_chunks = (
+        database_session.query(ChunkDB)
+        .filter(
+            ChunkDB.document_id == document.id
+        )
+        .all()
+    )
+
+    assert len(original_chunks) > 0
+
+    document_path.write_text(
+        "# Billing Policy\n\n"
+        "Updated billing policy with new information.\n",
+        encoding="utf-8",
+    )
+
+    second_result = pipeline.run()
+
+    assert len(second_result) == 1
+
+    database_session.refresh(document)
+
+    assert document.content_hash != original_hash
+
+    updated_chunks = (
+        database_session.query(ChunkDB)
+        .filter(
+            ChunkDB.document_id == document.id
+        )
+        .all()
+    )
+
+    assert len(updated_chunks) > 0
+
+
+def test_indexing_service_deletes_document(
+    database_session,
+    tmp_path: Path,
+) -> None:
+    document_path = tmp_path / "policy.md"
+
+    document_path.write_text(
+        "# Test Policy\n\nTest content.",
+        encoding="utf-8",
+    )
+
+    pipeline = create_filesystem_ingestion_pipeline(
+        session=database_session,
+        input_dir=tmp_path,
+    )
+
+    pipeline.run()
+
+    document = (
+        database_session.query(DocumentDB)
+        .filter(
+            DocumentDB.source_uri == str(document_path)
+        )
+        .one()
+    )
+
+    from src.services.indexing_service import IndexingService
+
+    service = IndexingService(database_session)
+
+    deleted = service.delete(document.id)
+
+    assert deleted is True
+
+    assert (
+        database_session.query(DocumentDB)
+        .filter(DocumentDB.id == document.id)
+        .one_or_none()
+        is None
+    )
+
+    assert (
+        database_session.query(ChunkDB)
+        .filter(ChunkDB.document_id == document.id)
+        .count()
+        == 0
+    )

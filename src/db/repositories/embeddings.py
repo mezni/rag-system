@@ -42,3 +42,25 @@ class EmbeddingRepository:
         return self.session.execute(
             statement
         ).scalar_one_or_none()
+
+    def delete_by_chunk_ids(
+        self,
+        chunk_ids: list[UUID],
+    ) -> int:
+        if not chunk_ids:
+            return 0
+
+        embeddings = list(
+            self.session.execute(
+                select(EmbeddingDB).where(
+                    EmbeddingDB.chunk_id.in_(chunk_ids)
+                )
+            ).scalars().all()
+        )
+
+        for embedding in embeddings:
+            self.session.delete(embedding)
+
+        self.session.flush()
+
+        return len(embeddings)

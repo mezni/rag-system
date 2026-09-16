@@ -18,9 +18,7 @@ from src.ingestion.stages.embed import EmbedStage
 from src.ingestion.stages.enrich import EnrichStage
 from src.ingestion.stages.load import LoadStage
 from src.ingestion.stages.parse import ParseStage
-from src.services.ingestion_persistence_service import (
-    IngestionPersistenceService,
-)
+from src.services.indexing_service import IndexingService
 
 
 class IngestionPipeline:
@@ -45,7 +43,7 @@ class IngestionPipeline:
         self.chunk_stage = ChunkStage(chunker)
         self.embed_stage = EmbedStage(embedding_provider)
 
-        self.persistence_service = IngestionPersistenceService(session)
+        self.indexing_service = IndexingService(session)
         self.documents = DocumentRepository(session)
 
         self.change_detector = ChangeDetector()
@@ -77,10 +75,18 @@ class IngestionPipeline:
                 continue
 
             if change.change_type == DocumentChangeType.MODIFIED:
-                raise NotImplementedError(
-                    "Modified document replacement will be implemented "
-                    "in the indexing/versioning step."
-                )
+                raw_document = self.loader_stage.execute(change)
+                parsed_document = self.parse_stage.execute(raw_document)
+                cleaned_document = self.clean_stage.execute(parsed_document)
+                enriched_document = self.enrich_stage.execute(cleaned_document)
+                chunked_document = self.chunk_stage.execute(enriched_document)
+                embedded_document = self.embed_stage.execute(chunked_document)
+
+                self.indexing_service.update(embedded_document)
+
+                results.append(embedded_document)
+
+                continue
 
             raw_document = self.loader_stage.execute(change)
             parsed_document = self.parse_stage.execute(raw_document)
@@ -89,7 +95,7 @@ class IngestionPipeline:
             chunked_document = self.chunk_stage.execute(enriched_document)
             embedded_document = self.embed_stage.execute(chunked_document)
 
-            self.persistence_service.persist(embedded_document)
+            self.indexing_service.add(embedded_document)
 
             results.append(embedded_document)
 

@@ -74,3 +74,18 @@ class DocumentRepository:
 
     def delete(self, document: DocumentDB) -> None:
         self.session.delete(document)
+
+    def update_content_hash(
+        self,
+        document: DocumentDB,
+        content_hash: str,
+        title: str | None = None,
+    ) -> DocumentDB:
+        document.content_hash = content_hash
+
+        if title is not None:
+            document.title = title
+
+        self.session.flush()
+
+        return document

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.21  | Indexing | `IndexOperation`, `IndexRequest`, `IndexingService` add/update/delete, reindex flow |
 | 0.1.20  | Pipeline | `IngestionPipeline` orchestrating all stages, filesystem factory, E2E tests |
 | 0.1.19  | Chunk Persistence | ORM relationships, `ChunkRepository`/`EmbeddingRepository`, `IngestionPersistenceService` |
 | 0.1.18  | Vector Storage | pgvector, `ChunkDB`/`EmbeddingDB`, chunks+embeddings migration |
@@ -29,6 +30,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.21] - 2026-09-16
+
+### Added
+- **Enum:** `IndexOperation` (`ADD`, `UPDATE`, `DELETE`, `REINDEX`) in `src/core/enums.py`
+- **Model:** `IndexRequest` in `src/models/indexing.py` — operation, optional `document_id`, optional reason
+- **Repositories:** `EmbeddingRepository.delete_by_chunk_ids`, `DocumentRepository.update_content_hash`
+- **Service:** `IndexingService` in `src/services/indexing_service.py` — `add`, `update` (replaces chunks/embeddings), `delete` (cascades), transactional with rollback
+- **Pipeline:** `IngestionPipeline` now uses `IndexingService`; modified documents are reindexed via `update` instead of raising `NotImplementedError`
+- **Testing:** `test_modified_document_is_reindexed`, `test_indexing_service_deletes_document`
 
 ## [0.1.20] - 2026-09-16
 

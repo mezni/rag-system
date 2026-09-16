@@ -31,7 +31,7 @@ uv run ruff check .
 - `src/core/` – errors, ids, clock, enums, hashing primitives
 - `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector), Alembic migrations
 - `src/models/` – Pydantic application/domain models
-- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`)
+- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`)
 - `src/embeddings/` – embedding providers (`LocalEmbeddingProvider`)
 - `src/ingestion/` – document ingestion pipeline
   - `sources/` – document discovery (`FilesystemSource`)
