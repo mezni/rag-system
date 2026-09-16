@@ -29,7 +29,7 @@ uv run ruff check .
 - `config/` – YAML application settings (`settings.yaml`)
 - `src/config/` – layered settings (`.env` environment + YAML file)
 - `src/core/` – errors, ids, clock, enums, hashing primitives
-- `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector), Alembic migrations
+- `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector, `index_versions`), Alembic migrations
 - `src/models/` – Pydantic application/domain models
 - `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`)
 - `src/embeddings/` – embedding providers (`LocalEmbeddingProvider`)

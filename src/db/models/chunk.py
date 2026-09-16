@@ -30,6 +30,13 @@ class ChunkDB(Base):
         index=True,
     )
 
+    index_version_id: Mapped[UUID] = mapped_column(
+        PostgreSQLUUID(as_uuid=True),
+        ForeignKey("index_versions.id", ondelete="RESTRICT"),
+        nullable=False,
+        index=True,
+    )
+
     chunk_index: Mapped[int] = mapped_column(
         Integer,
         nullable=False,

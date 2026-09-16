@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.22  | Index Versions | `IndexVersion`/`IndexVersionDB`, `index_versions` migration, `IndexVersionRepository` |
 | 0.1.21  | Indexing | `IndexOperation`, `IndexRequest`, `IndexingService` add/update/delete, reindex flow |
 | 0.1.20  | Pipeline | `IngestionPipeline` orchestrating all stages, filesystem factory, E2E tests |
 | 0.1.19  | Chunk Persistence | ORM relationships, `ChunkRepository`/`EmbeddingRepository`, `IngestionPersistenceService` |
@@ -30,6 +31,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.22] - 2026-09-16
+
+### Added
+- **Model:** `IndexVersion` in `src/models/indexing.py` — version metadata (status, embedding model/dimensions, activation timestamps)
+- **Database model:** `IndexVersionDB` in `src/db/models/index_version.py` (`index_versions` table with `activated_at`)
+- **Schema:** `ChunkDB.index_version_id` — NOT NULL FK to `index_versions` (`ondelete=RESTRICT`); migration `e71285cbb8e1` also establishes the `index_versions → chunks → embeddings` versioning chain
+- **Repository:** `IndexVersionRepository` in `src/db/repositories/index_versions.py` (`create`, `get_active`, `get_by_version_number`) exported from `src/db/repositories/__init__.py`
+- **Note:** pipeline integration tests marked skipped pending `IndexingService` awareness of the active index version (per design)
 
 ## [0.1.21] - 2026-09-16
 
