@@ -1,0 +1,25 @@
+from datetime import datetime
+from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class IngestionRun(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID | None = None
+    run_type: str = Field(min_length=1, max_length=50)
+    status: str = Field(min_length=1, max_length=50)
+
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+
+    discovered_count: int = Field(default=0, ge=0)
+    processed_count: int = Field(default=0, ge=0)
+    skipped_count: int = Field(default=0, ge=0)
+    failed_count: int = Field(default=0, ge=0)
+
+    error_message: str | None = Field(
+        default=None,
+        max_length=2000,
+    )

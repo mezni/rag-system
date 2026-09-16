@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.26  | Ingestion Runs | `IngestionRun`/`IngestionRunDB`, `ingestion_runs` migration, `IngestionRunService` |
 | 0.1.25  | Reindex Service | `add_to_version`, BUILDING/ACTIVE-gated persistence, `ReindexService` build-activate flow |
 | 0.1.24  | Version Lifecycle | `IndexVersionStatus` enum, `VersioningService`, create/activate/fail lifecycle |
 | 0.1.23  | Version-Aware Indexing | chunk↔version relationships, `IndexVersionRepository` in `IndexingService`, dimension validation |
@@ -34,6 +35,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.26] - 2026-09-16
+
+### Added
+- **Model:** `IngestionRun` Pydantic model (`src/models/ingestion.py`)
+- **DB model:** `IngestionRunDB` (`ingestion_runs` table) migrated via `e8c4e4f33447`
+- **Repository:** `IngestionRunRepository` (`create`, `get_by_id`, `mark_completed`, `mark_failed`)
+- **Service:** `IngestionRunService` (`start`, `complete`, `fail`)
+- **Testing:** `tests/integration/test_ingestion_runs.py`; conftest teardown clears `ingestion_runs`
 
 ## [0.1.25] - 2026-09-16
 
