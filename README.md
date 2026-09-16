@@ -31,7 +31,7 @@ uv run ruff check .
 - `src/core/` – errors, ids, clock, enums, hashing primitives
 - `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector, `index_versions`), Alembic migrations
 - `src/models/` – Pydantic application/domain models
-- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`)
+- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`, `ReindexService`); version-aware indexing: `VersioningService` manages the BUILDING/ACTIVE/RETIRED/FAILED lifecycle while `ReindexService` builds a new version, indexes documents into it, then activates it
 - `src/embeddings/` – embedding providers (`LocalEmbeddingProvider`)
 - `src/ingestion/` – document ingestion pipeline
   - `sources/` – document discovery (`FilesystemSource`)

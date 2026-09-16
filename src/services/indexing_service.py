@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from src.core.enums import IndexOperation
+from src.core.enums import IndexOperation, IndexVersionStatus
 from src.db.repositories.chunks import ChunkRepository
 from src.db.repositories.documents import DocumentRepository
 from src.db.repositories.embeddings import EmbeddingRepository
@@ -28,9 +28,12 @@ class IndexingService:
                 self._build_document_data(data)
             )
 
+            index_version = self._get_active_index_version()
+
             self._persist_chunks_and_embeddings(
                 document.id,
                 data,
+                index_version.id,
             )
 
             self.session.commit()
@@ -72,9 +75,12 @@ class IndexingService:
                 title=data.metadata.title,
             )
 
+            index_version = self._get_active_index_version()
+
             self._persist_chunks_and_embeddings(
                 document.id,
                 data,
+                index_version.id,
             )
 
             self.session.commit()
@@ -104,12 +110,55 @@ class IndexingService:
             self.session.rollback()
             raise
 
+    def add_to_version(
+        self,
+        data: EmbeddedDocument,
+        index_version_id: UUID,
+    ) -> UUID:
+        try:
+            document = self.documents.get_by_source_uri(
+                data.document.source_uri
+            )
+
+            if document is None:
+                document = self.documents.create(
+                    self._build_document_data(data)
+                )
+
+            self._persist_chunks_and_embeddings(
+                document_id=document.id,
+                data=data,
+                index_version_id=index_version_id,
+            )
+
+            self.session.flush()
+
+            return document.id
+
+        except Exception:
+            self.session.rollback()
+            raise
+
     def _persist_chunks_and_embeddings(
         self,
         document_id: UUID,
         data: EmbeddedDocument,
+        index_version_id: UUID,
     ) -> None:
-        index_version = self._get_active_index_version()
+        index_version = self.index_versions.get_by_id(index_version_id)
+
+        if index_version is None:
+            raise ValueError(
+                f"Index version not found: {index_version_id}"
+            )
+
+        if index_version.status not in (
+            IndexVersionStatus.BUILDING.value,
+            IndexVersionStatus.ACTIVE.value,
+        ):
+            raise ValueError(
+                "Documents can only be added to a BUILDING or ACTIVE index version"
+            )
 
         for chunk, embedding in zip(
             data.chunks,
@@ -118,7 +167,7 @@ class IndexingService:
         ):
             if embedding.dimensions != index_version.embedding_dimensions:
                 raise ValueError(
-                    "Embedding dimensions do not match the active index version"
+                    "Embedding dimensions do not match the index version"
                 )
 
             database_chunk = self.chunks.create(

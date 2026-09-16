@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.25  | Reindex Service | `add_to_version`, BUILDING/ACTIVE-gated persistence, `ReindexService` build-activate flow |
 | 0.1.24  | Version Lifecycle | `IndexVersionStatus` enum, `VersioningService`, create/activate/fail lifecycle |
 | 0.1.23  | Version-Aware Indexing | chunk↔version relationships, `IndexVersionRepository` in `IndexingService`, dimension validation |
 | 0.1.22  | Index Versions | `IndexVersion`/`IndexVersionDB`, `index_versions` migration, `IndexVersionRepository` |
@@ -33,6 +34,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.25] - 2026-09-16
+
+### Added
+- **Service:** `ReindexService` — build a new index version, index documents into it, then activate; rollback on failure without touching version state
+- **Indexing:** `IndexingService.add_to_version` adds a document to a specific BUILDING version; `_persist_chunks_and_embeddings` now takes an explicit `index_version_id` and validates the version exists and is BUILDING/ACTIVE
+- **Repository:** `IndexVersionRepository.get_by_id`
+- **Testing:** `tests/integration/test_reindex_service.py`
+- `add()`/`update()` now resolve the active index version and pass it to persistence
 
 ## [0.1.24] - 2026-09-16
 

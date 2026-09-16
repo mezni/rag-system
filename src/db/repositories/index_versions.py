@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -46,6 +47,16 @@ class IndexVersionRepository:
     ) -> IndexVersionDB | None:
         statement = select(IndexVersionDB).where(
             IndexVersionDB.version_number == version_number
+        )
+
+        return self.session.execute(statement).scalar_one_or_none()
+
+    def get_by_id(
+        self,
+        version_id: UUID,
+    ) -> IndexVersionDB | None:
+        statement = select(IndexVersionDB).where(
+            IndexVersionDB.id == version_id
         )
 
         return self.session.execute(statement).scalar_one_or_none()
