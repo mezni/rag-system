@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Feature Domain | Key Objective |
 |---------|---------------|---------------|
+| 0.1.6 | Document Repository | Add SQLAlchemy DocumentRepository with CRUD operations and SQLAlchemy session management for PostgreSQL document storage |
 | 0.1.5 | Alembic Migrations | Add SQLAlchemy ORM models and Alembic database migration infrastructure for PostgreSQL document storage |
 | 0.1.4 | Release Readiness | Infrastructure and domain layer complete; RAG system ready for vector indexing and retrieval implementation |
 | 0.1.3 | Infrastructure | Add PostgreSQL Pydantic configuration and connection management with psycopg |
@@ -18,7 +19,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## v0.1.5 - Alembic Migrations (Current)
+## v0.1.6 - Document Repository (Current)
+
+**Objective**: Add SQLAlchemy DocumentRepository with CRUD operations and SQLAlchemy session management for PostgreSQL document storage.
+
+**Changes**:
+- `src/infrastructure/persistence/postgres/repositories/document_repository.py` → `DocumentRepository` class with `create()`, `get_by_id()`, `list_all()`, `update()`, `delete()` methods bridging `DocumentRecord` (domain) and `DocumentModel` (SQLAlchemy ORM)
+- `src/infrastructure/persistence/postgres/session.py` → `DatabaseSession` class creating SQLAlchemy engine and session factory from `PostgresSettings`
+- `tests/integration/postgres/test_document_repository.py` → 3 integration tests verifying document create+get, update, and list operations with PostgreSQL
+- Repository pattern established as boundary between domain layer (`DocumentRecord`) and persistence layer (`DocumentModel` / PostgreSQL), preventing SQLAlchemy model leakage
+- All 8 tests passing (5 unit/integration from prior steps + 3 new repository tests)
+- `uv run ruff check .` clean
+
+---
+
+## v0.1.5 - Alembic Migrations (Previous)
 
 **Objective**: Add SQLAlchemy ORM models and Alembic database migration infrastructure for PostgreSQL document storage.
 
@@ -30,12 +45,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `database/migrations/versions/8c04059a0aa6_initial_schema.py` → auto-generated migration creating `documents` table with columns: id (uuid, primary key), source (String, not null), title (String, not null), content (Text, not null), content_hash (String(64), not null), version (Integer, not null, default=1), created_at/updated_at (DateTime with timezone)
 - Migration verified: `uv run alembic upgrade head` successfully applies the schema to the running PostgreSQL container
 - Table confirmed: `documents` with columns id (uuid), source (varchar), title (varchar), content (text), content_hash (varchar(64)), version (integer), created_at/updated_at (timestamp with tz)
+- All 5 prior tests passing (2 config, 2 domain record, 1 connection test)
 
 ---
 
 ## v0.1.4 - Release Readiness (Previous)
 
 **Objective**: Infrastructure and domain layer complete; RAG system ready for vector indexing and retrieval implementation.
+
+**Changes**:
+- `src/infrastructure/persistence/postgres/config.py` → `PostgresConfig` pydantic model with validated fields (host, port, database, user), environment variable integration via `.env`
+- `src/infrastructure/persistence/postgres/connection.py` → `PostgresConnection` class managing connections via `psycopg.connect()`, with context manager support and `connection()` method for dependency injection
+- `src/domain/documents/models.py` → Pydantic `Document`, `Metadata`, `Chunk` dataclasses + `DocumentRecord` BaseModel with UUID IDs, timestamps, and content_hash; `model_dump()`/`model_validate_dict()` for serialization
+- `tests/unit/infrastructure/persistence/postgres/test_config.py` → 2 unit tests verifying `PostgresConfig` defaults and port validation rejection
+- `tests/integration/postgres/test_connection.py` → 1 integration test confirming `PostgresConnection` can execute SQL (`SELECT 1`) and return `(1,)`
+- `tests/unit/domain/test_document_record.py` → 2 unit tests verifying `DocumentRecord` defaults (version=1, auto-generated IDs/timestamps) and content preservation
+- Dependency injection pattern: `PostgresConfig` → `PostgresConnection`, enabling testability with alternative configurations
+- Password remains in `.env` per security best practices; non-secret settings read from environment
+- All checks pass: `uv run ruff check .` clean, `uv run pytest` 5/5 tests pass
 
 **Changes**:
 - `src/infrastructure/persistence/postgres/config.py` → `PostgresConfig` pydantic model with validated fields (host, port, database, user), environment variable integration via `.env`
