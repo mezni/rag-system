@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.13  | Parsing | `ParsedDocument`, Markdown/Text parsers, `ParserRegistry`, `ParseStage` |
 | 0.1.12  | Loading | `RawDocument`, `DocumentLoader`, `FilesystemLoader`, `LoadStage` |
 | 0.1.11  | Change Detection | SHA-256 hashing, `ChangeDetector`, `DocumentChangeType` |
 | 0.1.10  | Ingestion | Document discovery: `DocumentSource`, `FilesystemSource`, `DiscoveryStage` |
@@ -21,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.13] - 2026-09-16
+
+### Added
+- **Ingestion context:** `ParsedDocument` in `src/ingestion/context.py` — Pydantic model adding a `format` tag to a `RawDocument`
+- **Parsers:** `DocumentParser` base interface (`supports`, `parse`) in `src/ingestion/parsers/base.py`; `MarkdownParser` (`.md`, `.markdown`) and `TextParser` (`.txt`) in `src/ingestion/parsers/`
+- **Registry:** `ParserRegistry` in `src/ingestion/parsers/registry.py` selects the first supporting parser, raising `ValueError` for unsupported formats
+- **Stage:** `ParseStage[RawDocument, ParsedDocument]` in `src/ingestion/stages/parse.py`
+- **Exports:** `src/ingestion/parsers/__init__.py` re-exports `DocumentParser`, `MarkdownParser`, `ParserRegistry`, `TextParser`
+- **Testing:** `tests/unit/ingestion/test_markdown_parser.py`, `test_parser_registry.py`, `test_parse_stage.py`
 
 ## [0.1.12] - 2026-09-16
 

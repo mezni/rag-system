@@ -42,3 +42,16 @@ class RawDocument(BaseModel):
     document: DocumentInput
     content: str
     content_hash: str
+
+
+class ParsedDocument(BaseModel):
+    """Structured textual representation of a document."""
+
+    model_config = ConfigDict(
+        extra="forbid",
+    )
+
+    document: DocumentInput
+    content: str
+    content_hash: str
+    format: str
