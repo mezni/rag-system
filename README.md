@@ -31,7 +31,7 @@ uv run ruff check .
 - `src/core/` – errors, ids, clock, enums (`DocumentChangeType`, `DocumentLifecycleStatus`, `IndexOperation`, `IndexVersionStatus`), hashing primitives
 - `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector, `index_versions`, `ingestion_runs`, `document_processing`), Alembic migrations
 - `src/models/` – Pydantic application/domain models (`Document`/`DocumentCreate`, `IngestionRun`, `DocumentProcessingResult`)
-- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`, `ReindexService`, `IngestionRunService`, `DocumentProcessingService`); version-aware indexing: `VersioningService` manages the BUILDING/ACTIVE/RETIRED/FAILED lifecycle while `ReindexService` builds a new version, indexes documents into it, then activates it
+- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`, `ReindexService`, `IngestionRunService`, `DocumentProcessingService`); document lifecycle transitions (PROCESSING→ACTIVE) on index; version-aware indexing: `VersioningService` manages the BUILDING/ACTIVE/RETIRED/FAILED lifecycle while `ReindexService` builds a new version, indexes documents into it, then activates it
 - `src/embeddings/` – embedding providers (`LocalEmbeddingProvider`)
 - `src/ingestion/` – document ingestion pipeline
   - `sources/` – document discovery (`FilesystemSource`)
@@ -40,6 +40,6 @@ uv run ruff check .
   - `parsers/` – format-specific parsing (Markdown, Text) via `ParserRegistry`
   - `cleaners/` – text normalization (`TextDocumentCleaner`)
   - `chunkers/` – chunk splitting (`CharacterTextChunker`)
-  - `pipeline.py` / `factory.py` – pipeline orchestration and wiring; `run()` returns an `IngestionResult` with per-document failure isolation
+  - `pipeline.py` / `factory.py` – pipeline orchestration and wiring; `run()` returns an `IngestionResult` with per-document failure isolation, recording success/skip/failure into `ingestion_runs` and `document_processing`
 - `tests/unit/` – unit tests
 - `tests/integration/` – integration tests (require the running database)

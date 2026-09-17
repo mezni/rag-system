@@ -40,6 +40,11 @@ class IndexingService:
                 index_version.id,
             )
 
+            self.documents.update_status(
+                document,
+                DocumentLifecycleStatus.ACTIVE,
+            )
+
             self.session.commit()
 
             return document.id
@@ -60,6 +65,11 @@ class IndexingService:
                 raise ValueError(
                     "Cannot update document because it does not exist"
                 )
+
+            self.documents.update_status(
+                document,
+                DocumentLifecycleStatus.PROCESSING,
+            )
 
             existing_chunks = self.chunks.get_by_document_id(
                 document.id
@@ -85,6 +95,11 @@ class IndexingService:
                 document.id,
                 data,
                 index_version.id,
+            )
+
+            self.documents.update_status(
+                document,
+                DocumentLifecycleStatus.ACTIVE,
             )
 
             self.session.commit()
@@ -210,5 +225,5 @@ class IndexingService:
             source_uri=data.document.source_uri,
             title=data.metadata.title,
             content_hash=data.content_hash,
-            status=DocumentLifecycleStatus.ACTIVE,
+            status=DocumentLifecycleStatus.PROCESSING,
         )

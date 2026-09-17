@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.30  | Lifecycle Transitions | `DocumentService` set_processing/active/failed, index PROCESSING→ACTIVE flow |
 | 0.1.29  | Document Lifecycle | `DocumentLifecycleStatus` enum, enum-typed status, `update_status` |
 | 0.1.28  | Document Processing | per-document success/skip/failure records, `DocumentProcessingService` |
 | 0.1.27  | Run Tracking | `IngestionResult`, run counter updates, per-document isolation, complete/fail |
@@ -38,6 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.30] - 2026-09-16
+
+### Added
+- **Service:** `DocumentService.set_processing`, `set_active`, `set_failed` lifecycle transitions
+- **Indexing:** new documents start `PROCESSING` (`_build_document_data`) and move to `ACTIVE` after chunks/embeddings persist; `update()` transitions PROCESSING→ACTIVE, with rollback leaving the previous ACTIVE state intact on failure
+- **Testing:** `tests/integration/test_document_lifecycle.py`
 
 ## [0.1.29] - 2026-09-16
 

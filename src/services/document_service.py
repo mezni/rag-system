@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
+from src.core.enums import DocumentLifecycleStatus
 from src.db.repositories.documents import DocumentRepository
 from src.models.document import Document, DocumentCreate
 
@@ -45,3 +46,45 @@ class DocumentService:
         self.session.commit()
 
         return True
+
+    def set_processing(self, document_id: UUID) -> Document | None:
+        document = self.repository.get_by_id(document_id)
+
+        if document is None:
+            return None
+
+        self.repository.update_status(
+            document,
+            DocumentLifecycleStatus.PROCESSING,
+        )
+        self.session.commit()
+
+        return self.repository.to_domain(document)
+
+    def set_active(self, document_id: UUID) -> Document | None:
+        document = self.repository.get_by_id(document_id)
+
+        if document is None:
+            return None
+
+        self.repository.update_status(
+            document,
+            DocumentLifecycleStatus.ACTIVE,
+        )
+        self.session.commit()
+
+        return self.repository.to_domain(document)
+
+    def set_failed(self, document_id: UUID) -> Document | None:
+        document = self.repository.get_by_id(document_id)
+
+        if document is None:
+            return None
+
+        self.repository.update_status(
+            document,
+            DocumentLifecycleStatus.FAILED,
+        )
+        self.session.commit()
+
+        return self.repository.to_domain(document)
