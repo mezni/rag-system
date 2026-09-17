@@ -20,6 +20,9 @@ from src.ingestion.stages.embed import EmbedStage
 from src.ingestion.stages.enrich import EnrichStage
 from src.ingestion.stages.load import LoadStage
 from src.ingestion.stages.parse import ParseStage
+from src.services.document_processing_service import (
+    DocumentProcessingService,
+)
 from src.services.indexing_service import IndexingService
 from src.services.ingestion_run_service import IngestionRunService
 
@@ -49,6 +52,7 @@ class IngestionPipeline:
         self.indexing_service = IndexingService(session)
         self.documents = DocumentRepository(session)
         self.run_service = IngestionRunService(session)
+        self.processing_service = DocumentProcessingService(session)
 
         self.change_detector = ChangeDetector()
 
@@ -83,6 +87,11 @@ class IngestionPipeline:
                 )
 
                 if change.change_type == DocumentChangeType.UNCHANGED:
+                    self.processing_service.record_skipped(
+                        run_id=run.id,
+                        source_uri=document.source_uri,
+                    )
+
                     skipped_count += 1
                     continue
 
@@ -97,15 +106,36 @@ class IngestionPipeline:
                     document_id = self.indexing_service.update(
                         embedded_document
                     )
+
+                    self.processing_service.record_success(
+                        run_id=run.id,
+                        source_uri=document.source_uri,
+                        operation="update",
+                        document_id=document_id,
+                    )
                 else:
                     document_id = self.indexing_service.add(
                         embedded_document
                     )
 
+                    self.processing_service.record_success(
+                        run_id=run.id,
+                        source_uri=document.source_uri,
+                        operation="add",
+                        document_id=document_id,
+                    )
+
                 document_ids.append(document_id)
                 processed_count += 1
 
-            except Exception:
+            except Exception as exc:
+                self.processing_service.record_failure(
+                    run_id=run.id,
+                    source_uri=document.source_uri,
+                    operation="process",
+                    error_message=str(exc),
+                )
+
                 failed_count += 1
                 continue
 

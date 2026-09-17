@@ -3,6 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from src.core.enums import DocumentLifecycleStatus
 from src.db.models.document import DocumentDB
 from src.models.document import Document, DocumentCreate
 
@@ -86,6 +87,16 @@ class DocumentRepository:
         if title is not None:
             document.title = title
 
+        self.session.flush()
+
+        return document
+
+    def update_status(
+        self,
+        document: DocumentDB,
+        status: DocumentLifecycleStatus,
+    ) -> DocumentDB:
+        document.status = status.value
         self.session.flush()
 
         return document

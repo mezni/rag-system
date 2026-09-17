@@ -1,3 +1,4 @@
+from src.core.enums import DocumentLifecycleStatus
 from src.models.document import DocumentCreate
 from src.services.document_service import DocumentService
 
@@ -17,7 +18,7 @@ def test_create_document(database_session):
     assert document.id is not None
     assert document.source == "filesystem"
     assert document.title == "Billing Policy"
-    assert document.status == "active"
+    assert document.status == DocumentLifecycleStatus.PENDING
 
 
 def test_get_document(database_session):

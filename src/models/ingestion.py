@@ -23,3 +23,20 @@ class IngestionRun(BaseModel):
         default=None,
         max_length=2000,
     )
+
+
+class DocumentProcessingResult(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: UUID | None = None
+    run_id: UUID
+    document_id: UUID | None = None
+
+    source_uri: str = Field(min_length=1)
+    operation: str = Field(min_length=1, max_length=50)
+    status: str = Field(min_length=1, max_length=50)
+
+    error_message: str | None = Field(
+        default=None,
+        max_length=2000,
+    )

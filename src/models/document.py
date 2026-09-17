@@ -3,6 +3,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.core.enums import DocumentLifecycleStatus
+
 
 class DocumentCreate(BaseModel):
     """Data required to create a document."""
@@ -19,7 +21,7 @@ class DocumentCreate(BaseModel):
         pattern=r"^[a-fA-F0-9]{64}$",
     )
 
-    status: str = Field(default="active", min_length=1, max_length=50)
+    status: DocumentLifecycleStatus = DocumentLifecycleStatus.PENDING
 
 
 class Document(BaseModel):
@@ -39,7 +41,7 @@ class Document(BaseModel):
         pattern=r"^[a-fA-F0-9]{64}$",
     )
 
-    status: str = Field(default="active", min_length=1, max_length=50)
+    status: DocumentLifecycleStatus = DocumentLifecycleStatus.PENDING
 
     created_at: datetime | None = None
     updated_at: datetime | None = None

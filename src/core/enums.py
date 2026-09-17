@@ -9,6 +9,14 @@ class DocumentChangeType(StrEnum):
     UNCHANGED = "unchanged"
 
 
+class DocumentLifecycleStatus(StrEnum):
+    PENDING = "pending"
+    PROCESSING = "processing"
+    ACTIVE = "active"
+    FAILED = "failed"
+    DELETED = "deleted"
+
+
 class IndexOperation(StrEnum):
     """Supported index operations."""
 

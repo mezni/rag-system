@@ -1,5 +1,6 @@
 import pytest
 
+from src.core.enums import IndexVersionStatus
 from src.db.repositories.index_versions import IndexVersionRepository
 
 
@@ -12,7 +13,7 @@ def active_index_version(database_session) -> None:
     if repository.get_active() is None:
         repository.create(
             version_number=1,
-            status="active",
+            status=IndexVersionStatus.ACTIVE.value,
             embedding_model="local-deterministic",
             embedding_dimensions=8,
         )

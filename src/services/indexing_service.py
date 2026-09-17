@@ -2,7 +2,11 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from src.core.enums import IndexOperation, IndexVersionStatus
+from src.core.enums import (
+    DocumentLifecycleStatus,
+    IndexOperation,
+    IndexVersionStatus,
+)
 from src.db.repositories.chunks import ChunkRepository
 from src.db.repositories.documents import DocumentRepository
 from src.db.repositories.embeddings import EmbeddingRepository
@@ -206,5 +210,5 @@ class IndexingService:
             source_uri=data.document.source_uri,
             title=data.metadata.title,
             content_hash=data.content_hash,
-            status="active",
+            status=DocumentLifecycleStatus.ACTIVE,
         )

@@ -1,3 +1,4 @@
+from src.core.enums import DocumentLifecycleStatus
 from src.db.repositories.documents import DocumentRepository
 from src.models.document import DocumentCreate
 
@@ -22,7 +23,7 @@ def test_create_and_get_document(database_session):
     assert stored_document.id == document.id
     assert stored_document.title == "Billing Policy"
     assert stored_document.source == "filesystem"
-    assert stored_document.status == "active"
+    assert stored_document.status == DocumentLifecycleStatus.PENDING.value
 
 
 def test_find_document_by_source_uri(database_session):

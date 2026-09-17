@@ -1,11 +1,15 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import DateTime, Integer, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.base import Base
+
+if TYPE_CHECKING:
+    from src.db.models.document_processing import DocumentProcessingDB
 
 
 class IngestionRunDB(Base):
@@ -65,4 +69,9 @@ class IngestionRunDB(Base):
     error_message: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,
+    )
+
+    processing_records: Mapped[list["DocumentProcessingDB"]] = relationship(
+        "DocumentProcessingDB",
+        back_populates="run",
     )

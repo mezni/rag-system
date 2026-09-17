@@ -10,6 +10,7 @@ from src.db.base import Base
 
 if TYPE_CHECKING:
     from src.db.models.chunk import ChunkDB
+    from src.db.models.document_processing import DocumentProcessingDB
 
 
 class DocumentDB(Base):
@@ -67,4 +68,9 @@ class DocumentDB(Base):
         "ChunkDB",
         back_populates="document",
         cascade="all, delete-orphan",
+    )
+
+    processing_records: Mapped[list["DocumentProcessingDB"]] = relationship(
+        "DocumentProcessingDB",
+        back_populates="document",
     )

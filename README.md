@@ -28,10 +28,10 @@ uv run ruff check .
 
 - `config/` – YAML application settings (`settings.yaml`)
 - `src/config/` – layered settings (`.env` environment + YAML file)
-- `src/core/` – errors, ids, clock, enums, hashing primitives
-- `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector, `index_versions`, `ingestion_runs`), Alembic migrations
-- `src/models/` – Pydantic application/domain models
-- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`, `ReindexService`, `IngestionRunService`); version-aware indexing: `VersioningService` manages the BUILDING/ACTIVE/RETIRED/FAILED lifecycle while `ReindexService` builds a new version, indexes documents into it, then activates it
+- `src/core/` – errors, ids, clock, enums (`DocumentChangeType`, `DocumentLifecycleStatus`, `IndexOperation`, `IndexVersionStatus`), hashing primitives
+- `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector, `index_versions`, `ingestion_runs`, `document_processing`), Alembic migrations
+- `src/models/` – Pydantic application/domain models (`Document`/`DocumentCreate`, `IngestionRun`, `DocumentProcessingResult`)
+- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`, `ReindexService`, `IngestionRunService`, `DocumentProcessingService`); version-aware indexing: `VersioningService` manages the BUILDING/ACTIVE/RETIRED/FAILED lifecycle while `ReindexService` builds a new version, indexes documents into it, then activates it
 - `src/embeddings/` – embedding providers (`LocalEmbeddingProvider`)
 - `src/ingestion/` – document ingestion pipeline
   - `sources/` – document discovery (`FilesystemSource`)

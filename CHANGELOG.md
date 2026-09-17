@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.29  | Document Lifecycle | `DocumentLifecycleStatus` enum, enum-typed status, `update_status` |
+| 0.1.28  | Document Processing | per-document success/skip/failure records, `DocumentProcessingService` |
 | 0.1.27  | Run Tracking | `IngestionResult`, run counter updates, per-document isolation, complete/fail |
 | 0.1.26  | Ingestion Runs | `IngestionRun`/`IngestionRunDB`, `ingestion_runs` migration, `IngestionRunService` |
 | 0.1.25  | Reindex Service | `add_to_version`, BUILDING/ACTIVE-gated persistence, `ReindexService` build-activate flow |
@@ -36,6 +38,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.29] - 2026-09-16
+
+### Added
+- **Enums:** `DocumentLifecycleStatus` (PENDING/PROCESSING/ACTIVE/FAILED/DELETED)
+- **Models:** `DocumentCreate`/`Document` status now typed `DocumentLifecycleStatus` (default PENDING)
+- **Repository:** `DocumentRepository.update_status`
+- **Indexing:** `IndexingService._build_document_data` marks new documents `ACTIVE`
+- **Testing:** `tests/unit/core/test_document_lifecycle.py`; document tests updated to enum statuses; index-version tests use `IndexVersionStatus`
+
+## [0.1.28] - 2026-09-16
+
+### Added
+- **Model:** `DocumentProcessingResult` in `src/models/ingestion.py`
+- **DB model:** `DocumentProcessingDB` (`document_processing`, FKs to runs/documents) migrated via `f6479a21dd17`
+- **Repository:** `DocumentProcessingRepository` (`create`, `get_by_run_id`)
+- **Service:** `DocumentProcessingService` (`record_success`, `record_skipped`, `record_failure`)
+- **Pipeline:** unmatched/success/failure events recorded per document; pipeline tests still pass
+- **Testing:** `tests/integration/test_document_processing.py`
 
 ## [0.1.27] - 2026-09-16
 
