@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.33  | Processing Operations | `DocumentProcessingOperation` enum, change-type→operation mapping in pipeline |
 | 0.1.32  | Ingestion Enums   | `IngestionRunStatus`/`DocumentProcessingStatus` enums, enum-typed models & repositories |
 | 0.1.31  | Processing Persistence | `DocumentProcessingService` commits per record; rollback-survival persistence test |
 | 0.1.30  | Lifecycle Transitions | `DocumentService` set_processing/active/failed, index PROCESSING→ACTIVE flow |
@@ -41,6 +42,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.33] - 2026-09-19
+
+### Added
+- **Enum:** `DocumentProcessingOperation` (ADD/UPDATE/DELETE/SKIP/REINDEX) in `src/core/enums.py`
+- **Models:** `DocumentProcessingResult.operation` typed `DocumentProcessingOperation`
+
+### Changed
+- **Service:** `DocumentProcessingService` `record_success`/`record_skipped`/`record_failure` now accept `DocumentProcessingOperation` (the recorded `operation` column uses `.value`); `record_skipped` no longer takes an `operation` argument and always writes `SKIP`
+- **Pipeline:** maps change type to operation (NEW→ADD, MODIFIED→UPDATE, UNCHANGED→SKIP) and records that operation for success/failure attempts
+
+### Testing
+- **Testing:** `tests/unit/core/test_ingestion_operations.py`; integration test passes `DocumentProcessingOperation.ADD` and asserts `record.operation == "add"`
 
 ## [0.1.32] - 2026-09-19
 

@@ -2,7 +2,10 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from src.core.enums import DocumentProcessingStatus
+from src.core.enums import (
+    DocumentProcessingOperation,
+    DocumentProcessingStatus,
+)
 from src.db.repositories.document_processing import (
     DocumentProcessingRepository,
 )
@@ -18,13 +21,13 @@ class DocumentProcessingService:
         *,
         run_id: UUID,
         source_uri: str,
-        operation: str,
+        operation: DocumentProcessingOperation,
         document_id: UUID | None = None,
     ):
         record = self.repository.create(
             run_id=run_id,
             source_uri=source_uri,
-            operation=operation,
+            operation=operation.value,
             status=DocumentProcessingStatus.SUCCESS.value,
             document_id=document_id,
         )
@@ -38,13 +41,12 @@ class DocumentProcessingService:
         *,
         run_id: UUID,
         source_uri: str,
-        operation: str = "skip",
         document_id: UUID | None = None,
     ):
         record = self.repository.create(
             run_id=run_id,
             source_uri=source_uri,
-            operation=operation,
+            operation=DocumentProcessingOperation.SKIP.value,
             status=DocumentProcessingStatus.SKIPPED.value,
             document_id=document_id,
         )
@@ -58,14 +60,14 @@ class DocumentProcessingService:
         *,
         run_id: UUID,
         source_uri: str,
-        operation: str,
+        operation: DocumentProcessingOperation,
         error_message: str,
         document_id: UUID | None = None,
     ):
         record = self.repository.create(
             run_id=run_id,
             source_uri=source_uri,
-            operation=operation,
+            operation=operation.value,
             status=DocumentProcessingStatus.FAILED.value,
             document_id=document_id,
             error_message=error_message,

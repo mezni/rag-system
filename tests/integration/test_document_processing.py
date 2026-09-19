@@ -1,5 +1,6 @@
 from sqlalchemy import select
 
+from src.core.enums import DocumentProcessingOperation
 from src.db.models.document_processing import DocumentProcessingDB
 from src.services.document_processing_service import (
     DocumentProcessingService,
@@ -16,11 +17,12 @@ def test_record_success(database_session):
     record = processing_service.record_success(
         run_id=run.id,
         source_uri="data/raw/test.md",
-        operation="add",
+        operation=DocumentProcessingOperation.ADD,
     )
 
     assert record.id is not None
     assert record.run_id == run.id
+    assert record.operation == "add"
     assert record.status == "success"
 
 
@@ -35,7 +37,7 @@ def test_processing_record_is_committed(
     processing_service.record_success(
         run_id=run.id,
         source_uri="data/raw/test.md",
-        operation="add",
+        operation=DocumentProcessingOperation.ADD,
     )
 
     database_session.rollback()

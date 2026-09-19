@@ -2,7 +2,10 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from src.core.enums import DocumentChangeType
+from src.core.enums import (
+    DocumentChangeType,
+    DocumentProcessingOperation,
+)
 from src.db.repositories.documents import DocumentRepository
 from src.embeddings.base import EmbeddingProvider
 from src.ingestion.change_detection import ChangeDetector
@@ -70,6 +73,9 @@ class IngestionPipeline:
         failed_count = 0
 
         for document in discovered_documents:
+            operation: DocumentProcessingOperation | None = None
+            document_id: UUID | None = None
+
             try:
                 existing_document = self.documents.get_by_source_uri(
                     document.source_uri
@@ -86,7 +92,16 @@ class IngestionPipeline:
                     previous_content_hash=previous_hash,
                 )
 
-                if change.change_type == DocumentChangeType.UNCHANGED:
+                if change.change_type == DocumentChangeType.NEW:
+                    operation = DocumentProcessingOperation.ADD
+
+                elif change.change_type == DocumentChangeType.MODIFIED:
+                    operation = DocumentProcessingOperation.UPDATE
+
+                else:
+                    operation = DocumentProcessingOperation.SKIP
+
+                if operation == DocumentProcessingOperation.SKIP:
                     self.processing_service.record_skipped(
                         run_id=run.id,
                         source_uri=document.source_uri,
@@ -102,28 +117,22 @@ class IngestionPipeline:
                 chunked_document = self.chunk_stage.execute(enriched_document)
                 embedded_document = self.embed_stage.execute(chunked_document)
 
-                if change.change_type == DocumentChangeType.MODIFIED:
+                if operation == DocumentProcessingOperation.UPDATE:
                     document_id = self.indexing_service.update(
                         embedded_document
                     )
 
-                    self.processing_service.record_success(
-                        run_id=run.id,
-                        source_uri=document.source_uri,
-                        operation="update",
-                        document_id=document_id,
-                    )
                 else:
                     document_id = self.indexing_service.add(
                         embedded_document
                     )
 
-                    self.processing_service.record_success(
-                        run_id=run.id,
-                        source_uri=document.source_uri,
-                        operation="add",
-                        document_id=document_id,
-                    )
+                self.processing_service.record_success(
+                    run_id=run.id,
+                    source_uri=document.source_uri,
+                    operation=operation,
+                    document_id=document_id,
+                )
 
                 document_ids.append(document_id)
                 processed_count += 1
@@ -132,7 +141,8 @@ class IngestionPipeline:
                 self.processing_service.record_failure(
                     run_id=run.id,
                     source_uri=document.source_uri,
-                    operation="process",
+                    operation=operation,
+                    document_id=document_id,
                     error_message=str(exc),
                 )
 

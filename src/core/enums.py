@@ -43,3 +43,11 @@ class DocumentProcessingStatus(StrEnum):
     SUCCESS = "success"
     SKIPPED = "skipped"
     FAILED = "failed"
+
+
+class DocumentProcessingOperation(StrEnum):
+    ADD = "add"
+    UPDATE = "update"
+    DELETE = "delete"
+    SKIP = "skip"
+    REINDEX = "reindex"

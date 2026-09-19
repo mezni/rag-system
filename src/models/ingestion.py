@@ -4,6 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 from src.core.enums import (
+    DocumentProcessingOperation,
     DocumentProcessingStatus,
     IngestionRunStatus,
 )
@@ -38,7 +39,7 @@ class DocumentProcessingResult(BaseModel):
     document_id: UUID | None = None
 
     source_uri: str = Field(min_length=1)
-    operation: str = Field(min_length=1, max_length=50)
+    operation: DocumentProcessingOperation
     status: DocumentProcessingStatus
 
     error_message: str | None = Field(
