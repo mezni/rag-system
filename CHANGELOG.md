@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.31  | Processing Persistence | `DocumentProcessingService` commits per record; rollback-survival persistence test |
 | 0.1.30  | Lifecycle Transitions | `DocumentService` set_processing/active/failed, index PROCESSING→ACTIVE flow |
 | 0.1.29  | Document Lifecycle | `DocumentLifecycleStatus` enum, enum-typed status, `update_status` |
 | 0.1.28  | Document Processing | per-document success/skip/failure records, `DocumentProcessingService` |
@@ -39,6 +40,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.31] - 2026-09-19
+
+### Changed
+- **Service:** `DocumentProcessingService` `record_success`/`record_skipped`/`record_failure` now commit the session per record, so processing records persist independently of later run commits
+
+### Testing
+- **Testing:** `test_record_success` no longer calls `database_session.commit()`; adds `test_processing_record_is_committed` verifying records survive a `database_session.rollback()`
 
 ## [0.1.30] - 2026-09-16
 

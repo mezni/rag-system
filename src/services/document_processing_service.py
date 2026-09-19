@@ -20,13 +20,17 @@ class DocumentProcessingService:
         operation: str,
         document_id: UUID | None = None,
     ):
-        return self.repository.create(
+        record = self.repository.create(
             run_id=run_id,
             source_uri=source_uri,
             operation=operation,
             status="success",
             document_id=document_id,
         )
+
+        self.session.commit()
+
+        return record
 
     def record_skipped(
         self,
@@ -36,13 +40,17 @@ class DocumentProcessingService:
         operation: str = "skip",
         document_id: UUID | None = None,
     ):
-        return self.repository.create(
+        record = self.repository.create(
             run_id=run_id,
             source_uri=source_uri,
             operation=operation,
             status="skipped",
             document_id=document_id,
         )
+
+        self.session.commit()
+
+        return record
 
     def record_failure(
         self,
@@ -53,7 +61,7 @@ class DocumentProcessingService:
         error_message: str,
         document_id: UUID | None = None,
     ):
-        return self.repository.create(
+        record = self.repository.create(
             run_id=run_id,
             source_uri=source_uri,
             operation=operation,
@@ -61,3 +69,7 @@ class DocumentProcessingService:
             document_id=document_id,
             error_message=error_message,
         )
+
+        self.session.commit()
+
+        return record

@@ -40,6 +40,6 @@ uv run ruff check .
   - `parsers/` – format-specific parsing (Markdown, Text) via `ParserRegistry`
   - `cleaners/` – text normalization (`TextDocumentCleaner`)
   - `chunkers/` – chunk splitting (`CharacterTextChunker`)
-  - `pipeline.py` / `factory.py` – pipeline orchestration and wiring; `run()` returns an `IngestionResult` with per-document failure isolation, recording success/skip/failure into `ingestion_runs` and `document_processing`
+  - `pipeline.py` / `factory.py` – pipeline orchestration and wiring; `run()` returns an `IngestionResult` with per-document failure isolation, recording success/skip/failure into `ingestion_runs` and `document_processing` (each record commits immediately so it survives later rollbacks)
 - `tests/unit/` – unit tests
 - `tests/integration/` – integration tests (require the running database)
