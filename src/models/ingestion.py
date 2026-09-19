@@ -3,13 +3,18 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.core.enums import (
+    DocumentProcessingStatus,
+    IngestionRunStatus,
+)
+
 
 class IngestionRun(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     id: UUID | None = None
     run_type: str = Field(min_length=1, max_length=50)
-    status: str = Field(min_length=1, max_length=50)
+    status: IngestionRunStatus = IngestionRunStatus.RUNNING
 
     started_at: datetime | None = None
     completed_at: datetime | None = None
@@ -34,7 +39,7 @@ class DocumentProcessingResult(BaseModel):
 
     source_uri: str = Field(min_length=1)
     operation: str = Field(min_length=1, max_length=50)
-    status: str = Field(min_length=1, max_length=50)
+    status: DocumentProcessingStatus
 
     error_message: str | None = Field(
         default=None,

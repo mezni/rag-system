@@ -31,3 +31,15 @@ class IndexVersionStatus(StrEnum):
     ACTIVE = "active"
     RETIRED = "retired"
     FAILED = "failed"
+
+
+class IngestionRunStatus(StrEnum):
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class DocumentProcessingStatus(StrEnum):
+    SUCCESS = "success"
+    SKIPPED = "skipped"
+    FAILED = "failed"

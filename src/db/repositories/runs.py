@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from src.core.enums import IngestionRunStatus
 from src.db.models.run import IngestionRunDB
 
 
@@ -17,7 +18,7 @@ class IngestionRunRepository:
     ) -> IngestionRunDB:
         run = IngestionRunDB(
             run_type=run_type,
-            status="running",
+            status=IngestionRunStatus.RUNNING.value,
         )
 
         self.session.add(run)
@@ -41,7 +42,7 @@ class IngestionRunRepository:
         self,
         run: IngestionRunDB,
     ) -> IngestionRunDB:
-        run.status = "completed"
+        run.status = IngestionRunStatus.COMPLETED.value
         run.completed_at = datetime.now(timezone.utc)
 
         self.session.flush()
@@ -53,7 +54,7 @@ class IngestionRunRepository:
         run: IngestionRunDB,
         error_message: str,
     ) -> IngestionRunDB:
-        run.status = "failed"
+        run.status = IngestionRunStatus.FAILED.value
         run.completed_at = datetime.now(timezone.utc)
         run.error_message = error_message
 

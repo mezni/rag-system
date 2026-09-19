@@ -2,6 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
+from src.core.enums import DocumentProcessingStatus
 from src.db.repositories.document_processing import (
     DocumentProcessingRepository,
 )
@@ -24,7 +25,7 @@ class DocumentProcessingService:
             run_id=run_id,
             source_uri=source_uri,
             operation=operation,
-            status="success",
+            status=DocumentProcessingStatus.SUCCESS.value,
             document_id=document_id,
         )
 
@@ -44,7 +45,7 @@ class DocumentProcessingService:
             run_id=run_id,
             source_uri=source_uri,
             operation=operation,
-            status="skipped",
+            status=DocumentProcessingStatus.SKIPPED.value,
             document_id=document_id,
         )
 
@@ -65,7 +66,7 @@ class DocumentProcessingService:
             run_id=run_id,
             source_uri=source_uri,
             operation=operation,
-            status="failed",
+            status=DocumentProcessingStatus.FAILED.value,
             document_id=document_id,
             error_message=error_message,
         )

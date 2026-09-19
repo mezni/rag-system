@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.32  | Ingestion Enums   | `IngestionRunStatus`/`DocumentProcessingStatus` enums, enum-typed models & repositories |
 | 0.1.31  | Processing Persistence | `DocumentProcessingService` commits per record; rollback-survival persistence test |
 | 0.1.30  | Lifecycle Transitions | `DocumentService` set_processing/active/failed, index PROCESSING→ACTIVE flow |
 | 0.1.29  | Document Lifecycle | `DocumentLifecycleStatus` enum, enum-typed status, `update_status` |
@@ -40,6 +41,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.32] - 2026-09-19
+
+### Added
+- **Enums:** `IngestionRunStatus` (RUNNING/COMPLETED/FAILED) and `DocumentProcessingStatus` (SUCCESS/SKIPPED/FAILED) in `src/core/enums.py`
+- **Models:** `IngestionRun.status` typed `IngestionRunStatus` (default RUNNING); `DocumentProcessingResult.status` typed `DocumentProcessingStatus`
+- **Repository:** `IngestionRunRepository` writes `IngestionRunStatus.*.value` for create/complete/fail
+- **Service:** `DocumentProcessingService` writes `DocumentProcessingStatus.*.value` for success/skipped/failed
+- **Testing:** `tests/unit/core/test_ingestion_enums.py`
 
 ## [0.1.31] - 2026-09-19
 
