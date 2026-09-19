@@ -901,6 +901,12 @@ It records:
 - `skipped`
 - `failed`
 
+Typed by enums in `src/core/enums.py`:
+
+- `IngestionRunStatus` (RUNNING/COMPLETED/FAILED) — run lifecycle
+- `DocumentProcessingStatus` (SUCCESS/SKIPPED/FAILED) — record status
+- `DocumentProcessingOperation` (ADD/UPDATE/DELETE/SKIP/REINDEX) — operation performed
+
 Commit semantics:
 
 - `record_success()` / `record_skipped()` / `record_failure()` each commit their record immediately, so processing history is durable even if a later document-level transaction rolls back.
@@ -1139,17 +1145,27 @@ from:
 
 and make failure history durable.
 
-#### Step 33
+#### Step 33 — FINISHED
 
-Add explicit document operation records:
+Add explicit document operation records with run correlation.
+
+Implemented via `DocumentProcessingOperation`:
 
 - ADD
 - UPDATE
 - DELETE
 - SKIP
-- FAILED
+- REINDEX
 
-with run correlation.
+Every `document_processing` record (success/skipped/failure) carries a `run_id` and an `operation`. The pipeline derives the operation from the change type:
+
+```
+NEW      → ADD
+MODIFIED → UPDATE
+UNCHANGED → SKIP
+```
+
+- **Testing:** `tests/unit/core/test_ingestion_operations.py`
 
 #### Step 34
 
@@ -1654,7 +1670,7 @@ embeddings
 
 ## 37. Current stopping point
 
-We are currently at Step 31.
+We are currently at Step 31 (Steps 31 and 33 are complete; Step 32 remains).
 
 The immediate next task is:
 
@@ -1670,6 +1686,7 @@ Start from:
 ```
 rag-system
 Step 31 completed
+Step 33 completed (explicit document operation records)
 Step 32 is next
 ```
 
@@ -1679,4 +1696,4 @@ and continue incrementally.
 
 **One-line handoff**
 
-> rag-system is a Python 3.13 + uv + Pydantic + SQLAlchemy + Alembic + PostgreSQL/pgvector RAG platform; ingestion through embedding, indexing, index versioning, ingestion runs, per-document processing tracking, and document lifecycle states are implemented. `document_processing` records are transaction-safe (each `record_success`/`record_skipped`/`record_failure` commits immediately, verified by `test_processing_record_is_committed`). We are currently at Step 31; next is Step 32: improve document lifecycle/error handling, then continue with version-aware indexing, complete reindexing, retrieval, generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, testing, CI/CD, and production hardening.
+> rag-system is a Python 3.13 + uv + Pydantic + SQLAlchemy + Alembic + PostgreSQL/pgvector RAG platform; ingestion through embedding, indexing, index versioning, ingestion runs, per-document processing tracking, and document lifecycle states are implemented. `document_processing` is transaction-safe (each `record_success`/`record_skipped`/`record_failure` commits immediately, verified by `test_processing_record_is_committed`) and typed by `IngestionRunStatus`/`DocumentProcessingStatus`/`DocumentProcessingOperation` enums; the pipeline maps change type to operation (NEW→ADD, MODIFIED→UPDATE, UNCHANGED→SKIP) with run correlation. We are currently at Step 31; next is Step 32: improve document lifecycle/error handling, then continue with version-aware indexing, complete reindexing, retrieval, generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, testing, CI/CD, and production hardening.
