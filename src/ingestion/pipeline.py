@@ -5,13 +5,14 @@ from sqlalchemy.orm import Session
 from src.core.enums import (
     DocumentChangeType,
     DocumentProcessingOperation,
+    DocumentProcessingStatus,
 )
 from src.db.repositories.documents import DocumentRepository
 from src.embeddings.base import EmbeddingProvider
 from src.ingestion.change_detection import ChangeDetector
 from src.ingestion.chunking import DocumentChunker
 from src.ingestion.cleaning import DocumentCleaner
-from src.ingestion.context import IngestionResult
+from src.ingestion.context import DocumentInput, IngestionResult
 from src.ingestion.loaders.base import DocumentLoader
 from src.ingestion.metadata import MetadataExtractor
 from src.ingestion.parsers.registry import ParserRegistry
@@ -23,6 +24,7 @@ from src.ingestion.stages.embed import EmbedStage
 from src.ingestion.stages.enrich import EnrichStage
 from src.ingestion.stages.load import LoadStage
 from src.ingestion.stages.parse import ParseStage
+from src.models.ingestion import DocumentProcessingResult
 from src.services.document_processing_service import (
     DocumentProcessingService,
 )
@@ -32,6 +34,15 @@ from src.services.ingestion_run_service import IngestionRunService
 
 class IngestionPipeline:
     """Execute the complete document ingestion pipeline."""
+
+    _OPERATION_BY_CHANGE_TYPE: dict[
+        DocumentChangeType,
+        DocumentProcessingOperation,
+    ] = {
+        DocumentChangeType.NEW: DocumentProcessingOperation.ADD,
+        DocumentChangeType.MODIFIED: DocumentProcessingOperation.UPDATE,
+        DocumentChangeType.UNCHANGED: DocumentProcessingOperation.SKIP,
+    }
 
     def __init__(
         self,
@@ -72,82 +83,23 @@ class IngestionPipeline:
         skipped_count = 0
         failed_count = 0
 
-        for document in discovered_documents:
-            operation: DocumentProcessingOperation | None = None
-            document_id: UUID | None = None
+        for document_input in discovered_documents:
+            result = self._process_document(
+                run_id=run.id,
+                document_input=document_input,
+            )
 
-            try:
-                existing_document = self.documents.get_by_source_uri(
-                    document.source_uri
-                )
-
-                previous_hash = (
-                    existing_document.content_hash
-                    if existing_document is not None
-                    else None
-                )
-
-                change = self.change_detector.detect(
-                    document=document,
-                    previous_content_hash=previous_hash,
-                )
-
-                if change.change_type == DocumentChangeType.NEW:
-                    operation = DocumentProcessingOperation.ADD
-
-                elif change.change_type == DocumentChangeType.MODIFIED:
-                    operation = DocumentProcessingOperation.UPDATE
-
-                else:
-                    operation = DocumentProcessingOperation.SKIP
-
-                if operation == DocumentProcessingOperation.SKIP:
-                    self.processing_service.record_skipped(
-                        run_id=run.id,
-                        source_uri=document.source_uri,
-                    )
-
-                    skipped_count += 1
-                    continue
-
-                raw_document = self.loader_stage.execute(change)
-                parsed_document = self.parse_stage.execute(raw_document)
-                cleaned_document = self.clean_stage.execute(parsed_document)
-                enriched_document = self.enrich_stage.execute(cleaned_document)
-                chunked_document = self.chunk_stage.execute(enriched_document)
-                embedded_document = self.embed_stage.execute(chunked_document)
-
-                if operation == DocumentProcessingOperation.UPDATE:
-                    document_id = self.indexing_service.update(
-                        embedded_document
-                    )
-
-                else:
-                    document_id = self.indexing_service.add(
-                        embedded_document
-                    )
-
-                self.processing_service.record_success(
-                    run_id=run.id,
-                    source_uri=document.source_uri,
-                    operation=operation,
-                    document_id=document_id,
-                )
-
-                document_ids.append(document_id)
+            if result.status == DocumentProcessingStatus.SUCCESS:
                 processed_count += 1
 
-            except Exception as exc:
-                self.processing_service.record_failure(
-                    run_id=run.id,
-                    source_uri=document.source_uri,
-                    operation=operation,
-                    document_id=document_id,
-                    error_message=str(exc),
-                )
+                if result.document_id is not None:
+                    document_ids.append(result.document_id)
 
+            elif result.status == DocumentProcessingStatus.SKIPPED:
+                skipped_count += 1
+
+            elif result.status == DocumentProcessingStatus.FAILED:
                 failed_count += 1
-                continue
 
         try:
             self.run_service.update_counts(
@@ -174,4 +126,108 @@ class IngestionPipeline:
             skipped_count=skipped_count,
             failed_count=failed_count,
             document_ids=document_ids,
+        )
+
+    def _process_document(
+        self,
+        run_id: UUID,
+        document_input: DocumentInput,
+    ) -> DocumentProcessingResult:
+        """Process exactly one source document and record its outcome."""
+
+        existing_document = self.documents.get_by_source_uri(
+            document_input.source_uri
+        )
+
+        previous_content_hash = (
+            existing_document.content_hash
+            if existing_document is not None
+            else None
+        )
+
+        change = self.change_detector.detect(
+            document=document_input,
+            previous_content_hash=previous_content_hash,
+        )
+
+        operation = self._operation_for(change.change_type)
+
+        if change.change_type == DocumentChangeType.UNCHANGED:
+            record = self.processing_service.record_skipped(
+                run_id=run_id,
+                source_uri=document_input.source_uri,
+                document_id=(
+                    existing_document.id
+                    if existing_document is not None
+                    else None
+                ),
+            )
+
+            return self._to_result(record)
+
+        try:
+            raw_document = self.loader_stage.execute(change)
+            parsed_document = self.parse_stage.execute(raw_document)
+            cleaned_document = self.clean_stage.execute(parsed_document)
+            enriched_document = self.enrich_stage.execute(cleaned_document)
+            chunked_document = self.chunk_stage.execute(enriched_document)
+            embedded_document = self.embed_stage.execute(chunked_document)
+
+            if operation == DocumentProcessingOperation.UPDATE:
+                if existing_document is None:
+                    raise ValueError(
+                        f"Cannot update missing document: "
+                        f"{document_input.source_uri}"
+                    )
+
+                document_id = self.indexing_service.update(
+                    embedded_document
+                )
+
+            else:
+                document_id = self.indexing_service.add(
+                    embedded_document
+                )
+
+            record = self.processing_service.record_success(
+                run_id=run_id,
+                document_id=document_id,
+                source_uri=document_input.source_uri,
+                operation=operation,
+            )
+
+            return self._to_result(record)
+
+        except Exception as exc:
+            record = self.processing_service.record_failure(
+                run_id=run_id,
+                document_id=(
+                    existing_document.id
+                    if existing_document is not None
+                    else None
+                ),
+                source_uri=document_input.source_uri,
+                operation=operation,
+                error_message=str(exc),
+            )
+
+            return self._to_result(record)
+
+    @classmethod
+    def _operation_for(
+        cls,
+        change_type: DocumentChangeType,
+    ) -> DocumentProcessingOperation:
+        return cls._OPERATION_BY_CHANGE_TYPE[change_type]
+
+    @staticmethod
+    def _to_result(record) -> DocumentProcessingResult:
+        return DocumentProcessingResult(
+            id=record.id,
+            run_id=record.run_id,
+            document_id=record.document_id,
+            source_uri=record.source_uri,
+            operation=record.operation,
+            status=record.status,
+            error_message=record.error_message,
         )

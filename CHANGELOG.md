@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.34  | Pipeline Isolation | `_process_document` owns the per-document workflow; `run()` orchestrates via `DocumentProcessingResult` counters |
 | 0.1.33  | Processing Operations | `DocumentProcessingOperation` enum, change-type→operation mapping in pipeline |
 | 0.1.32  | Ingestion Enums   | `IngestionRunStatus`/`DocumentProcessingStatus` enums, enum-typed models & repositories |
 | 0.1.31  | Processing Persistence | `DocumentProcessingService` commits per record; rollback-survival persistence test |
@@ -42,6 +43,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.34] - 2026-09-20
+
+### Changed
+- **Pipeline:** per-document work extracted into `IngestionPipeline._process_document(run_id, document_input) -> DocumentProcessingResult`, which owns change detection, change-type→operation mapping, the load→parse→clean→enrich→chunk→embed stage chain, and success/failure recording (including the explicit `UPDATE`-missing-document guard)
+- **Pipeline:** `run()` is now orchestration only — discover, call `_process_document` per input, tally `processed`/`skipped`/`failed` from result status, build `document_ids` from successful results, then update run counts and complete/fail
+- **Pipeline:** internal `_operation_for` maps `DocumentChangeType`→`DocumentProcessingOperation`; `_to_result` converts persisted records to `DocumentProcessingResult`
+
+### Testing
+- **Testing:** `tests/ingestion/test_pipeline.py` — NEW→ADD→SUCCESS, MODIFIED→UPDATE→SUCCESS, UNCHANGED→SKIP→SKIPPED, and processing-exception→FAILED with `error_message`, exercised without a database via fake session/repositories
 
 ## [0.1.33] - 2026-09-19
 
