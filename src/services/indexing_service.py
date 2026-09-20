@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 
 from src.core.enums import (
     DocumentLifecycleStatus,
-    IndexOperation,
     IndexVersionStatus,
 )
 from src.db.repositories.chunks import ChunkRepository
@@ -71,8 +70,11 @@ class IndexingService:
                 DocumentLifecycleStatus.PROCESSING,
             )
 
-            existing_chunks = self.chunks.get_by_document_id(
-                document.id
+            index_version = self._get_active_index_version()
+
+            existing_chunks = self.chunks.get_by_document_id_and_version(
+                document.id,
+                index_version.id,
             )
 
             chunk_ids = [
@@ -81,15 +83,16 @@ class IndexingService:
             ]
 
             self.embeddings.delete_by_chunk_ids(chunk_ids)
-            self.chunks.delete_by_document_id(document.id)
+            self.chunks.delete_by_document_id(
+                document.id,
+                index_version.id,
+            )
 
             self.documents.update_content_hash(
                 document=document,
                 content_hash=data.content_hash,
                 title=data.metadata.title,
             )
-
-            index_version = self._get_active_index_version()
 
             self._persist_chunks_and_embeddings(
                 document.id,

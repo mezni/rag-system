@@ -51,15 +51,27 @@ class ChunkRepository:
             self.session.execute(statement).scalars().all()
         )
 
+    def get_by_document_id_and_version(
+        self,
+        document_id: UUID,
+        index_version_id: UUID,
+    ) -> list[ChunkDB]:
+        return list(
+            self.session.query(ChunkDB)
+            .filter(
+                ChunkDB.document_id == document_id,
+                ChunkDB.index_version_id == index_version_id,
+            )
+            .order_by(ChunkDB.chunk_index)
+            .all()
+        )
+
     def delete_by_document_id(
         self,
         document_id: UUID,
-    ) -> int:
-        chunks = self.get_by_document_id(document_id)
-
-        for chunk in chunks:
-            self.session.delete(chunk)
-
-        self.session.flush()
-
-        return len(chunks)
+        index_version_id: UUID,
+    ) -> None:
+        self.session.query(ChunkDB).filter(
+            ChunkDB.document_id == document_id,
+            ChunkDB.index_version_id == index_version_id,
+        ).delete(synchronize_session=False)

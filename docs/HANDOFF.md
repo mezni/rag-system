@@ -776,15 +776,15 @@ new index version
 activation
 ```
 
-## 26. Important versioning issue to remember
+## 26. Version-aware indexing update — RESOLVED
 
-There is an architectural issue that must be fixed before relying heavily on simultaneous index versions.
+There was an architectural issue that had to be fixed before relying heavily on simultaneous index versions:
 
-`IndexingService.update()` currently removes existing chunks for a document.
+`IndexingService.update()` previously removed **all** chunks for a document.
 
-With multiple index versions, this can potentially remove chunks belonging to an older version.
+With multiple index versions, this could remove chunks belonging to an older version.
 
-The correct long-term behavior needs to be:
+The correct behavior:
 
 ```
 Document
@@ -796,7 +796,25 @@ Document
 
 and updating/reindexing one version must not accidentally destroy another version.
 
-This should be addressed before production-grade versioned retrieval.
+This is now **fixed**:
+
+- `IndexingService.update()` resolves the active index version and deletes only that version's chunks (plus their embeddings) for the document, then re-persists into the same version.
+- `ChunkRepository.delete_by_document_id(document_id, index_version_id)` scopes the deletion to one version.
+- `ChunkRepository.get_by_document_id_and_version(document_id, index_version_id)` gives version-scoped chunk lookup (used by retrieval filtering by active version later).
+- A uniqueness constraint `uq_chunks_document_version_index` on `(document_id, index_version_id, chunk_index)` prevents duplicate chunk positions inside one version.
+
+Diagram of the invariant:
+
+```
+document A / v1 / 0   ✓
+document A / v1 / 1   ✓
+document A / v2 / 0   ✓
+document A / v2 / 1   ✓
+
+document A / v1 / 0   ✗ duplicate (rejected)
+```
+
+- **Testing:** `tests/services/test_indexing_service.py` — builds doc A with v1 + v2 chunks, updates in active v2, and asserts v1 keeps its 2 chunks while v2 holds the updated content.
 
 ## 27. Ingestion run tracking — FINISHED
 
@@ -1102,12 +1120,23 @@ src/
 │       ├── clean.py
 │       ├── enrich.py
 │       ├── chunk.py
-│       └── embed.py
+│       ├── embed.py
+│       └── finalizer.py
 │
 └── embeddings/
     ├── base.py
     └── local.py
 ```
+
+Config also includes:
+
+```
+config/
+├── settings.yaml
+└── ingestion.yaml
+```
+
+`ingestion.yaml` keeps operational/archive behavior (`filesystem.input_dir`, `processed_dir`, `archive_flag`) out of Python code; loading it through the config system is a later step.
 
 ## 34. What remains — implementation roadmap
 
@@ -1167,62 +1196,62 @@ UNCHANGED → SKIP
 
 - **Testing:** `tests/unit/core/test_ingestion_operations.py`
 
-#### Step 34
+#### Step 34 — FINISHED
 
-Complete ingestion lifecycle:
+Pipeline per-document isolation.
 
-```
-Discovery
-→ Change Detection
-→ Load
-→ Parse
-→ Clean
-→ Metadata
-→ Chunk
-→ Embed
-→ Index
-→ Document State
-→ Archive/Delete
-```
+`IngestionPipeline._process_document(run_id, document_input) -> DocumentProcessingResult` now owns the workflow for exactly one source document:
 
-#### Step 35
+- change detection (previous hash from persisted document)
+- change-type → operation mapping (NEW→ADD, MODIFIED→UPDATE, UNCHANGED→SKIP)
+- the load → parse → clean → enrich → chunk → embed stage chain
+- success/failure recording (with the explicit `UPDATE`-missing-document guard)
 
-Implement archive/delete behavior.
+`run()` is orchestration only: discover, iterate `_process_document`, tally `processed`/`skipped`/`failed` from result status, build `document_ids`, then update run counts and complete/fail.
 
-Original requirement:
+Also fixed: `IngestionRunService.start()` now commits the run immediately — previously a failed document's `IndexingService` rollback could undo the uncommitted `ingestion_runs` row and break the `document_processing` FK when `record_failure` committed.
 
-```
-input_dir=data/raw
-processed_dir=data/processed
-```
+- **Testing:** `tests/ingestion/test_pipeline.py` (NEW→ADD→SUCCESS, MODIFIED→UPDATE→SUCCESS, UNCHANGED→SKIP→SKIPPED, exception→FAILED)
 
-If:
+#### Step 35 — FINISHED
+
+Implement archive/delete behavior (source finalization).
+
+- `config/ingestion.yaml` keeps operational behavior out of Python code:
 
 ```
-archive_flag=true
+filesystem:
+  input_dir: data/raw
+  processed_dir: data/processed
+  archive_flag: true
 ```
 
-move processed files to:
+- `FileFinalizer` in `src/ingestion/stages/finalizer.py`:
+  - `archive_flag=true` → move the file to `processed_dir` (collision-safe: `document.md` → `document_1.md`)
+  - `archive_flag=false` → delete the file
+  - missing source is a no-op
+- The pipeline finalizes the source **only after SUCCESS** — never on FAILED or SKIPPED — so an already-indexed file that reappears in `data/raw` is not archived/deleted by a re-run.
+- Factory builds `FileFinalizer(processed_dir=Path("data/processed"), archive_flag=True)`.
 
-```
-data/processed
-```
+Pending: load `processed_dir`/`archive_flag` from `config/ingestion.yaml` through the existing config system.
 
-otherwise delete them.
+- **Testing:** `tests/ingestion/stages/test_finalizer.py`; `tests/integration/test_pipeline_finalization.py` (SUCCESS→finalized, FAILED→remains in raw, SKIPPED→remains in raw)
 
 ### Phase B — Production indexing
 
-#### Step 36
+#### Step 36 — FINISHED
 
 Fix version-aware indexing.
 
-Ensure:
+`IndexingService.update()` is now version-aware: it resolves the active version and deletes/re-persists chunks only for that version, so v1 chunks survive a v2 update.
 
-- v1 chunks
+Supporting changes:
 
-cannot be accidentally deleted when processing:
+- `ChunkRepository.delete_by_document_id(document_id, index_version_id)` — version-scoped bulk delete
+- `ChunkRepository.get_by_document_id_and_version(...)` — version-scoped lookup (useful when retrieval filters by active version)
+- `uq_chunks_document_version_index` unique constraint on `(document_id, index_version_id, chunk_index)` in `ChunkDB` (migration `b3f863980aee`)
 
-- v2
+- **Testing:** `tests/services/test_indexing_service.py`
 
 #### Step 37
 
@@ -1585,9 +1614,9 @@ Although the architecture anticipates PDF:
 
 they haven't been implemented yet.
 
-4. **Index version update issue**
+4. ~~**Index version update issue**~~ — RESOLVED
 
-`IndexingService.update()` needs to become version-aware before we rely on multiple simultaneously stored index versions.
+`IndexingService.update()` is now version-aware (see §26), so multiple simultaneously stored index versions are safe.
 
 5. **Reindex failure tracking**
 
@@ -1607,11 +1636,11 @@ This is acceptable for learning/dev, but concurrent production reindex operation
 
 7. **Database constraints**
 
-Potential future constraints:
+`unique(document_id, index_version_id, chunk_index)` — **DONE** (`uq_chunks_document_version_index`).
 
-- `unique(document_id, index_version_id, chunk_index)`
+Still potential future work:
 
-and potentially stronger lifecycle/status constraints.
+- stronger lifecycle/status constraints
 
 ## 36. Current RAGOps foundation
 

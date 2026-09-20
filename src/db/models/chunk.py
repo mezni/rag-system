@@ -2,7 +2,14 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Text, func
+from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    Integer,
+    Text,
+    UniqueConstraint,
+    func,
+)
 from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -17,6 +24,15 @@ class ChunkDB(Base):
     """Persisted document chunk."""
 
     __tablename__ = "chunks"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "document_id",
+            "index_version_id",
+            "chunk_index",
+            name="uq_chunks_document_version_index",
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(
         PostgreSQLUUID(as_uuid=True),
