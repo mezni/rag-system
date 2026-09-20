@@ -26,20 +26,20 @@ uv run ruff check .
 
 ## Layout
 
-- `config/` – YAML application settings (`settings.yaml`)
+- `config/` – YAML application settings (`settings.yaml`, `ingestion.yaml`)
 - `src/config/` – layered settings (`.env` environment + YAML file)
 - `src/core/` – errors, ids, clock, enums (`DocumentChangeType`, `DocumentLifecycleStatus`, `IndexOperation`, `IndexVersionStatus`, `IngestionRunStatus`, `DocumentProcessingStatus`, `DocumentProcessingOperation`), hashing primitives
 - `src/db/` – SQLAlchemy engine, session, models (`documents`, `chunks`, `embeddings` with pgvector, `index_versions`, `ingestion_runs`, `document_processing`), Alembic migrations
 - `src/models/` – Pydantic application/domain models (`Document`/`DocumentCreate`, `IngestionRun`, `DocumentProcessingResult`)
-- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`, `ReindexService`, `IngestionRunService`, `DocumentProcessingService`); document lifecycle transitions (PROCESSING→ACTIVE) on index; version-aware indexing: `VersioningService` manages the BUILDING/ACTIVE/RETIRED/FAILED lifecycle while `ReindexService` builds a new version, indexes documents into it, then activates it
+- `src/services/` – application services (`DocumentService`, `IngestionPersistenceService`, `IndexingService`, `VersioningService`, `ReindexService`, `IngestionRunService`, `DocumentProcessingService`); document lifecycle transitions (PROCESSING→ACTIVE) on index; version-aware indexing: `VersioningService` manages the BUILDING/ACTIVE/RETIRED/FAILED lifecycle while `ReindexService` builds a new version, indexes documents into it, then activates it; `IndexingService.update()` never touches other versions (chunks are version-scoped via `delete_by_document_id(document_id, index_version_id)`, and `uq_chunks_document_version_index` enforces `unique(document_id, index_version_id, chunk_index)`)
 - `src/embeddings/` – embedding providers (`LocalEmbeddingProvider`)
 - `src/ingestion/` – document ingestion pipeline
   - `sources/` – document discovery (`FilesystemSource`)
-  - `stages/` – pipeline stages (discover, load, parse, clean, enrich, chunk, embed)
+  - `stages/` – pipeline stages (discover, load, parse, clean, enrich, chunk, embed, finalize)
   - `loaders/` – raw content loading (`FilesystemLoader`)
   - `parsers/` – format-specific parsing (Markdown, Text) via `ParserRegistry`
   - `cleaners/` – text normalization (`TextDocumentCleaner`)
   - `chunkers/` – chunk splitting (`CharacterTextChunker`)
-  - `pipeline.py` / `factory.py` – pipeline orchestration and wiring; `run()` returns an `IngestionResult` with per-document failure isolation, mapping change type to an operation (NEW→ADD, MODIFIED→UPDATE, UNCHANGED→SKIP) and recording success/skip/failure into `ingestion_runs` and `document_processing` (each record commits immediately so it survives later rollbacks)
+  - `pipeline.py` / `factory.py` – pipeline orchestration and wiring; `run()` returns an `IngestionResult` with per-document failure isolation via `_process_document`, mapping change type to an operation (NEW→ADD, MODIFIED→UPDATE, UNCHANGED→SKIP) and recording success/skip/failure into `ingestion_runs` and `document_processing` (each record commits immediately so it survives later rollbacks); sources are finalized by `FileFinalizer` (archive to `data/processed` or delete) only after a SUCCESS, never on FAILED/SKIPPED
 - `tests/unit/` – unit tests
 - `tests/integration/` – integration tests (require the running database)

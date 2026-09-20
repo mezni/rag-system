@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.36  | Version-Aware Chunks | version-scoped chunk delete/lookup, `IndexingService.update()` preserves other versions, `uq_chunks_document_version_index` constraint |
 | 0.1.35  | Source Finalization | `FileFinalizer` archive/delete, `config/ingestion.yaml`, finalize-on-SUCCESS gating, durable run start |
 | 0.1.34  | Pipeline Isolation | `_process_document` owns the per-document workflow; `run()` orchestrates via `DocumentProcessingResult` counters |
 | 0.1.33  | Processing Operations | `DocumentProcessingOperation` enum, change-type→operation mapping in pipeline |
@@ -44,6 +45,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.36] - 2026-09-20
+
+### Added
+- **Repository:** `ChunkRepository.get_by_document_id_and_version(document_id, index_version_id)` — version-scoped chunk lookup (usable by retrieval filtered on the active version)
+- **DB constraint:** `uq_chunks_document_version_index` — `unique(document_id, index_version_id, chunk_index)` on `chunks` (`ChunkDB.__table_args__`), migrated via `b3f863980aee`
+
+### Changed
+- **Repository:** `ChunkRepository.delete_by_document_id` now takes `index_version_id` and bulk-deletes (`synchronize_session=False`) only chunks belonging to that version
+- **Indexing:** `IndexingService.update()` resolves the active index version and deletes/re-persists chunks only for it, so updating one version never destroys another version's chunks (their embeddings are removed first via `delete_by_chunk_ids`)
+
+### Testing
+- **Testing:** `tests/services/test_indexing_service.py` — doc A indexed into v1 and v2, then updated in the active v2; asserts v1 keeps its original two chunks while v2 holds the re-indexed content
 
 ## [0.1.35] - 2026-09-20
 

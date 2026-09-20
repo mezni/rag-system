@@ -939,7 +939,7 @@ status: success
 document_id: xyz
 ```
 
-## 30. Document lifecycle — CURRENT STEP
+## 30. Document lifecycle — FINISHED (base; Step 32 will improve it)
 
 We just implemented the foundation for explicit lifecycle states.
 
@@ -1138,7 +1138,60 @@ config/
 
 `ingestion.yaml` keeps operational/archive behavior (`filesystem.input_dir`, `processed_dir`, `archive_flag`) out of Python code; loading it through the config system is a later step.
 
-## 34. What remains — implementation roadmap
+## 34. Pipeline per-document isolation — FINISHED
+
+`IngestionPipeline.run()` is now orchestration only; all per-document work moved into `_process_document(run_id, document_input) -> DocumentProcessingResult`:
+
+```
+discover documents
+        │
+        ▼
+_process_document (exactly one source document):
+        ├── hash → change detection → operation (ADD / UPDATE / SKIP)
+        ├── load → parse → clean → enrich → chunk → embed
+        ├── index (add/update) via IndexingService
+        ├── on success: index + document committed together
+        ├── on failure: rollback document transaction, record_failure
+        └── finalize source (archive/delete) only after SUCCESS
+        │
+        ▼
+tally processed / skipped / failed from each result → complete or fail run
+```
+
+What this guarantees:
+
+- a failed document leaves no partial chunks behind
+- one failure does not abort the whole run
+- run-level counters reflect exact per-document outcomes
+- an `UPDATE` that reaches the persistence layer always has its document present (explicit guard)
+
+Also fixed: `IngestionRunService.start()` now commits the `ingestion_runs` row immediately. Previously a failed document's `IndexingService` rollback could undo the uncommitted run row and break the `document_processing.run_id` foreign key when `record_failure` committed.
+
+- **Testing:** `tests/ingestion/test_pipeline.py` (NEW→ADD→SUCCESS, MODIFIED→UPDATE→SUCCESS, UNCHANGED→SKIP→SKIPPED, exception→FAILED)
+
+## 35. Source finalization (archive/delete) — FINISHED
+
+`FileFinalizer` in `src/ingestion/stages/finalizer.py`.
+
+Behavior mirrors the original `data/raw` → `data/processed` requirement:
+
+```
+filesystem:
+  input_dir: data/raw
+  processed_dir: data/processed
+  archive_flag: true
+```
+
+- `archive_flag=true` → move the processed source to `processed_dir` (collision-safe: `document.md` → `document_1.md`)
+- `archive_flag=false` → delete the source
+- missing source → no-op
+- finalization runs **only after SUCCESS** — never on FAILED or SKIPPED — so an already-indexed file that reappears in `data/raw` is not archived/deleted by a re-run
+
+Pending: load `processed_dir`/`archive_flag` from `config/ingestion.yaml` through the existing config system instead of the current factory default (`FileFinalizer(processed_dir=Path("data/processed"), archive_flag=True)`).
+
+- **Testing:** `tests/ingestion/stages/test_finalizer.py`; `tests/integration/test_pipeline_finalization.py` (SUCCESS→finalized, FAILED→remains in raw, SKIPPED→remains in raw)
+
+## 36. What remains — implementation roadmap
 
 ### Phase A — Finish ingestion/RAGOps foundation
 
@@ -1198,7 +1251,7 @@ UNCHANGED → SKIP
 
 #### Step 34 — FINISHED
 
-Pipeline per-document isolation.
+Pipeline per-document isolation (detail in §34).
 
 `IngestionPipeline._process_document(run_id, document_input) -> DocumentProcessingResult` now owns the workflow for exactly one source document:
 
@@ -1215,7 +1268,7 @@ Also fixed: `IngestionRunService.start()` now commits the run immediately — pr
 
 #### Step 35 — FINISHED
 
-Implement archive/delete behavior (source finalization).
+Implement archive/delete behavior (source finalization; detail in §35).
 
 - `config/ingestion.yaml` keeps operational behavior out of Python code:
 
@@ -1583,7 +1636,7 @@ Eventually cover:
 - runbooks
 - troubleshooting
 
-## 35. Important known technical debt
+## 37. Important known technical debt
 
 Keep these in mind when continuing.
 
@@ -1642,7 +1695,7 @@ Still potential future work:
 
 - stronger lifecycle/status constraints
 
-## 36. Current RAGOps foundation
+## 38. Current RAGOps foundation
 
 At this point we have:
 
@@ -1695,13 +1748,30 @@ index version
 chunks
     │
 embeddings
+    │
+source finalization (archive/delete on SUCCESS)
 ```
 
-## 37. Current stopping point
+## 39. Current stopping point
 
-We are currently at Step 31 (Steps 31 and 33 are complete; Step 32 remains).
+We are between Phase A and Phase B of the roadmap.
 
-The immediate next task is:
+**Completed**
+
+- Step 31 — transaction-safe `document_processing`
+- Step 33 — explicit document operation records (`DocumentProcessingOperation`, run correlation)
+- Step 34 — pipeline per-document isolation (§34)
+- Step 35 — source finalization / archive-delete (§35)
+- Step 36 — version-aware `IndexingService.update()` + chunk uniqueness constraint (§26)
+
+**Remaining**
+
+- Step 32 — improve document lifecycle/error handling — **NEXT**
+- Step 37 — complete version-aware ADD/UPDATE/DELETE/REINDEX (UPDATE done; DELETE is still whole-document/cross-version via cascade; REINDEX needs the Step 38 end-to-end flow)
+- Step 38 — complete end-to-end reindex
+- then retrieval, generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, CI/CD, hardening
+
+The immediate next task:
 
 ```
 STEP 32
@@ -1714,8 +1784,7 @@ Start from:
 
 ```
 rag-system
-Step 31 completed
-Step 33 completed (explicit document operation records)
+Steps 31, 33, 34, 35, 36 completed
 Step 32 is next
 ```
 
@@ -1725,4 +1794,4 @@ and continue incrementally.
 
 **One-line handoff**
 
-> rag-system is a Python 3.13 + uv + Pydantic + SQLAlchemy + Alembic + PostgreSQL/pgvector RAG platform; ingestion through embedding, indexing, index versioning, ingestion runs, per-document processing tracking, and document lifecycle states are implemented. `document_processing` is transaction-safe (each `record_success`/`record_skipped`/`record_failure` commits immediately, verified by `test_processing_record_is_committed`) and typed by `IngestionRunStatus`/`DocumentProcessingStatus`/`DocumentProcessingOperation` enums; the pipeline maps change type to operation (NEW→ADD, MODIFIED→UPDATE, UNCHANGED→SKIP) with run correlation. We are currently at Step 31; next is Step 32: improve document lifecycle/error handling, then continue with version-aware indexing, complete reindexing, retrieval, generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, testing, CI/CD, and production hardening.
+> rag-system is a Python 3.13 + uv + Pydantic + SQLAlchemy + Alembic + PostgreSQL/pgvector RAG platform; ingestion through embedding, indexing, index versioning, ingestion runs, per-document processing tracking, document lifecycle states, and source finalization (archive/delete) are implemented. The pipeline is per-document isolated (`_process_document`), each document's chunks are version-aware (`IndexingService.update()` deletes only the active version; `uq_chunks_document_version_index` enforces `unique(document_id, index_version_id, chunk_index)`, verified by `tests/services/test_indexing_service.py`), processed sources are finalized only on SUCCESS (`FileFinalizer`), and `document_processing` records commit immediately and are typed by `IngestionRunStatus`/`DocumentProcessingStatus`/`DocumentProcessingOperation` enums. Steps 31, 33, 34, 35, 36 are complete; next is Step 32: improve document lifecycle/error handling, then Step 37 version-aware DELETE/REINDEX, Step 38 end-to-end reindex, retrieval, generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, testing, CI/CD, and production hardening.
