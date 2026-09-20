@@ -22,6 +22,7 @@ from src.ingestion.stages.clean import CleanStage
 from src.ingestion.stages.discover import DiscoveryStage
 from src.ingestion.stages.embed import EmbedStage
 from src.ingestion.stages.enrich import EnrichStage
+from src.ingestion.stages.finalizer import FileFinalizer
 from src.ingestion.stages.load import LoadStage
 from src.ingestion.stages.parse import ParseStage
 from src.models.ingestion import DocumentProcessingResult
@@ -53,6 +54,7 @@ class IngestionPipeline:
         metadata_extractor: MetadataExtractor,
         chunker: DocumentChunker,
         embedding_provider: EmbeddingProvider,
+        finalizer: FileFinalizer,
         session: Session,
     ) -> None:
         self.discovery_stage = DiscoveryStage(source)
@@ -62,6 +64,7 @@ class IngestionPipeline:
         self.enrich_stage = EnrichStage(metadata_extractor)
         self.chunk_stage = ChunkStage(chunker)
         self.embed_stage = EmbedStage(embedding_provider)
+        self.finalizer = finalizer
 
         self.indexing_service = IndexingService(session)
         self.documents = DocumentRepository(session)
@@ -94,6 +97,8 @@ class IngestionPipeline:
 
                 if result.document_id is not None:
                     document_ids.append(result.document_id)
+
+                self.finalizer.finalize(document_input.path)
 
             elif result.status == DocumentProcessingStatus.SKIPPED:
                 skipped_count += 1

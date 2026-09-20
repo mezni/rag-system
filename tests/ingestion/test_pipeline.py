@@ -18,6 +18,7 @@ from src.ingestion.parsers.registry import ParserRegistry
 from src.ingestion.parsers.text import TextParser
 from src.ingestion.pipeline import IngestionPipeline
 from src.ingestion.sources.filesystem import FilesystemSource
+from src.ingestion.stages.finalizer import FileFinalizer
 
 
 class _FakeSession:
@@ -93,6 +94,10 @@ def _build_pipeline(tmp_path: Path, existing) -> IngestionPipeline:
             chunk_overlap=50,
         ),
         embedding_provider=LocalEmbeddingProvider(dimensions=8),
+        finalizer=FileFinalizer(
+            processed_dir=tmp_path / "processed",
+            archive_flag=True,
+        ),
         session=_FakeSession(),
     )
 

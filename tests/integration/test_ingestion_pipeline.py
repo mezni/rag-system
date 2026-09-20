@@ -10,7 +10,10 @@ def test_ingestion_pipeline_end_to_end(
     database_session,
     tmp_path: Path,
 ) -> None:
-    document_path = tmp_path / "billing-policy.md"
+    raw = tmp_path / "raw"
+    raw.mkdir()
+
+    document_path = raw / "billing-policy.md"
 
     document_path.write_text(
         "# Billing Policy\n\n"
@@ -22,7 +25,8 @@ def test_ingestion_pipeline_end_to_end(
 
     pipeline = create_filesystem_ingestion_pipeline(
         session=database_session,
-        input_dir=tmp_path,
+        input_dir=raw,
+        processed_dir=tmp_path / "processed",
     )
 
     results = pipeline.run()
@@ -71,25 +75,35 @@ def test_ingestion_skips_unchanged_document(
     database_session,
     tmp_path: Path,
 ) -> None:
-    document_path = tmp_path / "billing-policy.md"
+    raw = tmp_path / "raw"
+    raw.mkdir()
 
-    document_path.write_text(
+    document_path = raw / "billing-policy.md"
+    content = (
         "# Billing Policy\n\n"
-        "Customers are billed according to their active service plan.\n",
-        encoding="utf-8",
+        "Customers are billed according to their active service plan.\n"
     )
+
+    document_path.write_text(content, encoding="utf-8")
 
     pipeline = create_filesystem_ingestion_pipeline(
         session=database_session,
-        input_dir=tmp_path,
+        input_dir=raw,
+        processed_dir=tmp_path / "processed",
     )
 
     first_result = pipeline.run()
-    second_result = pipeline.run()
 
     assert first_result.processed_count == 1
+
+    document_path.write_text(content, encoding="utf-8")
+
+    second_result = pipeline.run()
+
+    assert second_result.discovered_count == 1
     assert second_result.processed_count == 0
     assert second_result.skipped_count == 1
+    assert document_path.exists()
 
     documents = (
         database_session.query(DocumentDB)
@@ -106,7 +120,10 @@ def test_modified_document_is_reindexed(
     database_session,
     tmp_path: Path,
 ) -> None:
-    document_path = tmp_path / "billing-policy.md"
+    raw = tmp_path / "raw"
+    raw.mkdir()
+
+    document_path = raw / "billing-policy.md"
 
     document_path.write_text(
         "# Billing Policy\n\n"
@@ -116,7 +133,8 @@ def test_modified_document_is_reindexed(
 
     pipeline = create_filesystem_ingestion_pipeline(
         session=database_session,
-        input_dir=tmp_path,
+        input_dir=raw,
+        processed_dir=tmp_path / "processed",
     )
 
     first_result = pipeline.run()
@@ -175,7 +193,10 @@ def test_indexing_service_deletes_document(
     database_session,
     tmp_path: Path,
 ) -> None:
-    document_path = tmp_path / "policy.md"
+    raw = tmp_path / "raw"
+    raw.mkdir()
+
+    document_path = raw / "policy.md"
 
     document_path.write_text(
         "# Test Policy\n\nTest content.",
@@ -184,7 +205,8 @@ def test_indexing_service_deletes_document(
 
     pipeline = create_filesystem_ingestion_pipeline(
         session=database_session,
-        input_dir=tmp_path,
+        input_dir=raw,
+        processed_dir=tmp_path / "processed",
     )
 
     pipeline.run()

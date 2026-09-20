@@ -11,7 +11,11 @@ class IngestionRunService:
         self.repository = IngestionRunRepository(session)
 
     def start(self, run_type: str):
-        return self.repository.create(run_type)
+        run = self.repository.create(run_type)
+
+        self.session.commit()
+
+        return run
 
     def complete(self, run_id: UUID):
         run = self.repository.get_by_id(run_id)

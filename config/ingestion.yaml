@@ -1,0 +1,4 @@
+filesystem:
+  input_dir: data/raw
+  processed_dir: data/processed
+  archive_flag: true

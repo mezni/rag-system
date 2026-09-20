@@ -12,11 +12,14 @@ from src.ingestion.parsers.registry import ParserRegistry
 from src.ingestion.parsers.text import TextParser
 from src.ingestion.pipeline import IngestionPipeline
 from src.ingestion.sources.filesystem import FilesystemSource
+from src.ingestion.stages.finalizer import FileFinalizer
 
 
 def create_filesystem_ingestion_pipeline(
     session: Session,
     input_dir: str | Path,
+    processed_dir: str | Path = "data/processed",
+    archive_flag: bool = True,
 ) -> IngestionPipeline:
     source = FilesystemSource(
         input_dir=input_dir,
@@ -45,6 +48,11 @@ def create_filesystem_ingestion_pipeline(
         dimensions=8,
     )
 
+    finalizer = FileFinalizer(
+        processed_dir=Path(processed_dir),
+        archive_flag=archive_flag,
+    )
+
     return IngestionPipeline(
         source=source,
         loader=loader,
@@ -53,5 +61,6 @@ def create_filesystem_ingestion_pipeline(
         metadata_extractor=metadata_extractor,
         chunker=chunker,
         embedding_provider=embedding_provider,
+        finalizer=finalizer,
         session=session,
     )

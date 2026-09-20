@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.35  | Source Finalization | `FileFinalizer` archive/delete, `config/ingestion.yaml`, finalize-on-SUCCESS gating, durable run start |
 | 0.1.34  | Pipeline Isolation | `_process_document` owns the per-document workflow; `run()` orchestrates via `DocumentProcessingResult` counters |
 | 0.1.33  | Processing Operations | `DocumentProcessingOperation` enum, change-type→operation mapping in pipeline |
 | 0.1.32  | Ingestion Enums   | `IngestionRunStatus`/`DocumentProcessingStatus` enums, enum-typed models & repositories |
@@ -43,6 +44,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.35] - 2026-09-20
+
+### Added
+- **Config:** `config/ingestion.yaml` with `filesystem.input_dir`/`processed_dir`/`archive_flag` (operational behavior out of Python code; YAML loading to come)
+- **Finalizer:** `FileFinalizer` in `src/ingestion/stages/finalizer.py` — archive mode (`shutil.move` with `_unique_destination` collision handling: `document.md` → `document_1.md`) or delete mode (`unlink`); missing-source noop
+- **Testing:** `tests/ingestion/stages/test_finalizer.py` (archive, delete, collision, noop); `tests/integration/test_pipeline_finalization.py` (SUCCESS→finalized, FAILED→source stays in raw, SKIPPED→source stays in raw)
+
+### Changed
+- **Pipeline:** `IngestionPipeline` now requires `finalizer: FileFinalizer`; `run()` finalizes the source file only after `SUCCESS` — never on `FAILED` or `SKIPPED`, so an already-indexed file reappearing in `data/raw` is not archived/deleted by a re-run
+- **Factory:** `create_filesystem_ingestion_pipeline` builds `FileFinalizer(processed_dir=Path("data/processed"), archive_flag=True)` (overridable) and passes it to the pipeline
+
+### Fixed
+- **Run durability:** `IngestionRunService.start()` now commits the run immediately; previously a failed document's `IndexingService` rollback could undo the uncommitted `ingestion_runs` row, breaking the `document_processing` FK when `record_failure` committed
+
+### Testing
+- **Tests updated:** `tests/integration/test_ingestion_pipeline.py` restructured to sibling `raw/`/`processed/` dirs (recursive discovery was re-indexing archived copies); skip test now verifies restore-and-skip leaves the source in place
 
 ## [0.1.34] - 2026-09-20
 
