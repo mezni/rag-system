@@ -11,6 +11,7 @@ class IndexRequest(BaseModel):
 
     operation: IndexOperation
     document_id: UUID | None = None
+    index_version_id: UUID | None = None
     reason: str | None = Field(default=None, max_length=500)
 
 

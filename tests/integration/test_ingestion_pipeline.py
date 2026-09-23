@@ -189,7 +189,7 @@ def test_modified_document_is_reindexed(
     assert len(updated_chunks) > 0
 
 
-def test_indexing_service_deletes_document(
+def test_indexing_service_removes_document_from_active_index(
     database_session,
     tmp_path: Path,
 ) -> None:
@@ -223,20 +223,18 @@ def test_indexing_service_deletes_document(
 
     service = IndexingService(database_session)
 
-    deleted = service.delete(document.id)
-
-    assert deleted is True
-
-    assert (
-        database_session.query(DocumentDB)
-        .filter(DocumentDB.id == document.id)
-        .one_or_none()
-        is None
-    )
+    service.delete(document.id)
 
     assert (
         database_session.query(ChunkDB)
         .filter(ChunkDB.document_id == document.id)
         .count()
         == 0
+    )
+
+    assert (
+        database_session.query(DocumentDB)
+        .filter(DocumentDB.id == document.id)
+        .one()
+        is not None
     )

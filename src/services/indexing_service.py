@@ -6,6 +6,7 @@ from src.core.enums import (
     DocumentLifecycleStatus,
     IndexVersionStatus,
 )
+from src.db.models.index_version import IndexVersionDB
 from src.db.repositories.chunks import ChunkRepository
 from src.db.repositories.documents import DocumentRepository
 from src.db.repositories.embeddings import EmbeddingRepository
@@ -23,37 +24,51 @@ class IndexingService:
         self.embeddings = EmbeddingRepository(session)
         self.index_versions = IndexVersionRepository(session)
 
-    def add(self, data: EmbeddedDocument) -> UUID:
-        """Add a new document to the index."""
+    def add(
+        self,
+        data: EmbeddedDocument,
+        index_version_id: UUID | None = None,
+    ) -> UUID:
+        """Add a new document to the index (defaults to the active version)."""
+
+        version = self._resolve_version(index_version_id)
+
+        self._validate_writable_version(version)
+        self._validate_embedding_dimensions(data, version)
 
         try:
-            document = self.documents.create(
-                self._build_document_data(data)
+            document_id = self.add_to_version(
+                data=data,
+                index_version_id=version.id,
             )
 
-            index_version = self._get_active_index_version()
+            document = self.documents.get_by_id(document_id)
 
-            self._persist_chunks_and_embeddings(
-                document.id,
-                data,
-                index_version.id,
-            )
-
-            self.documents.update_status(
-                document,
-                DocumentLifecycleStatus.ACTIVE,
-            )
+            if document is not None:
+                self.documents.update_status(
+                    document,
+                    DocumentLifecycleStatus.ACTIVE,
+                )
 
             self.session.commit()
 
-            return document.id
+            return document_id
 
         except Exception:
             self.session.rollback()
             raise
 
-    def update(self, data: EmbeddedDocument) -> UUID:
+    def update(
+        self,
+        data: EmbeddedDocument,
+        index_version_id: UUID | None = None,
+    ) -> UUID:
         """Replace the indexed content for an existing document."""
+
+        version = self._resolve_version(index_version_id)
+
+        self._validate_writable_version(version)
+        self._validate_embedding_dimensions(data, version)
 
         try:
             document = self.documents.get_by_source_uri(
@@ -70,11 +85,9 @@ class IndexingService:
                 DocumentLifecycleStatus.PROCESSING,
             )
 
-            index_version = self._get_active_index_version()
-
             existing_chunks = self.chunks.get_by_document_id_and_version(
                 document.id,
-                index_version.id,
+                version.id,
             )
 
             chunk_ids = [
@@ -85,7 +98,7 @@ class IndexingService:
             self.embeddings.delete_by_chunk_ids(chunk_ids)
             self.chunks.delete_by_document_id(
                 document.id,
-                index_version.id,
+                version.id,
             )
 
             self.documents.update_content_hash(
@@ -95,9 +108,9 @@ class IndexingService:
             )
 
             self._persist_chunks_and_embeddings(
-                document.id,
-                data,
-                index_version.id,
+                document_id=document.id,
+                data=data,
+                index_version=version,
             )
 
             self.documents.update_status(
@@ -113,30 +126,36 @@ class IndexingService:
             self.session.rollback()
             raise
 
-    def delete(self, document_id: UUID) -> bool:
-        """Delete a document and its indexed content."""
+    def delete(
+        self,
+        document_id: UUID,
+        index_version_id: UUID | None = None,
+    ) -> None:
+        """Remove a document from an index version, keeping the document record."""
 
-        try:
-            document = self.documents.get_by_id(document_id)
+        version = self._resolve_version(index_version_id)
 
-            if document is None:
-                return False
+        self._validate_writable_version(version)
 
-            self.documents.delete(document)
+        self.chunks.delete_by_document_id(
+            document_id=document_id,
+            index_version_id=version.id,
+        )
 
-            self.session.commit()
-
-            return True
-
-        except Exception:
-            self.session.rollback()
-            raise
+        self.session.commit()
 
     def add_to_version(
         self,
         data: EmbeddedDocument,
         index_version_id: UUID,
     ) -> UUID:
+        """Persist a document into an explicit BUILDING/ACTIVE version."""
+
+        version = self._resolve_version(index_version_id)
+
+        self._validate_writable_version(version)
+        self._validate_embedding_dimensions(data, version)
+
         try:
             document = self.documents.get_by_source_uri(
                 data.document.source_uri
@@ -150,7 +169,7 @@ class IndexingService:
             self._persist_chunks_and_embeddings(
                 document_id=document.id,
                 data=data,
-                index_version_id=index_version_id,
+                index_version=version,
             )
 
             self.session.flush()
@@ -161,37 +180,66 @@ class IndexingService:
             self.session.rollback()
             raise
 
+    def _resolve_version(
+        self,
+        index_version_id: UUID | None,
+    ) -> IndexVersionDB:
+        if index_version_id is not None:
+            version = self.index_versions.get_by_id(
+                index_version_id
+            )
+
+            if version is None:
+                raise ValueError(
+                    f"Index version not found: {index_version_id}"
+                )
+
+            return version
+
+        version = self.index_versions.get_active()
+
+        if version is None:
+            raise ValueError("No active index version exists")
+
+        return version
+
+    def _validate_writable_version(
+        self,
+        version: IndexVersionDB,
+    ) -> None:
+        if version.status not in {
+            IndexVersionStatus.BUILDING.value,
+            IndexVersionStatus.ACTIVE.value,
+        }:
+            raise ValueError(
+                f"Index version {version.version_number} "
+                f"is not writable: {version.status}"
+            )
+
+    def _validate_embedding_dimensions(
+        self,
+        data: EmbeddedDocument,
+        version: IndexVersionDB,
+    ) -> None:
+        for embedding in data.embeddings:
+            if embedding.dimensions != version.embedding_dimensions:
+                raise ValueError(
+                    "Embedding dimensions do not match index version: "
+                    f"expected {version.embedding_dimensions}, "
+                    f"got {embedding.dimensions}"
+                )
+
     def _persist_chunks_and_embeddings(
         self,
         document_id: UUID,
         data: EmbeddedDocument,
-        index_version_id: UUID,
+        index_version: IndexVersionDB,
     ) -> None:
-        index_version = self.index_versions.get_by_id(index_version_id)
-
-        if index_version is None:
-            raise ValueError(
-                f"Index version not found: {index_version_id}"
-            )
-
-        if index_version.status not in (
-            IndexVersionStatus.BUILDING.value,
-            IndexVersionStatus.ACTIVE.value,
-        ):
-            raise ValueError(
-                "Documents can only be added to a BUILDING or ACTIVE index version"
-            )
-
         for chunk, embedding in zip(
             data.chunks,
             data.embeddings,
             strict=True,
         ):
-            if embedding.dimensions != index_version.embedding_dimensions:
-                raise ValueError(
-                    "Embedding dimensions do not match the index version"
-                )
-
             database_chunk = self.chunks.create(
                 document_id=document_id,
                 index_version_id=index_version.id,
@@ -208,14 +256,6 @@ class IndexingService:
                 dimensions=embedding.dimensions,
                 vector=embedding.vector,
             )
-
-    def _get_active_index_version(self):
-        version = self.index_versions.get_active()
-
-        if version is None:
-            raise RuntimeError("No active index version exists")
-
-        return version
 
     @staticmethod
     def _build_document_data(
