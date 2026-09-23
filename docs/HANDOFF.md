@@ -719,6 +719,7 @@ Capabilities:
 - `activate_version()`
 - `fail_version()`
 - `get_active_version()`
+- `get_version()` (domain model lookup; static `to_domain()` maps `IndexVersionDB` → Pydantic `IndexVersion`)
 
 Index version repository supports:
 
@@ -730,51 +731,56 @@ Index version repository supports:
 - `activate()`
 - `mark_failed()`
 
-## 25. Reindex Service — PARTIALLY FINISHED
+## 25. Reindex Service — FINISHED
 
 Created:
 
 `src/services/reindex_service.py`
 
-Current workflow:
+Current workflow (`reindex(embedding_model, embedding_dimensions) -> IndexVersion`):
 
 ```
 create BUILDING version
         ↓
-index documents into version
+_build_version: discover source → run PipelineStages
+   load → parse → clean → enrich → chunk → embed
         ↓
-activate version
+add each document into the BUILDING version (IndexingService.add_to_version)
+        ↓
+validate (IndexValidationService — chunk/embedding counts, dimensions,
+duplicates, missing embeddings, non-empty guarantee)
+        ↓
+valid? ──no──► mark version FAILED (rollback + re-persist + commit) → raise
+  │yes
+  ▼
+activate version (retires previous ACTIVE) → commit → return IndexVersion
 ```
 
-If indexing fails, the transaction rolls back.
+The constructor injects `VersioningService`, `IndexingService`,
+`IndexValidationService`, and the ingestion components (`document_source`,
+`document_loader`, `parser_registry`, `cleaner`, `metadata_extractor`,
+`chunker`, `embedding_provider`). It builds the existing `PipelineStage`
+classes internally (LoadStage → ParseStage → CleanStage → EnrichStage →
+ChunkStage → EmbedStage), so ingestion and indexing share the same stage
+code — `ReindexService` does not duplicate parsing/chunking/embedding logic.
 
-Important limitation:
+Failure handling: on any exception the transaction is rolled back; the new
+version is re-added to the session and marked FAILED (committed), so it is
+durably recorded while the previously ACTIVE version is left untouched.
 
-The current `ReindexService` accepts already embedded documents:
+**Empirical gotcha (verified with the test DB):** after `session.rollback()`
+a flushed-but-uncommitted `IndexVersionDB` is removed from the session
+(becomes transient) but keeps its `id` in `__dict__`. `_mark_failed()` must
+therefore `session.add(version)` before `fail_version()` + `commit` — calling
+`fail_version()` on the rolled-back object alone would never persist the
+FAILED row.
 
-```python
-reindex(
-    documents: list[EmbeddedDocument],
-    embedding_model: str,
-    embedding_dimensions: int,
-)
-```
-
-It is not yet a complete source-to-index reindex workflow.
-
-Later we need to connect:
-
-```
-source
- ↓
-ingestion
- ↓
-embedding
- ↓
-new index version
- ↓
-activation
-```
+- **Testing:** `tests/services/test_reindex_service.py` — success path builds
+  v2, activates it, retires v1, and attaches all chunks to v2; failure path
+  (embedding provider fails on the third document) marks the new version
+  FAILED with zero chunks while v1 stays ACTIVE. The old
+  `tests/integration/test_reindex_service.py` (pre-dates this rewrite) was
+  deleted.
 
 ## 26. Version-aware indexing update — RESOLVED
 
@@ -1037,6 +1043,8 @@ Existing tests cover things such as:
 - indexing
 - index versions
 - reindexing
+- index validation (`tests/services/test_index_validation_service.py`)
+- retrieval (`tests/services/test_retrieval_service.py`, `tests/integration/test_vector_search_repository.py`)
 - ingestion runs
 - document processing
 
@@ -1058,7 +1066,9 @@ src/
 │   ├── chunk.py
 │   ├── embedding.py
 │   ├── indexing.py
-│   └── ingestion.py
+│   ├── ingestion.py
+│   ├── index_validation.py
+│   └── retrieval.py
 │
 ├── config/
 │   ├── loader.py
@@ -1081,6 +1091,7 @@ src/
 │       ├── chunks.py
 │       ├── embeddings.py
 │       ├── index_versions.py
+│       ├── vector_search.py
 │       ├── runs.py
 │       └── document_processing.py
 │
@@ -1089,6 +1100,8 @@ src/
 │   ├── indexing_service.py
 │   ├── versioning_service.py
 │   ├── reindex_service.py
+│   ├── index_validation_service.py
+│   ├── retrieval_service.py
 │   ├── ingestion_run_service.py
 │   └── document_processing_service.py
 │
@@ -1306,7 +1319,7 @@ Supporting changes:
 
 - **Testing:** `tests/services/test_indexing_service.py`
 
-#### Step 37
+#### Step 37 — FINISHED
 
 Complete version-aware:
 
@@ -1315,41 +1328,40 @@ Complete version-aware:
 - DELETE
 - REINDEX
 
-#### Step 38
+All four are now version-aware. `IndexRequest.index_version_id` lets an
+explicit targeting version override the ACTIVE version; `IndexingService`
+resolves it (`_resolve_version`), rejects writes to RETIRED/FAILED versions
+(`_validate_writable_version`), and validates each embedding's dimension
+against the version (`_validate_embedding_dimensions`). `delete()` removes
+only that version's chunks/embeddings for a document and keeps the
+`DocumentDB` row. `add()` delegates to `add_to_version`, marks the document
+ACTIVE, and commits.
 
-Complete end-to-end reindex:
+- **Testing:** `tests/services/test_indexing_service.py` — update leaves other
+  versions alone, writes to RETIRED/FAILED versions raise, dimension
+  mismatches raise; integration delete test renamed accordingly.
+
+#### Step 38 — FINISHED
+
+Complete end-to-end reindex (detail in §25):
 
 ```
 source
  ↓
 discover
  ↓
-process
+process (load → parse → clean → enrich → chunk → embed)
  ↓
-embed
- ↓
-build new index
+build new BUILDING index version (add_to_version)
  ↓
 validate
  ↓
-activate
- ↓
-retire old index
+activate  ──►  retire old ACTIVE version
 ```
 
-#### Step 39
+#### Step 39 — FINISHED
 
-Add index validation before activation.
-
-Examples:
-
-- document count
-- chunk count
-- embedding count
-- embedding dimensions
-- failed documents
-- duplicate chunks
-- missing embeddings
+Add index validation before activation (detail in §40).
 
 ### Phase C — Retrieval
 
@@ -1369,7 +1381,7 @@ reranking
 context builder
 ```
 
-Components planned:
+Components:
 
 ```
 src/retrieval/
@@ -1384,6 +1396,11 @@ src/retrieval/
     ├── keyword.py
     └── hybrid.py
 ```
+
+#### Step 40 — FINISHED
+
+Initial vector retrieval + metadata filtering (detail in §41). The search
+half of Phase C is in place; reranking and context building are next.
 
 Metrics:
 
@@ -1671,15 +1688,12 @@ they haven't been implemented yet.
 
 `IndexingService.update()` is now version-aware (see §26), so multiple simultaneously stored index versions are safe.
 
-5. **Reindex failure tracking**
+5. ~~**Reindex failure tracking**~~ — RESOLVED
 
-Current reindex rollback means a failed version cannot reliably be marked FAILED in the same transaction after rollback.
-
-Later:
-
-- `reindex_runs`
-
-or a broader operation/run model should handle durable failure tracking.
+A failed reindex is now durably recorded: `ReindexService` rolls back,
+re-adds the version to the session, and marks it FAILED (committed), so the
+FAILED row survives even though the transaction rolled back. No
+`reindex_runs` table is needed yet.
 
 6. **`get_next_version_number()`**
 
@@ -1694,6 +1708,26 @@ This is acceptable for learning/dev, but concurrent production reindex operation
 Still potential future work:
 
 - stronger lifecycle/status constraints
+
+8. **Document metadata is not persisted for retrieval**
+
+`documents` only has `source`, `source_uri`, `title`, `content_hash`, status
+columns. `DocumentMetadata.document_type` exists only transiently during
+ingestion, so `RetrievalQuery.document_type` is deliberately not implemented.
+Deciding where persistent document metadata lives is the designed next step
+(see §41).
+
+9. **Duplicate-chunk validation is application-level only**
+
+The DB unique constraint guarantees no real duplicates can exist, so the
+`IndexValidationService._count_duplicate_chunks` check is unit-tested
+directly against fabricated chunk objects rather than through persisted rows.
+
+10. **`embeddings.vector` is hard-coded `Vector(8)`**
+
+The column type is fixed at 8 dimensions in `EmbeddingDB`, matching the
+`LocalEmbeddingProvider`. Real providers with different dimensions require
+making this configuration/column driven (migration) before production.
 
 ## 38. Current RAGOps foundation
 
@@ -1754,7 +1788,9 @@ source finalization (archive/delete on SUCCESS)
 
 ## 39. Current stopping point
 
-We are between Phase A and Phase B of the roadmap.
+We are at the start of Phase C (Retrieval): the **write** side
+(ingestion → indexing → validation → activation) is complete, and the first
+**read**-side pieces (vector search + metadata filtering) now exist.
 
 **Completed**
 
@@ -1763,19 +1799,25 @@ We are between Phase A and Phase B of the roadmap.
 - Step 34 — pipeline per-document isolation (§34)
 - Step 35 — source finalization / archive-delete (§35)
 - Step 36 — version-aware `IndexingService.update()` + chunk uniqueness constraint (§26)
+- Step 37 — version-aware ADD/UPDATE/DELETE/REINDEX (changelog 0.1.37)
+- Step 38 — end-to-end coordinated reindex (§25, changelog 0.1.38)
+- Step 39 — index validation before activation (§40, changelog 0.1.39)
+- Step 40 — initial retrieval: vector search + `source`/`document_id` filters (§41, changelog 0.2.1 / 0.2.2)
 
-**Remaining**
+**Remaining / Next**
 
-- Step 32 — improve document lifecycle/error handling — **NEXT**
-- Step 37 — complete version-aware ADD/UPDATE/DELETE/REINDEX (UPDATE done; DELETE is still whole-document/cross-version via cascade; REINDEX needs the Step 38 end-to-end flow)
-- Step 38 — complete end-to-end reindex
-- then retrieval, generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, CI/CD, hardening
+- Step 32 — improve document lifecycle/error handling (still outstanding from Phase A; not touched this session)
+- Step 41 (suggested) — persist document metadata so `document_type` (and richer filters) can be implemented — architectural checkpoint, see §41
+- Phase C continues — reranking, context building
+- then generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, CI/CD, hardening
 
 The immediate next task:
 
 ```
-STEP 32
-Improve document lifecycle/error handling
+STEP 41 (suggested)
+Persist document metadata for retrieval filtering
+(e.g. document_type on documents/chunks), then enable
+RetrievalQuery.document_type
 ```
 
 The next session should not restart the project.
@@ -1784,14 +1826,97 @@ Start from:
 
 ```
 rag-system
-Steps 31, 33, 34, 35, 36 completed
-Step 32 is next
+Steps 31, 33, 34, 35, 36, 37, 38, 39, 40 completed
+Next: document metadata persistence → retrieval filter expansion
 ```
 
 and continue incrementally.
+
+## 40. Index Validation Service — FINISHED
+
+Created this session (changelog 0.1.39).
+
+`src/models/index_validation.py` — `IndexValidationResult`: `valid`,
+`document_count`, `chunk_count`, `embedding_count`,
+`expected_embedding_dimensions`, `invalid_embedding_count`,
+`duplicate_chunk_count`, `documents_without_chunks`,
+`chunks_without_embeddings`, and an `errors` list (`extra="forbid"`).
+
+`src/services/index_validation_service.py` — `validate(index_version_id)`:
+
+- raises `ValueError` if the version is missing
+- version must be BUILDING (validation runs between build and activation)
+- **non-empty guard:** `chunk_count == 0` is invalid — protects against
+  activating an empty index after a silent source-discovery failure
+- every embedding dimension must equal `version.embedding_dimensions`
+- every chunk must have exactly one embedding
+- duplicate `(document_id, chunk_index)` positions are counted — this is an
+  application-level check; `uq_chunks_document_version_index` already makes
+  real duplicates impossible in the DB, so the duplicate detector is
+  unit-tested directly rather than through persisted rows
+
+Repository methods added: `ChunkRepository.get_by_index_version_id` and
+`EmbeddingRepository.get_by_index_version_id` (embeddings via a `chunks`
+join).
+
+`ReindexService` gates activation behind validation: an invalid index is
+marked FAILED through the existing rollback path, never activated.
+
+- **Testing:** `tests/services/test_index_validation_service.py` (valid,
+  missing embedding, wrong dimensions, empty index, duplicate positions)
+
+## 41. Retrieval — FINISHED (initial vector search + filters)
+
+Created this session (changelog 0.2.1 and 0.2.2). This is the
+"query embedding → vector search → metadata filtering → top-k" segment of
+Phase C.
+
+**Models** — `src/models/retrieval.py`: `RetrievalQuery` (`query`, `top_k`
+1–100, optional `source`, optional `document_id`) and `RetrievalResult`
+(chunk/document/version ids, `content`, `chunk_index`, cosine-distance
+`score`), both frozen with `extra="forbid"`.
+
+**Vector search** — `src/db/repositories/vector_search.py`:
+`VectorSearchRepository.search(query_vector, index_version_id, top_k,
+source=None, document_id=None)` — pgvector `cosine_distance` over
+`embeddings → chunks → documents`; `source`/`document_id` are applied as
+SQL-side filters on `documents`; results ordered by distance, limited to
+`top_k`.
+
+**Retrieval service** — `src/services/retrieval_service.py`:
+`search(request)` resolves the ACTIVE index version (raises `ValueError` if
+none), embeds the query via `embedding_provider.embed_query(...)`, raises
+`ValueError` if the query-vector dimension does not match the ACTIVE version,
+then returns the top-`k` `RetrievalResult`s.
+
+**Embedding API** — `EmbeddingProvider.embed_query(text)` now exists as a
+default on the base class (delegates to `embed([text])`), so every provider
+can embed a single query for free.
+
+**Metadata filtering decision (important checkpoint):** document metadata is
+**not** duplicated onto chunks. Retrieval filters by joining
+`chunks → documents` and filtering on `documents.source` / `documents.id`.
+`RetrievalQuery.document_type` is deliberately **not** implemented:
+`DocumentMetadata.document_type` exists only transiently during ingestion and
+is not yet persisted. Enabling it requires deciding where persistent document
+metadata lives (documents.columns vs a metadata table) — that is the designed
+next step.
+
+**Testing:**
+
+- `tests/services/test_retrieval_service.py` — version isolation (only the
+  ACTIVE version's chunks are ever returned), `source` filter, `document_id`
+  filter, no-filter returns both documents, no-active-version → `ValueError`,
+  query-dimension mismatch → `ValueError`
+- `tests/integration/test_vector_search_repository.py` — SQL-side filters
+  (`source=billing`, `source=hr`, `document_id=A`) with every row tied to the
+  ACTIVE version
+- `tests/conftest.py` — shared `embedded_document_factory` fixture
+  (source/content/dimensions) so test files stop duplicating the
+  `EmbeddedDocument` builder
 
 ---
 
 **One-line handoff**
 
-> rag-system is a Python 3.13 + uv + Pydantic + SQLAlchemy + Alembic + PostgreSQL/pgvector RAG platform; ingestion through embedding, indexing, index versioning, ingestion runs, per-document processing tracking, document lifecycle states, and source finalization (archive/delete) are implemented. The pipeline is per-document isolated (`_process_document`), each document's chunks are version-aware (`IndexingService.update()` deletes only the active version; `uq_chunks_document_version_index` enforces `unique(document_id, index_version_id, chunk_index)`, verified by `tests/services/test_indexing_service.py`), processed sources are finalized only on SUCCESS (`FileFinalizer`), and `document_processing` records commit immediately and are typed by `IngestionRunStatus`/`DocumentProcessingStatus`/`DocumentProcessingOperation` enums. Steps 31, 33, 34, 35, 36 are complete; next is Step 32: improve document lifecycle/error handling, then Step 37 version-aware DELETE/REINDEX, Step 38 end-to-end reindex, retrieval, generation, guardrails, evaluation, observability, FinOps, API, CLI, Streamlit, testing, CI/CD, and production hardening.
+> rag-system is a Python 3.13 + uv + Pydantic + SQLAlchemy + Alembic + PostgreSQL/pgvector RAG platform. The write side is complete: ingestion through embedding, version-aware indexing (`IndexRequest.index_version_id`; ADD/UPDATE/DELETE/REINDEX scoped to one version, RETIRED/FAILED writes rejected), coordinated end-to-end `ReindexService` (source → shared PipelineStages → BUILDING version → `IndexValidationService` gate → activate/retire; invalid or empty indexes become FAILED while the previous ACTIVE survives — `_mark_failed` must re-add the version to the session after rollback), and index validation (changelog 0.1.37–0.1.39; the unit-tested-at-app-level duplicate check and the `documents`-join filtering are the two design gotchas). The read side has begun (0.2.1/0.2.2): `RetrievalService.search()` embeds the query via `embed_query`, dimension-checks against the ACTIVE version, and `VectorSearchRepository` runs pgvector cosine search with SQL-side `source`/`document_id` filters. 89 tests pass; ruff and mypy are clean on changed files (47 pre-existing repo-wide ruff errors; 5 pre-existing mypy errors including the dead `IngestionPersistenceService`). Next: persist document metadata so `RetrievalQuery.document_type` filtering can be enabled, then retrieval reranking/context building, then Phase D generation.

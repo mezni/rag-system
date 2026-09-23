@@ -24,9 +24,11 @@ def _embedded_document(
     source_uri: str,
     content: str,
     dimensions: int = 8,
+    *,
+    source: str = "filesystem",
 ) -> EmbeddedDocument:
     metadata = DocumentMetadata(
-        source="filesystem",
+        source=source,
         source_uri=source_uri,
         file_name="policy.md",
         extension=".md",
@@ -37,7 +39,7 @@ def _embedded_document(
     )
 
     document_input = DocumentInput(
-        source="filesystem",
+        source=source,
         source_uri=source_uri,
         path=Path(source_uri),
     )
@@ -88,6 +90,22 @@ def _retrieval_service(
             dimensions=dimensions
         ),
     )
+
+
+def _with_active_version(
+    database_session,
+) -> tuple[IndexingService, VersioningService]:
+    indexing = IndexingService(database_session)
+    versioning = VersioningService(database_session)
+
+    version = versioning.create_version(
+        "local-deterministic",
+        8,
+    )
+    versioning.activate_version(version)
+    database_session.commit()
+
+    return indexing, versioning
 
 
 def test_search_only_returns_chunks_from_active_version(
@@ -141,6 +159,133 @@ def test_search_only_returns_chunks_from_active_version(
         "old information" not in result.content
         for result in results
     )
+
+
+def test_search_filters_by_source(database_session) -> None:
+    indexing, _ = _with_active_version(database_session)
+
+    indexing.add(
+        _embedded_document(
+            "/tmp/billing.md",
+            "billing policy information",
+            source="billing",
+        )
+    )
+    indexing.add(
+        _embedded_document(
+            "/tmp/hr.md",
+            "hr policy information",
+            source="hr",
+        )
+    )
+
+    document = indexing.documents.get_by_source_uri(
+        "/tmp/billing.md"
+    )
+
+    assert document is not None
+
+    results = _retrieval_service(
+        database_session
+    ).search(
+        RetrievalQuery(
+            query="policy",
+            top_k=5,
+            source="billing",
+        )
+    )
+
+    assert results
+    assert all(
+        result.document_id == document.id
+        for result in results
+    )
+
+
+def test_search_filters_by_document_id(
+    database_session,
+) -> None:
+    indexing, _ = _with_active_version(database_session)
+
+    indexing.add(
+        _embedded_document(
+            "/tmp/billing.md",
+            "billing policy information",
+            source="billing",
+        )
+    )
+    indexing.add(
+        _embedded_document(
+            "/tmp/hr.md",
+            "hr policy information",
+            source="hr",
+        )
+    )
+
+    document = indexing.documents.get_by_source_uri(
+        "/tmp/billing.md"
+    )
+
+    assert document is not None
+
+    results = _retrieval_service(
+        database_session
+    ).search(
+        RetrievalQuery(
+            query="policy",
+            top_k=5,
+            document_id=document.id,
+        )
+    )
+
+    assert results
+    assert all(
+        result.document_id == document.id
+        for result in results
+    )
+
+
+def test_search_without_filters_returns_every_document(
+    database_session,
+) -> None:
+    indexing, _ = _with_active_version(database_session)
+
+    indexing.add(
+        _embedded_document(
+            "/tmp/billing.md",
+            "billing policy information",
+            source="billing",
+        )
+    )
+    indexing.add(
+        _embedded_document(
+            "/tmp/hr.md",
+            "hr policy information",
+            source="hr",
+        )
+    )
+
+    billing = indexing.documents.get_by_source_uri(
+        "/tmp/billing.md"
+    )
+    hr = indexing.documents.get_by_source_uri("/tmp/hr.md")
+
+    assert billing is not None
+    assert hr is not None
+
+    results = _retrieval_service(
+        database_session
+    ).search(
+        RetrievalQuery(query="policy", top_k=5)
+    )
+
+    result_documents = {
+        result.document_id
+        for result in results
+    }
+
+    assert billing.id in result_documents
+    assert hr.id in result_documents
 
 
 def test_search_requires_active_version(

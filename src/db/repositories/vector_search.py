@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from src.db.models.chunk import ChunkDB
+from src.db.models.document import DocumentDB
 from src.db.models.embedding import EmbeddingDB
 
 
@@ -18,6 +19,8 @@ class VectorSearchRepository:
         query_vector: list[float],
         index_version_id: UUID,
         top_k: int,
+        source: str | None = None,
+        document_id: UUID | None = None,
     ) -> list[tuple[ChunkDB, float]]:
         distance = EmbeddingDB.vector.cosine_distance(
             query_vector
@@ -32,9 +35,27 @@ class VectorSearchRepository:
                 EmbeddingDB,
                 EmbeddingDB.chunk_id == ChunkDB.id,
             )
+            .join(
+                DocumentDB,
+                DocumentDB.id == ChunkDB.document_id,
+            )
             .where(
                 ChunkDB.index_version_id == index_version_id,
             )
+        )
+
+        if source is not None:
+            statement = statement.where(
+                DocumentDB.source == source,
+            )
+
+        if document_id is not None:
+            statement = statement.where(
+                DocumentDB.id == document_id,
+            )
+
+        statement = (
+            statement
             .order_by(distance)
             .limit(top_k)
         )

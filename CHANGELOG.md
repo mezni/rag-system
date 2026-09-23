@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.2.2   | Retrieval Filters | SQL-side `source`/`document_id` filtering via `documents` join in vector search, shared embedded-document test factory |
 | 0.2.1   | Retrieval        | `VectorSearchRepository` pgvector cosine search, `RetrievalService` owning query embedding against the active version, `RetrievalQuery`/`RetrievalResult` models |
 | 0.1.39  | Index Validation | structured `IndexValidationResult`, `IndexValidationService` guarding activation in `ReindexService`, version-scoped chunk/embedding lookups |
 | 0.1.38  | End-to-End Reindex | source→embed coordinated reindex, BUILDING build→validate→ACTIVATE→retire, FAILED on failure keeps previous ACTIVE |
@@ -49,6 +50,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.2.2] - 2026-09-23
+
+### Added
+- **Retrieval filtering:** `RetrievalQuery` now carries optional `source` (min 1 / max 100 chars) and `document_id` filters
+- **Vector search repository:** `VectorSearchRepository.search()` now joins `documents` and applies `source`/`document_id` filters in SQL (still scoped to a single index version); no document metadata is duplicated onto chunks
+- **Testing:** service-level filter tests (`source=billing` returns only billing chunks, `document_id` filter, and no-filter returning every document); `tests/integration/test_vector_search_repository.py` verifying the SQL-side filters (`source=billing`, `source=hr`, `document_id=A`, all rows tied to the ACTIVE version); shared `embedded_document_factory` fixture promoted to root `conftest.py`
+
+### Changed
+- `RetrievalService.search()` forwards `request.source` and `request.document_id` to the repository
+- `document_type` is intentionally **not** implemented yet — the model field is deferred until document metadata is persisted on chunks/documents; this is a deliberate architectural checkpoint before wiring retrieval metadata
 
 ## [0.2.1] - 2026-09-23
 

@@ -9,6 +9,14 @@ class RetrievalQuery(BaseModel):
     query: str = Field(min_length=1)
     top_k: int = Field(default=5, ge=1, le=100)
 
+    source: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=100,
+    )
+
+    document_id: UUID | None = None
+
 
 class RetrievalResult(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
