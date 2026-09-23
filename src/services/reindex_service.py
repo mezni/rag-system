@@ -1,73 +1,144 @@
+from uuid import UUID
+
 from sqlalchemy.orm import Session
 
-from src.ingestion.context import EmbeddedDocument
+from src.core.enums import DocumentChangeType, IndexVersionStatus
+from src.core.hashing import calculate_file_hash
+from src.db.models.index_version import IndexVersionDB
+from src.embeddings.base import EmbeddingProvider
+from src.ingestion.chunking import DocumentChunker
+from src.ingestion.cleaning import DocumentCleaner
+from src.ingestion.context import DocumentChange
+from src.ingestion.loaders.base import DocumentLoader
+from src.ingestion.metadata import MetadataExtractor
+from src.ingestion.parsers.registry import ParserRegistry
+from src.ingestion.sources.base import DocumentSource
+from src.ingestion.stages.chunk import ChunkStage
+from src.ingestion.stages.clean import CleanStage
+from src.ingestion.stages.embed import EmbedStage
+from src.ingestion.stages.enrich import EnrichStage
+from src.ingestion.stages.load import LoadStage
+from src.ingestion.stages.parse import ParseStage
+from src.models.indexing import IndexVersion
 from src.services.indexing_service import IndexingService
 from src.services.versioning_service import VersioningService
 
 
 class ReindexService:
-    def __init__(self, session: Session) -> None:
-        self.session = session
-        self.versioning = VersioningService(session)
-        self.indexing = IndexingService(session)
+    """Coordinate source-to-index reindexing against a new index version.
 
-    def create_reindex_version(
-        self,
-        embedding_model: str,
-        embedding_dimensions: int,
-    ):
-        return self.versioning.create_version(
-            embedding_model=embedding_model,
-            embedding_dimensions=embedding_dimensions,
-        )
+    Builds a BUILDING version, ingests every discovered document into it,
+    validates the version, then activates it (retiring the previous ACTIVE
+    version). On failure the new version is marked FAILED and the previously
+    active version is left untouched.
+    """
 
-    def index_document(
+    def __init__(
         self,
-        data: EmbeddedDocument,
-        version_id,
-    ):
-        return self.indexing.add_to_version(
-            data=data,
-            index_version_id=version_id,
-        )
+        versioning_service: VersioningService,
+        indexing_service: IndexingService,
+        document_source: DocumentSource,
+        document_loader: DocumentLoader,
+        parser_registry: ParserRegistry,
+        cleaner: DocumentCleaner,
+        metadata_extractor: MetadataExtractor,
+        chunker: DocumentChunker,
+        embedding_provider: EmbeddingProvider,
+    ) -> None:
+        self.versioning_service = versioning_service
+        self.indexing_service = indexing_service
+        self.document_source = document_source
+        self.document_loader = document_loader
+        self.parser_registry = parser_registry
+        self.cleaner = cleaner
+        self.metadata_extractor = metadata_extractor
+        self.chunker = chunker
+        self.embedding_provider = embedding_provider
 
-    def activate(
-        self,
-        version,
-    ):
-        self.versioning.activate_version(version)
-        self.session.commit()
+        self._load_stage = LoadStage(self.document_loader)
+        self._parse_stage = ParseStage(self.parser_registry)
+        self._clean_stage = CleanStage(self.cleaner)
+        self._enrich_stage = EnrichStage(self.metadata_extractor)
+        self._chunk_stage = ChunkStage(self.chunker)
+        self._embed_stage = EmbedStage(self.embedding_provider)
 
-    def fail(
-        self,
-        version,
-    ):
-        self.versioning.fail_version(version)
-        self.session.commit()
+        self.session: Session = indexing_service.session
 
     def reindex(
         self,
-        documents: list[EmbeddedDocument],
         embedding_model: str,
         embedding_dimensions: int,
-    ):
-        version = self.create_reindex_version(
+    ) -> IndexVersion:
+        version = self.versioning_service.create_version(
             embedding_model=embedding_model,
             embedding_dimensions=embedding_dimensions,
         )
 
         try:
-            for document in documents:
-                self.index_document(
-                    data=document,
-                    version_id=version.id,
-                )
+            self._build_version(version.id)
 
-            self.versioning.activate_version(version)
+            self._validate_version(version.id)
+
+            self.versioning_service.activate_version(version)
+
             self.session.commit()
 
-            return version
+            activated_version = self.versioning_service.get_version(
+                version.id
+            )
+
+            if activated_version is None:
+                raise ValueError(
+                    f"Index version not found: {version.id}"
+                )
+
+            return activated_version
 
         except Exception:
             self.session.rollback()
+            self._mark_failed(version)
             raise
+
+    def _build_version(self, version_id: UUID) -> None:
+        documents = self.document_source.discover()
+
+        for document_input in documents:
+            change = DocumentChange(
+                document=document_input,
+                change_type=DocumentChangeType.NEW,
+                content_hash=calculate_file_hash(document_input.path),
+            )
+
+            raw_document = self._load_stage.execute(change)
+            parsed_document = self._parse_stage.execute(raw_document)
+            cleaned_document = self._clean_stage.execute(parsed_document)
+            enriched_document = self._enrich_stage.execute(cleaned_document)
+            chunked_document = self._chunk_stage.execute(enriched_document)
+            embedded_document = self._embed_stage.execute(chunked_document)
+
+            self.indexing_service.add_to_version(
+                data=embedded_document,
+                index_version_id=version_id,
+            )
+
+    def _validate_version(self, version_id: UUID) -> None:
+        version = self.versioning_service.get_version(
+            version_id
+        )
+
+        if version is None:
+            raise ValueError(
+                f"Index version not found: {version_id}"
+            )
+
+        if version.status != IndexVersionStatus.BUILDING:
+            raise ValueError(
+                f"Expected BUILDING version, got {version.status}"
+            )
+
+    def _mark_failed(self, version: IndexVersionDB) -> None:
+        if version not in self.session:
+            self.session.add(version)
+
+        self.versioning_service.fail_version(version)
+        self.session.commit()

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.38  | End-to-End Reindex | source→embed coordinated reindex, BUILDING build→validate→ACTIVATE→retire, FAILED on failure keeps previous ACTIVE |
 | 0.1.37  | Version-Aware Writes | unified version resolution/validation, explicit-version `add`/`update`/`delete`, single-version delete leaves `DocumentDB` intact |
 | 0.1.36  | Version-Aware Chunks | version-scoped chunk delete/lookup, `IndexingService.update()` preserves other versions, `uq_chunks_document_version_index` constraint |
 | 0.1.35  | Source Finalization | `FileFinalizer` archive/delete, `config/ingestion.yaml`, finalize-on-SUCCESS gating, durable run start |
@@ -46,6 +47,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.38] - 2026-09-23
+
+### Added
+- **Reindex:** `ReindexService` now coordinates the existing ingestion components end-to-end — injected `VersioningService`, `IndexingService`, and source/loader/parser registry/cleaner/metadata extractor/chunker/embedding provider — instead of accepting pre-embedded documents. Internally it builds the existing `PipelineStage`s, so `_build_version(version_id)` runs `load → parse → clean → enrich → chunk → embed` and persists each document into the target BUILDING version via `add_to_version`
+- **Reindex:** `_validate_version(version_id)` — post-build guard raising `ValueError` if the version is missing or no longer `BUILDING`
+- **Versioning:** `VersioningService.get_version(version_id) -> IndexVersion | None` with a `to_domain` mapper (`IndexVersionDB` → Pydantic `IndexVersion`); `reindex()` returns the domain model
+- **Testing:** `tests/services/test_reindex_service.py` — success path (reindex builds v2, activates it, retires v1, all chunks attached to v2) and failure path (embedding failure on the third document marks the new version FAILED with zero chunks while v1 stays ACTIVE, so the system never loses its active index)
+
+### Changed
+- **Reindex:** `reindex(embedding_model, embedding_dimensions) -> IndexVersion` replaces the old explicitly-passed `documents` parameter; it now discovers and processes the source itself
+- **Reindex:** failure handling rolls back, re-persists the failed version as `FAILED` (re-added to the session so it survives an inner `add_to_version` rollback), commits, and re-raises — the previously ACTIVE version is left untouched
+- **Removed:** obsolete `ReindexService.create_reindex_version`/`index_document`/`activate`/`fail` helpers (replaced by the coordinated `reindex()` flow); `tests/integration/test_reindex_service.py` deleted in favor of the new service-level suite
+
+### Tooling
+- **Dev dependency:** `mypy` added to the dev dependency group so `uv run mypy src` works
 
 ## [0.1.37] - 2026-09-23
 
