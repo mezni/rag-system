@@ -2,7 +2,7 @@ from uuid import UUID
 
 from sqlalchemy.orm import Session
 
-from src.core.enums import DocumentChangeType, IndexVersionStatus
+from src.core.enums import DocumentChangeType
 from src.core.hashing import calculate_file_hash
 from src.db.models.index_version import IndexVersionDB
 from src.embeddings.base import EmbeddingProvider
@@ -20,6 +20,7 @@ from src.ingestion.stages.enrich import EnrichStage
 from src.ingestion.stages.load import LoadStage
 from src.ingestion.stages.parse import ParseStage
 from src.models.indexing import IndexVersion
+from src.services.index_validation_service import IndexValidationService
 from src.services.indexing_service import IndexingService
 from src.services.versioning_service import VersioningService
 
@@ -37,6 +38,7 @@ class ReindexService:
         self,
         versioning_service: VersioningService,
         indexing_service: IndexingService,
+        validation_service: IndexValidationService,
         document_source: DocumentSource,
         document_loader: DocumentLoader,
         parser_registry: ParserRegistry,
@@ -47,6 +49,7 @@ class ReindexService:
     ) -> None:
         self.versioning_service = versioning_service
         self.indexing_service = indexing_service
+        self.validation_service = validation_service
         self.document_source = document_source
         self.document_loader = document_loader
         self.parser_registry = parser_registry
@@ -77,7 +80,15 @@ class ReindexService:
         try:
             self._build_version(version.id)
 
-            self._validate_version(version.id)
+            validation = self.validation_service.validate(
+                version.id
+            )
+
+            if not validation.valid:
+                raise ValueError(
+                    "Index validation failed: "
+                    + "; ".join(validation.errors)
+                )
 
             self.versioning_service.activate_version(version)
 
@@ -119,21 +130,6 @@ class ReindexService:
             self.indexing_service.add_to_version(
                 data=embedded_document,
                 index_version_id=version_id,
-            )
-
-    def _validate_version(self, version_id: UUID) -> None:
-        version = self.versioning_service.get_version(
-            version_id
-        )
-
-        if version is None:
-            raise ValueError(
-                f"Index version not found: {version_id}"
-            )
-
-        if version.status != IndexVersionStatus.BUILDING:
-            raise ValueError(
-                f"Expected BUILDING version, got {version.status}"
             )
 
     def _mark_failed(self, version: IndexVersionDB) -> None:

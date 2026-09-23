@@ -5,6 +5,9 @@ import pytest
 from src.core.enums import IndexVersionStatus
 from src.db.models.chunk import ChunkDB
 from src.db.models.index_version import IndexVersionDB
+from src.db.repositories.chunks import ChunkRepository
+from src.db.repositories.embeddings import EmbeddingRepository
+from src.db.repositories.index_versions import IndexVersionRepository
 from src.embeddings.base import EmbeddingProvider
 from src.embeddings.local import LocalEmbeddingProvider
 from src.ingestion.chunkers.text import CharacterTextChunker
@@ -15,6 +18,7 @@ from src.ingestion.parsers.markdown import MarkdownParser
 from src.ingestion.parsers.registry import ParserRegistry
 from src.ingestion.parsers.text import TextParser
 from src.ingestion.sources.filesystem import FilesystemSource
+from src.services.index_validation_service import IndexValidationService
 from src.services.indexing_service import IndexingService
 from src.services.reindex_service import ReindexService
 from src.services.versioning_service import VersioningService
@@ -66,6 +70,15 @@ def _build_reindex_service(
     return ReindexService(
         versioning_service=VersioningService(database_session),
         indexing_service=IndexingService(database_session),
+        validation_service=IndexValidationService(
+            index_version_repository=IndexVersionRepository(
+                database_session
+            ),
+            chunk_repository=ChunkRepository(database_session),
+            embedding_repository=EmbeddingRepository(
+                database_session
+            ),
+        ),
         document_source=FilesystemSource(
             input_dir=raw,
             patterns=("*.md", "*.txt"),

@@ -66,6 +66,22 @@ class ChunkRepository:
             .all()
         )
 
+    def get_by_index_version_id(
+        self,
+        index_version_id: UUID,
+    ) -> list[ChunkDB]:
+        return list(
+            self.session.query(ChunkDB)
+            .filter(
+                ChunkDB.index_version_id == index_version_id,
+            )
+            .order_by(
+                ChunkDB.document_id,
+                ChunkDB.chunk_index,
+            )
+            .all()
+        )
+
     def delete_by_document_id(
         self,
         document_id: UUID,

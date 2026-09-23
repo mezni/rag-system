@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.39  | Index Validation | structured `IndexValidationResult`, `IndexValidationService` guarding activation in `ReindexService`, version-scoped chunk/embedding lookups |
 | 0.1.38  | End-to-End Reindex | source→embed coordinated reindex, BUILDING build→validate→ACTIVATE→retire, FAILED on failure keeps previous ACTIVE |
 | 0.1.37  | Version-Aware Writes | unified version resolution/validation, explicit-version `add`/`update`/`delete`, single-version delete leaves `DocumentDB` intact |
 | 0.1.36  | Version-Aware Chunks | version-scoped chunk delete/lookup, `IndexingService.update()` preserves other versions, `uq_chunks_document_version_index` constraint |
@@ -47,6 +48,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.39] - 2026-09-23
+
+### Added
+- **Validation model:** `IndexValidationResult` (in `src/models/index_validation.py`) — structured validation output with `valid` flag plus `document_count`/`chunk_count`/`embedding_count`, `expected_embedding_dimensions`, `invalid_embedding_count`, `duplicate_chunk_count`, `documents_without_chunks`, `chunks_without_embeddings`, and an `errors` list; `extra="forbid"` config
+- **IndexValidationService:** `IndexValidationService` (in `src/services/index_validation_service.py`) with `validate(index_version_id)` returning `IndexValidationResult` and raising `ValueError` for unknown versions. Checks: version must be BUILDING, at least one chunk present (protects against replacing a working index with an empty one after silent source-discovery failure), every embedding dimension must match the version, every chunk must have exactly one embedding, and no duplicate `(document_id, chunk_index)` positions
+- **Repository method:** `ChunkRepository.get_by_index_version_id` — version-scoped chunk lookup ordered by `(document_id, chunk_index)`
+- **Repository method:** `EmbeddingRepository.get_by_index_version_id` — version-scoped embeddings via a `chunks` join
+- **Testing:** `tests/services/test_index_validation_service.py` — valid index, missing embedding (delete one embedding), wrong dimensions (declared 1536 on an 8-dim version), empty index, and duplicate-position detection (unit-tested at the application level, since `uq_chunks_document_version_index` prevents real duplicates in the DB)
+
+### Changed
+- **Reindex:** `ReindexService` now takes a `validation_service` dependency and runs `validation_service.validate()` between build and activate — a reindex only reaches `ACTIVE` when the built version is structurally sound; invalid versions are marked `FAILED` via the existing rollback path
+- **Reindex:** the internal `_validate_version` BUILDING-only guard is superseded by the full validation service
 
 ## [0.1.38] - 2026-09-23
 

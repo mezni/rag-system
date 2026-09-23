@@ -3,6 +3,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from src.db.models.chunk import ChunkDB
 from src.db.models.embedding import EmbeddingDB
 
 
@@ -42,6 +43,22 @@ class EmbeddingRepository:
         return self.session.execute(
             statement
         ).scalar_one_or_none()
+
+    def get_by_index_version_id(
+        self,
+        index_version_id: UUID,
+    ) -> list[EmbeddingDB]:
+        return list(
+            self.session.query(EmbeddingDB)
+            .join(
+                ChunkDB,
+                EmbeddingDB.chunk_id == ChunkDB.id,
+            )
+            .filter(
+                ChunkDB.index_version_id == index_version_id,
+            )
+            .all()
+        )
 
     def delete_by_chunk_ids(
         self,
