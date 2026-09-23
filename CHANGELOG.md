@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.2.1   | Retrieval        | `VectorSearchRepository` pgvector cosine search, `RetrievalService` owning query embedding against the active version, `RetrievalQuery`/`RetrievalResult` models |
 | 0.1.39  | Index Validation | structured `IndexValidationResult`, `IndexValidationService` guarding activation in `ReindexService`, version-scoped chunk/embedding lookups |
 | 0.1.38  | End-to-End Reindex | source→embed coordinated reindex, BUILDING build→validate→ACTIVATE→retire, FAILED on failure keeps previous ACTIVE |
 | 0.1.37  | Version-Aware Writes | unified version resolution/validation, explicit-version `add`/`update`/`delete`, single-version delete leaves `DocumentDB` intact |
@@ -48,6 +49,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.2.1] - 2026-09-23
+
+The system can now query its built index: a search goes through a new retrieval
+layer that embeds the query, finds the nearest chunks in the **active** index
+version, and returns ranked results.
+
+### Added
+- **Retrieval models:** `RetrievalQuery` (`query` min length 1, `top_k` 1–100) and `RetrievalResult` (chunk/document/version IDs, chunk content + index, cosine-distance `score`) in `src/models/retrieval.py`, both frozen with `extra="forbid"`
+- **Vector search repository:** `VectorSearchRepository.search()` in `src/db/repositories/vector_search.py` — pgvector `cosine_distance` query over a single index version (join `embeddings` → `chunks`, ordered by distance, limited to `top_k`)
+- **Retrieval service:** `RetrievalService` in `src/services/retrieval_service.py` — resolves the ACTIVE index version (raises `ValueError` if none exists), embeds the query via the injected `embedding_provider`, verifies the query embedding dimension matches the active version (else `ValueError`), and returns the top-`k` `RetrievalResult`s
+- **Embedding API:** `EmbeddingProvider.embed_query(text)` default on the base class, delegating to `embed([text])`, so every provider can embed a single query without new implementations
+- **Testing:** `tests/services/test_retrieval_service.py` (pgvector integration against Docker Postgres) — version isolation (v1 RETIRED chunks never returned while v2 ACTIVE is searched), no-active-version → `ValueError`, query-dimension mismatch → `ValueError`
+
+### Changed
+- **Semantic bump:** 0.1.x patch track → 0.2.x minor track, reflecting the system evolving from index-*writing* only into a writable *and searchable* index
 
 ## [0.1.39] - 2026-09-23
 
