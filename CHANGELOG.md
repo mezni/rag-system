@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 
 | Version | Feature Domain | Key Objectives |
 |---------|---------------|----------------|
+| 0.1.37  | Version-Aware Writes | unified version resolution/validation, explicit-version `add`/`update`/`delete`, single-version delete leaves `DocumentDB` intact |
 | 0.1.36  | Version-Aware Chunks | version-scoped chunk delete/lookup, `IndexingService.update()` preserves other versions, `uq_chunks_document_version_index` constraint |
 | 0.1.35  | Source Finalization | `FileFinalizer` archive/delete, `config/ingestion.yaml`, finalize-on-SUCCESS gating, durable run start |
 | 0.1.34  | Pipeline Isolation | `_process_document` owns the per-document workflow; `run()` orchestrates via `DocumentProcessingResult` counters |
@@ -45,6 +46,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 | 0.1.3   | Database      | SQLAlchemy `src/db` module, Alembic migrations |
 | 0.1.2   | Infrastructure | Docker Compose, Makefile, .env.example with DATABASE_URL |
 | 0.1.1   | Core          | Initial release with config, errors, ids, clock |
+
+## [0.1.37] - 2026-09-23
+
+### Added
+- **Model:** `IndexRequest.index_version_id: UUID | None` — explicit index-version targeting alongside `document_id`
+- **Indexing:** `IndexingService._resolve_version(index_version_id)` — single version-selection point: explicit version (not-found raises `ValueError`) or the active version (none raises `ValueError`)
+- **Indexing:** `IndexingService._validate_writable_version(version)` — rejects writes to `RETIRED`/`FAILED` versions (`BUILDING`/`ACTIVE` only)
+- **Indexing:** `IndexingService._validate_embedding_dimensions(data, version)` — rejects embeddings whose dimensions differ from the version's `embedding_dimensions` before persistence
+- **Testing:** `tests/services/test_indexing_service.py` version-isolation cases — ADD targets the active version by default; UPDATE in a BUILDING v2 while v1 is ACTIVE leaves v1 chunks untouched and replaces v2's; DELETE from v2 leaves v1 chunks and the `DocumentDB` row intact; writes to RETIRED/FAILED versions raise `ValueError`; dimension-mismatched embeddings raise `ValueError`
+
+### Changed
+- **Indexing:** `add()`, `update()`, `delete()` now accept an optional `index_version_id` and resolve it through `_resolve_version`, defaulting to the active version
+- **Indexing:** `add()` delegates persistence to `add_to_version` (single code path), then marks the document `ACTIVE` and commits
+- **Indexing:** `delete(document_id, index_version_id)` no longer removes the `DocumentDB` row — it removes only that version's chunks (embeddings cascade), keeping the document record; removing a document from the index across versions is now an explicit per-version operation
+- **Indexing:** `_persist_chunks_and_embeddings` takes the resolved `IndexVersionDB` (not a raw id) and relies on the public write paths for version/dimension validation
+- **Reindex:** `ReindexService` continues to call `add_to_version` with an explicit BUILDING version, never accidentally resolving the active version
+
+### Testing
+- **Test updated:** `tests/integration/test_ingestion_pipeline.py::test_indexing_service_removes_document_from_active_index` (renamed from `test_indexing_service_deletes_document`) — asserts chunks are gone after `delete()` while the `DocumentDB` row remains
 
 ## [0.1.36] - 2026-09-20
 
