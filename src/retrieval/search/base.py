@@ -16,7 +16,6 @@ class SearchStrategy(ABC):
         """Execute a search strategy."""
         raise NotImplementedError
 
-
 def reciprocal_rank_fusion(
     result_lists: list[list[RetrievalResult]],
     k: int = 60,
