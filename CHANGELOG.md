@@ -97,6 +97,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 - Test cleanup: removed duplicate filter field parameters from `RetrievalQuery` construction in test files
 - Consistent filter validation: all filter fields now go through the `RetrievalFilter` Pydantic model with `extra="forbid"`
 
+## [0.2.4] - 2026-09-25
+
+### Added
+- **RetrievalFilter model:** New `RetrievalFilter` class in `src/models/retrieval.py` consolidating `source`, `document_id`, and `document_type` filters into a single reusable object
+- **Unified filter API:** `RetrievalQuery.filters` field replaces individual filter arguments in `search()` calls
+
+### Changed
+- `RetrievalQuery` now uses `filters: RetrievalFilter | None` instead of individual `source`, `document_id`, `document_type` fields
+- `VectorSearchRepository.search()` accepts `filters: RetrievalFilter | None` and applies all filters from the object
+- `RetrievalService.search()` forwards `request.filters` to the repository instead of individual filter fields
+- All existing filter tests updated to use `RetrievalFilter(source="...", document_id=..., document_type=...)`
+
+### Fixed
+- Test cleanup: removed duplicate filter field parameters from `RetrievalQuery` construction in test files
+- Consistent filter validation: all filter fields now go through the `RetrievalFilter` Pydantic model with `extra="forbid"`
+
 ## [0.2.1] - 2026-09-23
 
 The system can now query its built index: a search goes through a new retrieval
