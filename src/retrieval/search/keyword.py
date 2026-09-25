@@ -1,35 +1,25 @@
-from src.db.repositories.vector_search import VectorSearchRepository
+from src.db.repositories.keyword_search import KeywordSearchRepository
 from src.models.retrieval import RetrievalQuery, RetrievalResult
 from src.retrieval.search.base import SearchStrategy
 
 
-class VectorSearchStrategy(SearchStrategy):
+class KeywordSearchStrategy(SearchStrategy):
     """
-    Vector similarity search strategy.
-
-    Delegates persistence-specific searching to the
-    VectorSearchRepository and converts persistence
-    results into application retrieval results.
+    PostgreSQL full-text search strategy.
     """
 
     def __init__(
         self,
-        repository: VectorSearchRepository,
-        embedding_provider,
+        repository: KeywordSearchRepository,
     ) -> None:
         self.repository = repository
-        self.embedding_provider = embedding_provider
 
     def search(
         self,
         request: RetrievalQuery,
     ) -> list[RetrievalResult]:
-        query_vector = self.embedding_provider.embed_query(
-            request.query,
-        )
-
         rows = self.repository.search(
-            query_vector=query_vector,
+            query=request.query,
             top_k=request.top_k,
             filters=request.filters,
         )
@@ -41,7 +31,7 @@ class VectorSearchStrategy(SearchStrategy):
                 index_version_id=chunk.index_version_id,
                 content=chunk.content,
                 chunk_index=chunk.chunk_index,
-                score=distance,
+                score=rank,
             )
-            for chunk, distance in rows
+            for chunk, rank in rows
         ]

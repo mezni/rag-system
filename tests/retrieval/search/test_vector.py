@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from src.models.retrieval import RetrievalFilter
+from src.models.retrieval import RetrievalFilter, RetrievalQuery
 from src.retrieval.search.vector import VectorSearchStrategy
 
 
@@ -39,8 +39,14 @@ class FakeVectorSearchRepository:
 def test_vector_search_strategy_maps_repository_result():
     repository = FakeVectorSearchRepository()
 
+    # Provide a mock embedding provider
+    class MockEmbeddingProvider:
+        def embed_query(self, query):
+            return [0.1, 0.2, 0.3]
+
     strategy = VectorSearchStrategy(
         repository=repository,
+        embedding_provider=MockEmbeddingProvider(),
     )
 
     filters = RetrievalFilter(
@@ -48,11 +54,13 @@ def test_vector_search_strategy_maps_repository_result():
         document_type="policy",
     )
 
-    results = strategy.search(
-        query_vector=[0.1, 0.2, 0.3],
+    request = RetrievalQuery(
+        query="What is the refund policy?",
         top_k=5,
         filters=filters,
     )
+
+    results = strategy.search(request)
 
     assert len(results) == 1
 

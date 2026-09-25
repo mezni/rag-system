@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.models.retrieval import RetrievalFilter, RetrievalResult
+from src.models.retrieval import RetrievalQuery, RetrievalResult
 
 
 class SearchStrategy(ABC):
@@ -11,9 +11,7 @@ class SearchStrategy(ABC):
     @abstractmethod
     def search(
         self,
-        query_vector: list[float],
-        top_k: int,
-        filters: RetrievalFilter | None = None,
+        request: RetrievalQuery,
     ) -> list[RetrievalResult]:
-        """Search the index and return ranked retrieval results."""
+        """Execute a search strategy."""
         raise NotImplementedError

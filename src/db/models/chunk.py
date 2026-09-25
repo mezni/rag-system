@@ -9,8 +9,9 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     func,
+    Index,
 )
-from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
+from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID, TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.base import Base
@@ -83,6 +84,11 @@ class ChunkDB(Base):
         DateTime(timezone=True),
         nullable=False,
         server_default=func.now(),
+    )
+
+    search_vector: Mapped[str | None] = mapped_column(
+        TSVECTOR,
+        nullable=True,
     )
 
     document: Mapped["DocumentDB"] = relationship(
