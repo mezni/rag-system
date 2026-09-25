@@ -26,4 +26,14 @@ class RetrievalService:
                 "No active index version exists"
             )
 
+        query_vector = self.search_strategy.embedding_provider.embed_query(
+            request.query,
+        )
+
+        if len(query_vector) != active_version.embedding_dimensions:
+            raise ValueError(
+                "Query embedding dimensions do not match "
+                "the active index version"
+            )
+
         return self.search_strategy.search(request)

@@ -113,6 +113,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 - Test cleanup: removed duplicate filter field parameters from `RetrievalQuery` construction in test files
 - Consistent filter validation: all filter fields now go through the `RetrievalFilter` Pydantic model with `extra="forbid"`
 
+## [0.2.5] - 2026-09-25
+
+### Added
+- **PostgreSQL full-text search:** `search_vector` column (TSVECTOR) added to `chunks` table with GIN index
+- **Full-text search trigger:** Automatic `search_vector` population on chunk insert/update via PostgreSQL trigger function
+- **KeywordSearchRepository:** `KeywordSearchRepository.search()` enables `websearch_to_tsquery`/`ts_rank_cd` queries against `search_vector`
+- **KeywordSearchStrategy:** New `SearchStrategy` implementation for PostgreSQL full-text search
+- **Retrieval pipeline diversification:** `RetrievalService` now accepts any `SearchStrategy` (vector or keyword), decoupling search logic from the service layer
+
+### Changed
+- `SearchStrategy` base class updated to accept `RetrievalQuery` instead of separate queryVector/top_k/filters parameters
+- `VectorSearchStrategy.search()` now takes `RetrievalQuery` and delegates embedding to `EmbeddingProvider`
+- `KeywordSearchStrategy.search()` now takes `RetrievalQuery` and delegates query processing to `KeywordSearchRepository`
+- `RetrievalService` constructor now accepts `search_strategy` instead of `vector_search_repository` + `embedding_provider`
+- `ChunkDB` model now includes `search_vector: Mapped[str | None] = mapped_column(TSVECTOR, nullable=True)`
+
+### Fixed
+- Metadata consistency: `search_vector` is now automatically maintained via PostgreSQL trigger, ensuring tsvector is always in sync with `content`
+- Test cleanup: retrieval service tests updated to use new `RetrievalService(index_version_repository, search_strategy)` constructor signature
+
 ## [0.2.1] - 2026-09-23
 
 The system can now query its built index: a search goes through a new retrieval

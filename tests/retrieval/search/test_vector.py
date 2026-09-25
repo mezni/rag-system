@@ -4,11 +4,20 @@ from src.models.retrieval import RetrievalFilter, RetrievalQuery
 from src.retrieval.search.vector import VectorSearchStrategy
 
 
+class FakeEmbeddingProvider:
+    def __init__(self) -> None:
+        self.dimensions = 8
+
+    def embed_query(self, query: str) -> list[float]:
+        return [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+
+
 class FakeVectorSearchRepository:
     def __init__(self) -> None:
         self.received_query_vector = None
         self.received_top_k = None
         self.received_filters = None
+        self.dimensions = 8
 
     def search(
         self,
@@ -39,14 +48,9 @@ class FakeVectorSearchRepository:
 def test_vector_search_strategy_maps_repository_result():
     repository = FakeVectorSearchRepository()
 
-    # Provide a mock embedding provider
-    class MockEmbeddingProvider:
-        def embed_query(self, query):
-            return [0.1, 0.2, 0.3]
-
     strategy = VectorSearchStrategy(
         repository=repository,
-        embedding_provider=MockEmbeddingProvider(),
+        embedding_provider=FakeEmbeddingProvider(),
     )
 
     filters = RetrievalFilter(
@@ -70,6 +74,6 @@ def test_vector_search_strategy_maps_repository_result():
     assert result.chunk_index == 0
     assert result.score == 0.15
 
-    assert repository.received_query_vector == [0.1, 0.2, 0.3]
+    assert repository.received_query_vector == [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
     assert repository.received_top_k == 5
     assert repository.received_filters == filters

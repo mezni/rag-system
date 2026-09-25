@@ -79,15 +79,18 @@ def _retrieval_service(
     database_session,
     dimensions: int = 8,
 ) -> RetrievalService:
-    return RetrievalService(g)
-        vector_search_repository=VectorSearchRepository(
-            database_session
-        ),
+    from src.retrieval.search.vector import VectorSearchStrategy
+    return RetrievalService(
         index_version_repository=IndexVersionRepository(
             database_session
         ),
-        embedding_provider=LocalEmbeddingProvider(
-            dimensions=dimensions
+        search_strategy=VectorSearchStrategy(
+            repository=VectorSearchRepository(
+                database_session
+            ),
+            embedding_provider=LocalEmbeddingProvider(
+                dimensions=dimensions
+            ),
         ),
     )
 
