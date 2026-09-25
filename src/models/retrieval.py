@@ -3,11 +3,11 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class RetrievalQuery(BaseModel):
-    model_config = ConfigDict(extra="forbid", frozen=True)
-
-    query: str = Field(min_length=1)
-    top_k: int = Field(default=5, ge=1, le=100)
+class RetrievalFilter(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+        frozen=True,
+    )
 
     source: str | None = Field(
         default=None,
@@ -22,6 +22,19 @@ class RetrievalQuery(BaseModel):
         min_length=1,
         max_length=100,
     )
+
+
+class RetrievalQuery(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+        frozen=True,
+    )
+
+    query: str = Field(min_length=1)
+
+    top_k: int = Field(default=5, ge=1, le=100)
+
+    filters: RetrievalFilter | None = None
 
 
 class RetrievalResult(BaseModel):

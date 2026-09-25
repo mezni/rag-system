@@ -1,11 +1,13 @@
 from uuid import UUID
 
-from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from sqlalchemy import Select, select
 
 from src.db.models.chunk import ChunkDB
 from src.db.models.document import DocumentDB
 from src.db.models.embedding import EmbeddingDB
+from src.models.retrieval import RetrievalFilter
 
 
 class VectorSearchRepository:
@@ -17,17 +19,12 @@ class VectorSearchRepository:
     def search(
         self,
         query_vector: list[float],
-        index_version_id: UUID,
         top_k: int,
-        source: str | None = None,
-        document_id: UUID | None = None,
-        document_type: str | None = None,
+        filters: RetrievalFilter | None = None,
     ) -> list[tuple[ChunkDB, float]]:
-        distance = EmbeddingDB.vector.cosine_distance(
-            query_vector
-        )
+        distance = EmbeddingDB.vector.cosine_distance(query_vector)
 
-        statement = (
+        statement: Select = (
             select(
                 ChunkDB,
                 distance.label("distance"),
@@ -40,35 +37,29 @@ class VectorSearchRepository:
                 DocumentDB,
                 DocumentDB.id == ChunkDB.document_id,
             )
-            .where(
-                ChunkDB.index_version_id == index_version_id,
-            )
-        )
-
-        if source is not None:
-            statement = statement.where(
-                DocumentDB.source == source,
-            )
-
-        if document_id is not None:
-            statement = statement.where(
-                DocumentDB.id == document_id,
-            )
-
-        if document_type is not None:
-            statement = statement.where(
-                DocumentDB.document_type == document_type,
-            )
-
-        statement = (
-            statement
             .order_by(distance)
             .limit(top_k)
         )
 
-        rows = self.session.execute(statement).all()
+        if filters is not None:
+            if filters.source is not None:
+                statement = statement.where(
+                    DocumentDB.source == filters.source,
+                )
+
+            if filters.document_id is not None:
+                statement = statement.where(
+                    DocumentDB.id == filters.document_id,
+                )
+
+            if filters.document_type is not None:
+                statement = statement.where(
+                    DocumentDB.document_type == filters.document_type,
+                )
+
+        result = self.session.execute(statement)
 
         return [
-            (chunk, float(distance))
-            for chunk, distance in rows
+            (chunk, float(distance_value))
+            for chunk, distance_value in result.all()
         ]

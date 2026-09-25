@@ -62,6 +62,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec.php#pe
 - `RetrievalService.search()` forwards `request.source` and `request.document_id` to the repository
 - `document_type` is intentionally **not** implemented yet — the model field is deferred until document metadata is persisted on chunks/documents; this is a deliberate architectural checkpoint before wiring retrieval metadata
 
+## [0.2.3] - 2026-09-25
+
+### Added
+- **Document type field:** `document_type` column added to `documents` table (String(100), nullable)
+- **Pydantic models:** `document_type` field added to both `DocumentCreate` and `Document` models with `max_length=100`
+- **Retrieval filtering:** `RetrievalQuery` now carries optional `document_type` filter (min 1 / max 100 chars)
+- **Vector search:** `VectorSearchRepository.search()` applies `document_type` filter in SQL via `DocumentDB.document_type`
+- **Indexing pipeline:** `document_type` passed from `EnrichedDocument.metadata.document_type` through `DocumentCreate` → `DocumentDB` → persistence
+- **Repository methods:** `DocumentRepository.create()` and `update_content_hash()` now persist `document_type`; `to_domain()` converts it to application model
+- **RetrievalService:** forwards `request.document_type` to the repository for SQL-side filtering
+
+### Changed
+- `RetrievalService.search()` now forwards `request.document_type` to the repository
+- `document_type` no longer deferred — fully wired from metadata extraction through persistence to retrieval filtering
+- `DocumentRepository.update_content_hash()` now also updates `document_type` (clears if metadata says `None`)
+
+### Fixed
+- Metadata refresh limitation: when newly extracted metadata has `document_type=None`, the previous value is now cleared (previously only `title` behavior was non-preserving)
+
+## [0.2.4] - 2026-09-25
+
+### Added
+- **RetrievalFilter model:** New `RetrievalFilter` class in `src/models/retrieval.py` consolidating `source`, `document_id`, and `document_type` filters into a single reusable object
+- **Unified filter API:** `RetrievalQuery.filters` field replaces individual filter arguments in `search()` calls
+
+### Changed
+- `RetrievalQuery` now uses `filters: RetrievalFilter | None` instead of individual `source`, `document_id`, `document_type` fields
+- `VectorSearchRepository.search()` accepts `filters: RetrievalFilter | None` and applies all filters from the object
+- `RetrievalService.search()` forwards `request.filters` to the repository instead of individual filter fields
+- All existing filter tests updated to use `RetrievalFilter(source="...", document_id=..., document_type=...)`
+
+### Fixed
+- Test cleanup: removed duplicate filter field parameters from `RetrievalQuery` construction in test files
+- Consistent filter validation: all filter fields now go through the `RetrievalFilter` Pydantic model with `extra="forbid"`
+
 ## [0.2.1] - 2026-09-23
 
 The system can now query its built index: a search goes through a new retrieval

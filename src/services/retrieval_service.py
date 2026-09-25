@@ -42,10 +42,8 @@ class RetrievalService:
 
         rows = self.vector_search_repository.search(
             query_vector=query_vector,
-            index_version_id=active_version.id,
             top_k=request.top_k,
-            source=request.source,
-            document_id=request.document_id,
+            filters=request.filters,
         )
 
         return [
