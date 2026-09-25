@@ -21,6 +21,7 @@ class VectorSearchRepository:
         top_k: int,
         source: str | None = None,
         document_id: UUID | None = None,
+        document_type: str | None = None,
     ) -> list[tuple[ChunkDB, float]]:
         distance = EmbeddingDB.vector.cosine_distance(
             query_vector
@@ -52,6 +53,11 @@ class VectorSearchRepository:
         if document_id is not None:
             statement = statement.where(
                 DocumentDB.id == document_id,
+            )
+
+        if document_type is not None:
+            statement = statement.where(
+                DocumentDB.document_type == document_type,
             )
 
         statement = (

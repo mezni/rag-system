@@ -19,6 +19,7 @@ class DocumentRepository:
             source=data.source,
             source_uri=data.source_uri,
             title=data.title,
+            document_type=data.document_type,
             content_hash=data.content_hash,
             status=data.status,
         )
@@ -67,8 +68,9 @@ class DocumentRepository:
             source=document.source,
             source_uri=document.source_uri,
             title=document.title,
+            document_type=document.document_type,
             content_hash=document.content_hash,
-            status=document.status,
+            status=DocumentLifecycleStatus(document.status),
             created_at=document.created_at,
             updated_at=document.updated_at,
         )
@@ -81,11 +83,11 @@ class DocumentRepository:
         document: DocumentDB,
         content_hash: str,
         title: str | None = None,
+        document_type: str | None = None,
     ) -> DocumentDB:
         document.content_hash = content_hash
-
-        if title is not None:
-            document.title = title
+        document.title = title
+        document.document_type = document_type
 
         self.session.flush()
 

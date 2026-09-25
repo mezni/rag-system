@@ -17,6 +17,12 @@ class RetrievalQuery(BaseModel):
 
     document_id: UUID | None = None
 
+    document_type: str | None = Field(
+        default=None,
+        min_length=1,
+        max_length=100,
+    )
+
 
 class RetrievalResult(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)

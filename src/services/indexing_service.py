@@ -105,6 +105,7 @@ class IndexingService:
                 document=document,
                 content_hash=data.content_hash,
                 title=data.metadata.title,
+                document_type=data.metadata.document_type,
             )
 
             self._persist_chunks_and_embeddings(
@@ -267,6 +268,7 @@ class IndexingService:
             source=data.document.source,
             source_uri=data.document.source_uri,
             title=data.metadata.title,
+            document_type=data.metadata.document_type,
             content_hash=data.content_hash,
             status=DocumentLifecycleStatus.PROCESSING,
         )

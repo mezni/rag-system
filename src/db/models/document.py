@@ -39,6 +39,11 @@ class DocumentDB(Base):
         nullable=True,
     )
 
+    document_type: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
     content_hash: Mapped[str] = mapped_column(
         String(64),
         nullable=False,

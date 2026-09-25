@@ -14,6 +14,7 @@ class DocumentCreate(BaseModel):
     source: str = Field(min_length=1, max_length=100)
     source_uri: str = Field(min_length=1)
     title: str | None = Field(default=None, max_length=500)
+    document_type: str | None = Field(default=None, max_length=100)
 
     content_hash: str = Field(
         min_length=64,
@@ -34,6 +35,7 @@ class Document(BaseModel):
     source: str = Field(min_length=1, max_length=100)
     source_uri: str = Field(min_length=1)
     title: str | None = Field(default=None, max_length=500)
+    document_type: str | None = Field(default=None, max_length=100)
 
     content_hash: str = Field(
         min_length=64,
